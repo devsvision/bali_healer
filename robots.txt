@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://balihealer.com/sitemap.xml

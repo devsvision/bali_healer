@@ -1,0 +1,17 @@
+{
+  "name": "Bali Healer Marketplace",
+  "short_name": "Bali Healer",
+  "description": "A multi-vendor marketplace for Balinese healing, spiritual wellness, and online or offline healing services.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "/assets/images/logo-bali-healer.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
