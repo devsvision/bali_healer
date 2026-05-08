@@ -87,7 +87,7 @@ export function render() {
 
       <div class="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-6xl flex-col items-center justify-center px-4 pb-16 pt-20 text-center">
         <h1 class="max-w-5xl text-5xl font-extrabold leading-[0.98] tracking-tight text-white md:text-7xl">
-          Healing & <span class="text-gold">Spiritual</span> Wellness<br class="hidden md:block" /> in Bali
+          Discover Your <span class="text-gold">Healing</span> Journey<br class="hidden md:block" /> in Bali
         </h1>
         <p class="mt-7 max-w-2xl text-xl leading-8 text-white/78 md:text-2xl">
           Connect with Bali's most authentic healers and discover ancient rituals for your body, mind, and soul.

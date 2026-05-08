@@ -5,8 +5,8 @@ let cleanupPage;
 const routes = {
   home: {
     hash: "home",
-    title: "Bali Healer | Spiritual Healing & Wellness Marketplace in Bali",
-    description: "Book trusted Balinese healers, spiritual wellness sessions, sound baths, chakra balancing, melukat rituals, breathwork, yoga therapy, and online or offline healing services in Bali."
+    title: "Discover Your Healing Journey in Bali | Bali Healer",
+    description: "Discover your healing journey in Bali with trusted Balinese healers, spiritual wellness sessions, sound baths, chakra balancing, melukat rituals, breathwork, yoga therapy, and online or offline healing services."
   },
   services: {
     hash: "services",
