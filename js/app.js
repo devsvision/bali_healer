@@ -1,6 +1,7 @@
 const app = document.querySelector("#app");
 const links = () => [...document.querySelectorAll(".page-link")];
 let cleanupPage;
+let initialRenderDone = false;
 
 const routes = {
   home: {
@@ -46,6 +47,18 @@ function setMeta(route) {
   if (twitterDescription) twitterDescription.content = route.description;
 }
 
+function revealInitialRender() {
+  if (initialRenderDone) return;
+  initialRenderDone = true;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.body.classList.remove("app-booting");
+      document.body.classList.add("app-ready");
+    });
+  });
+}
+
 async function loadPage(page, updateHash = true) {
   const route = routes[page] || routes.home;
   const nextPage = routes[page] ? page : "home";
@@ -76,7 +89,10 @@ async function loadPage(page, updateHash = true) {
     }
   });
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  const isInitialRender = !initialRenderDone;
+  revealInitialRender();
+
+  window.scrollTo({ top: 0, behavior: isInitialRender ? "auto" : "smooth" });
 }
 
 document.addEventListener("click", (event) => {

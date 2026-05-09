@@ -1,5 +1,47 @@
 import { promotions, services } from "../js/data.js";
 
+const heroLocations = [
+  "All locations",
+  ...new Set(services.map((service) => service.area))
+];
+
+const heroCategories = [
+  "All categories",
+  "Energy Healing",
+  "Chakra Balancing",
+  "Sound Bath",
+  "Melukat Ritual",
+  "Breathwork",
+  "Yoga Therapy",
+  "Meditation",
+  "Intuitive Reading",
+  "Massage Healing",
+  "Couple Healing",
+  "Retreat Package",
+  "Astrology",
+  "Tarot Reading",
+  "Reiki",
+  "Life Coaching",
+  "Corporate Wellness"
+];
+
+const datePickerMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
+
+const datePickerDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 const testimonials = [
   {
     name: "Amelia Hart",
@@ -101,11 +143,9 @@ export function render() {
               </span>
               <span class="min-w-0">
                 <span class="block text-xs font-extrabold uppercase text-white">Location</span>
-                <select class="mt-1 w-full bg-transparent text-sm text-mist/65 outline-none">
-                  <option>Where are you going?</option>
-                  <option>Ubud</option>
-                  <option>Canggu</option>
-                  <option>Seminyak</option>
+                <select aria-label="Choose location" class="mt-1 w-full cursor-pointer bg-transparent text-sm text-mist/65 outline-none">
+                  <option value="" selected disabled>Where are you going?</option>
+                  ${heroLocations.map((location) => `<option class="bg-night text-mist" value="${location}">${location}</option>`).join("")}
                 </select>
               </span>
             </label>
@@ -116,22 +156,20 @@ export function render() {
               </span>
               <span class="min-w-0">
                 <span class="block text-xs font-extrabold uppercase text-white">Category</span>
-                <select class="mt-1 w-full bg-transparent text-sm text-mist/65 outline-none">
-                  <option>What are you seeking?</option>
-                  <option>Energy Healing</option>
-                  <option>Sound Bath</option>
-                  <option>Breathwork</option>
+                <select aria-label="Choose category" class="mt-1 w-full cursor-pointer bg-transparent text-sm text-mist/65 outline-none">
+                  <option value="" selected disabled>What are you seeking?</option>
+                  ${heroCategories.map((category) => `<option class="bg-night text-mist" value="${category}">${category}</option>`).join("")}
                 </select>
               </span>
             </label>
 
-            <label class="flex items-center gap-4 border-gold/15 px-5 py-3 text-left md:border-l">
+            <label data-date-picker-container class="flex items-center gap-4 border-gold/15 px-5 py-3 text-left md:border-l">
               <span class="text-gold">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
               </span>
               <span class="min-w-0">
                 <span class="block text-xs font-extrabold uppercase text-white">Dates</span>
-                <input type="text" placeholder="dd/mm/yyyy" class="mt-1 w-full bg-transparent text-sm text-mist/65 outline-none placeholder:text-mist/55" />
+                <input type="text" data-date-picker aria-label="Choose date" placeholder="Select date" readonly class="mt-1 w-full cursor-pointer bg-transparent text-sm text-mist/65 outline-none placeholder:text-mist/55" />
               </span>
             </label>
 
@@ -465,9 +503,9 @@ export function render() {
 
           <form data-booking-form class="p-5">
             <div class="grid gap-4 sm:grid-cols-2">
-              <label class="block">
+              <label data-date-picker-container class="block">
                 <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Date</span>
-                <input required type="date" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold" />
+                <input required type="text" data-date-picker placeholder="Select date" readonly class="mt-2 w-full cursor-pointer rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
               </label>
               <label class="block">
                 <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Time</span>
@@ -542,12 +580,19 @@ export function init() {
   const bookingModal = document.querySelector("[data-booking-modal]");
   const bookingForm = document.querySelector("[data-booking-form]");
   const closeBookingButtons = [...document.querySelectorAll("[data-close-booking]")];
+  const dateInputs = [...document.querySelectorAll("[data-date-picker]")];
   if (!track || slides.length === 0) return;
 
   let active = 0;
   let activeTestimonial = 0;
   let timer;
   let testimonialTimer;
+  let activeDateInput;
+  let calendarDate = new Date();
+  const calendar = document.createElement("div");
+  calendar.dataset.dateCalendar = "true";
+  calendar.className = "fixed z-[80] hidden w-[292px] rounded-lg border border-gold/30 bg-[#111] p-4 text-sm text-mist shadow-[0_22px_70px_rgba(0,0,0,0.5)]";
+  document.body.appendChild(calendar);
 
   const render = () => {
     track.style.transform = `translateX(-${active * 100}%)`;
@@ -652,6 +697,10 @@ export function init() {
 
     modeSelect.innerHTML = `<option value="">Select mode</option>${modeOptions.map((mode) => `<option>${mode}</option>`).join("")}`;
     bookingForm?.reset();
+    bookingForm?.querySelectorAll("[data-date-picker]").forEach((input) => {
+      input.value = "";
+      delete input.dataset.isoDate;
+    });
     bookingModal.classList.remove("hidden");
     bookingModal.classList.add("flex");
     document.body.classList.add("overflow-hidden");
@@ -687,10 +736,217 @@ export function init() {
     if (event.key === "Escape") closeBooking();
   };
 
+  const formatDate = (date) => `${datePickerMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
+  const sameDate = (firstDate, secondDate) => (
+    firstDate &&
+    secondDate &&
+    firstDate.getFullYear() === secondDate.getFullYear() &&
+    firstDate.getMonth() === secondDate.getMonth() &&
+    firstDate.getDate() === secondDate.getDate()
+  );
+
+  const selectedDate = () => {
+    if (!activeDateInput?.dataset.isoDate) return null;
+    const [year, month, day] = activeDateInput.dataset.isoDate.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  const positionCalendar = () => {
+    if (!activeDateInput || calendar.classList.contains("hidden")) return;
+    const rect = activeDateInput.getBoundingClientRect();
+    const gap = 8;
+    const calendarWidth = 292;
+    const calendarHeight = 360;
+    const left = Math.min(Math.max(12, rect.left), window.innerWidth - calendarWidth - 12);
+    const hasBottomSpace = rect.bottom + gap + calendarHeight <= window.innerHeight;
+    const top = hasBottomSpace ? rect.bottom + gap : Math.max(12, rect.top - calendarHeight - gap);
+
+    calendar.style.left = `${left}px`;
+    calendar.style.top = `${top}px`;
+  };
+
+  const renderCalendar = () => {
+    const year = calendarDate.getFullYear();
+    const month = calendarDate.getMonth();
+    const today = new Date();
+    const selected = selectedDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const previousMonthDays = new Date(year, month, 0).getDate();
+    const cells = [];
+
+    for (let index = firstDay - 1; index >= 0; index -= 1) {
+      cells.push({ day: previousMonthDays - index, offset: -1 });
+    }
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      cells.push({ day, offset: 0 });
+    }
+
+    while (cells.length % 7 !== 0) {
+      cells.push({ day: cells.length - firstDay - daysInMonth + 1, offset: 1 });
+    }
+
+    const firstYear = Math.min(today.getFullYear() - 5, year - 5);
+    const lastYear = Math.max(today.getFullYear() + 10, year + 5);
+    const years = [];
+    for (let yearOption = firstYear; yearOption <= lastYear; yearOption += 1) {
+      years.push(yearOption);
+    }
+
+    calendar.innerHTML = `
+      <div class="mb-3 flex items-center justify-between gap-2">
+        <button type="button" data-calendar-prev class="flex h-9 w-9 items-center justify-center rounded-md border border-gold/20 text-goldSoft transition hover:bg-gold hover:text-black" aria-label="Previous month">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="grid min-w-0 flex-1 grid-cols-[1fr_76px] gap-2">
+          <select data-calendar-month aria-label="Choose month" class="min-w-0 rounded-md border border-gold/20 bg-black px-2 py-2 text-sm font-semibold text-white outline-none focus:border-gold">
+            ${datePickerMonths.map((monthName, index) => `<option value="${index}" ${index === month ? "selected" : ""}>${monthName}</option>`).join("")}
+          </select>
+          <select data-calendar-year aria-label="Choose year" class="rounded-md border border-gold/20 bg-black px-2 py-2 text-sm font-semibold text-white outline-none focus:border-gold">
+            ${years.map((yearOption) => `<option value="${yearOption}" ${yearOption === year ? "selected" : ""}>${yearOption}</option>`).join("")}
+          </select>
+        </div>
+        <button type="button" data-calendar-next class="flex h-9 w-9 items-center justify-center rounded-md border border-gold/20 text-goldSoft transition hover:bg-gold hover:text-black" aria-label="Next month">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-goldSoft">
+        ${datePickerDays.map((day) => `<span>${day}</span>`).join("")}
+      </div>
+      <div class="mt-2 grid grid-cols-7 gap-1">
+        ${cells.map((cell) => {
+          const cellDate = new Date(year, month + cell.offset, cell.day);
+          const isSelected = sameDate(cellDate, selected);
+          const isToday = sameDate(cellDate, today);
+          const dateValue = `${cellDate.getFullYear()}-${String(cellDate.getMonth() + 1).padStart(2, "0")}-${String(cellDate.getDate()).padStart(2, "0")}`;
+          const stateClass = isSelected
+            ? "bg-gold text-black"
+            : isToday
+              ? "border-gold/60 text-goldSoft"
+              : "border-transparent text-mist hover:border-gold/30 hover:bg-gold/10";
+          const mutedClass = cell.offset === 0 ? "" : "opacity-35";
+
+          return `
+            <button type="button" data-calendar-day="${dateValue}" class="flex h-9 items-center justify-center rounded-md border ${stateClass} ${mutedClass}">
+              ${cellDate.getDate()}
+            </button>
+          `;
+        }).join("")}
+      </div>
+      <div class="mt-4 flex justify-between border-t border-gold/10 pt-3">
+        <button type="button" data-calendar-clear class="text-xs font-semibold text-mist/55 transition hover:text-goldSoft">Clear</button>
+        <button type="button" data-calendar-today class="text-xs font-semibold text-goldSoft transition hover:text-gold">Today</button>
+      </div>
+    `;
+  };
+
+  const openDatePicker = (event) => {
+    event.stopPropagation();
+    activeDateInput = event.currentTarget;
+    const selected = selectedDate();
+    calendarDate = selected || new Date();
+    renderCalendar();
+    calendar.classList.remove("hidden");
+    positionCalendar();
+  };
+
+  const closeDatePicker = () => {
+    calendar.classList.add("hidden");
+    activeDateInput = undefined;
+  };
+
+  const chooseDate = (date) => {
+    if (!activeDateInput) return;
+    activeDateInput.dataset.isoDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    activeDateInput.value = formatDate(date);
+    activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
+    closeDatePicker();
+  };
+
+  const handleCalendarClick = (event) => {
+    event.stopPropagation();
+    const dayButton = event.target.closest("[data-calendar-day]");
+    if (dayButton) {
+      const [year, month, day] = dayButton.dataset.calendarDay.split("-").map(Number);
+      chooseDate(new Date(year, month - 1, day));
+      return;
+    }
+
+    if (event.target.closest("[data-calendar-prev]")) {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+      renderCalendar();
+      positionCalendar();
+      return;
+    }
+
+    if (event.target.closest("[data-calendar-next]")) {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1);
+      renderCalendar();
+      positionCalendar();
+      return;
+    }
+
+    if (event.target.closest("[data-calendar-today]")) {
+      chooseDate(new Date());
+      return;
+    }
+
+    if (event.target.closest("[data-calendar-clear]")) {
+      if (activeDateInput) {
+        activeDateInput.value = "";
+        delete activeDateInput.dataset.isoDate;
+        activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      closeDatePicker();
+    }
+  };
+
+  const handleCalendarChange = (event) => {
+    event.stopPropagation();
+
+    if (event.target.closest("[data-calendar-month]")) {
+      calendarDate = new Date(calendarDate.getFullYear(), Number(event.target.value), 1);
+      renderCalendar();
+      positionCalendar();
+      return;
+    }
+
+    if (event.target.closest("[data-calendar-year]")) {
+      calendarDate = new Date(Number(event.target.value), calendarDate.getMonth(), 1);
+      renderCalendar();
+      positionCalendar();
+    }
+  };
+
+  const handleDatePickerOutsideClick = (event) => {
+    if (calendar.classList.contains("hidden")) return;
+    if (
+      event.target.closest("[data-date-calendar]") ||
+      event.target.closest("[data-date-picker-container]")
+    ) return;
+    closeDatePicker();
+  };
+
+  const handleDatePickerEscape = (event) => {
+    if (event.key === "Escape") closeDatePicker();
+  };
+
   document.addEventListener("click", handleBookingClick);
   document.addEventListener("keydown", handleEscape);
+  document.addEventListener("click", handleDatePickerOutsideClick);
+  document.addEventListener("keydown", handleDatePickerEscape);
+  window.addEventListener("resize", positionCalendar);
+  window.addEventListener("scroll", positionCalendar, true);
+  calendar.addEventListener("click", handleCalendarClick);
+  calendar.addEventListener("change", handleCalendarChange);
   bookingForm?.addEventListener("submit", handleBookingSubmit);
   closeBookingButtons.forEach((button) => button.addEventListener("click", closeBooking));
+  dateInputs.forEach((input) => {
+    input.addEventListener("click", openDatePicker);
+    input.addEventListener("focus", openDatePicker);
+  });
 
   render();
   renderTestimonials();
@@ -703,8 +959,19 @@ export function init() {
     showAllServices?.removeEventListener("click", revealServices);
     document.removeEventListener("click", handleBookingClick);
     document.removeEventListener("keydown", handleEscape);
+    document.removeEventListener("click", handleDatePickerOutsideClick);
+    document.removeEventListener("keydown", handleDatePickerEscape);
+    window.removeEventListener("resize", positionCalendar);
+    window.removeEventListener("scroll", positionCalendar, true);
+    calendar.removeEventListener("click", handleCalendarClick);
+    calendar.removeEventListener("change", handleCalendarChange);
     bookingForm?.removeEventListener("submit", handleBookingSubmit);
     closeBookingButtons.forEach((button) => button.removeEventListener("click", closeBooking));
+    dateInputs.forEach((input) => {
+      input.removeEventListener("click", openDatePicker);
+      input.removeEventListener("focus", openDatePicker);
+    });
+    calendar.remove();
     document.body.classList.remove("overflow-hidden");
   };
 }
