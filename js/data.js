@@ -1,6 +1,7 @@
 export const services = [
   {
     name: "Balinese Energy Healing",
+    category: "Energy Healing",
     mode: "Offline",
     providerType: "Individual Healer",
     area: "Ubud",
@@ -11,6 +12,7 @@ export const services = [
   },
   {
     name: "Online Chakra Balancing",
+    category: "Chakra Balancing",
     mode: "Online",
     providerType: "Individual Healer",
     area: "Online",
@@ -21,6 +23,7 @@ export const services = [
   },
   {
     name: "Sound Bath Meditation",
+    category: "Sound Bath",
     mode: "Offline",
     providerType: "Business Healer",
     area: "Canggu",
@@ -31,6 +34,7 @@ export const services = [
   },
   {
     name: "Corporate Wellness Day",
+    category: "Corporate Wellness",
     mode: "Hybrid",
     providerType: "Business Healer",
     area: "Seminyak",
@@ -41,6 +45,7 @@ export const services = [
   },
   {
     name: "Melukat Purification Ritual",
+    category: "Melukat Ritual",
     mode: "Offline",
     providerType: "Individual Healer",
     area: "Tampaksiring",
@@ -51,6 +56,7 @@ export const services = [
   },
   {
     name: "Sunset Breathwork Journey",
+    category: "Breathwork",
     mode: "Hybrid",
     providerType: "Business Healer",
     area: "Canggu",
@@ -61,6 +67,7 @@ export const services = [
   },
   {
     name: "Private Yoga Therapy",
+    category: "Yoga Therapy",
     mode: "Offline",
     providerType: "Individual Healer",
     area: "Uluwatu",
@@ -71,6 +78,7 @@ export const services = [
   },
   {
     name: "Guided Meditation Session",
+    category: "Meditation",
     mode: "Online",
     providerType: "Business Healer",
     area: "Online",
@@ -81,6 +89,7 @@ export const services = [
   },
   {
     name: "Intuitive Reading",
+    category: "Intuitive Reading",
     mode: "Online",
     providerType: "Individual Healer",
     area: "Online",
@@ -91,6 +100,7 @@ export const services = [
   },
   {
     name: "Balinese Massage Healing",
+    category: "Massage Healing",
     mode: "Offline",
     providerType: "Business Healer",
     area: "Sanur",
@@ -101,6 +111,7 @@ export const services = [
   },
   {
     name: "Couple Connection Healing",
+    category: "Couple Healing",
     mode: "Hybrid",
     providerType: "Individual Healer",
     area: "Ubud",
@@ -111,6 +122,7 @@ export const services = [
   },
   {
     name: "Three Day Retreat Package",
+    category: "Retreat Package",
     mode: "Offline",
     providerType: "Business Healer",
     area: "Ubud",
@@ -121,6 +133,7 @@ export const services = [
   },
   {
     name: "Astrology Consultation",
+    category: "Astrology",
     mode: "Online",
     providerType: "Individual Healer",
     area: "Online",
@@ -131,6 +144,7 @@ export const services = [
   },
   {
     name: "Tarot Reflection Reading",
+    category: "Tarot Reading",
     mode: "Hybrid",
     providerType: "Individual Healer",
     area: "Ubud",
@@ -141,6 +155,7 @@ export const services = [
   },
   {
     name: "Reiki Restoration",
+    category: "Reiki",
     mode: "Hybrid",
     providerType: "Individual Healer",
     area: "Seminyak",
@@ -151,6 +166,7 @@ export const services = [
   },
   {
     name: "Life Coaching Integration",
+    category: "Life Coaching",
     mode: "Online",
     providerType: "Business Healer",
     area: "Online",
@@ -158,6 +174,73 @@ export const services = [
     price: "Rp650,000",
     rating: "4.7",
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80"
+  }
+];
+
+export const healingCategories = [
+  {
+    name: "Energy Healing",
+    description: "Balinese cleansing, aura care, and grounding sessions."
+  },
+  {
+    name: "Chakra Balancing",
+    description: "Remote or in-person alignment for body and mind."
+  },
+  {
+    name: "Sound Bath",
+    description: "Meditation with bowls, vibration, and deep rest."
+  },
+  {
+    name: "Corporate Wellness",
+    description: "Curated onsite programs for retreats and teams."
+  },
+  {
+    name: "Melukat Ritual",
+    description: "Sacred water purification with respectful temple guidance."
+  },
+  {
+    name: "Breathwork",
+    description: "Guided breathing for release, clarity, and nervous-system reset."
+  },
+  {
+    name: "Yoga Therapy",
+    description: "Gentle movement, mobility, and mindful recovery sessions."
+  },
+  {
+    name: "Meditation",
+    description: "Private or group sessions for stillness and focus."
+  },
+  {
+    name: "Intuitive Reading",
+    description: "Reflective guidance for emotional insight and direction."
+  },
+  {
+    name: "Massage Healing",
+    description: "Bodywork for relaxation, circulation, and energetic balance."
+  },
+  {
+    name: "Couple Healing",
+    description: "Shared rituals and connection sessions for two people."
+  },
+  {
+    name: "Retreat Package",
+    description: "Multi-day healing journeys with curated activities."
+  },
+  {
+    name: "Astrology",
+    description: "Birth chart reading and timing guidance."
+  },
+  {
+    name: "Tarot Reading",
+    description: "Symbolic card reading for reflection and decision support."
+  },
+  {
+    name: "Reiki",
+    description: "Light-touch energy session for calm and restoration."
+  },
+  {
+    name: "Life Coaching",
+    description: "Goal clarity, integration, and supportive personal guidance."
   }
 ];
 

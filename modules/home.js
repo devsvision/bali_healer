@@ -227,116 +227,6 @@ export function render() {
       </div>
     </section>
 
-    <section class="border-y border-gold/15 bg-charcoal/70 px-4 py-10 lg:px-8">
-      <div class="mx-auto max-w-7xl">
-        <div class="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.28em] text-goldSoft">Category</p>
-            <h3 class="mt-2 text-2xl font-semibold text-white">Choose the healing category you need</h3>
-          </div>
-          <p class="max-w-lg text-sm leading-6 text-mist/55">Explore services by session focus, from traditional Balinese rituals to modern wellness for individuals, couples, and teams.</p>
-        </div>
-
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        ${[
-          [
-            "Energy Healing",
-            "Balinese cleansing, aura care, and grounding sessions",
-            `<path d="M12 3v18M5 8c3.5 0 7 2.4 7 6.2C12 10.4 15.5 8 19 8"/><path d="M7 16c2.2 0 4-1.4 5-3 1 1.6 2.8 3 5 3"/>`
-          ],
-          [
-            "Chakra Balancing",
-            "Remote or in-person alignment for body and mind",
-            `<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M19.1 4.9l-2.8 2.8M7.7 16.3l-2.8 2.8"/>`
-          ],
-          [
-            "Sound Bath",
-            "Meditation with bowls, vibration, and deep rest",
-            `<path d="M4 14h16"/><path d="M7 14a5 5 0 0 0 10 0"/><path d="M9 8c1.5-1.4 4.5-1.4 6 0M6 5c3-2.6 9-2.6 12 0"/>`
-          ],
-          [
-            "Corporate Wellness",
-            "Curated onsite programs for retreats and teams",
-            `<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M9 5V3h6v2M8 11h8M8 15h5"/>`
-          ],
-          [
-            "Melukat Ritual",
-            "Sacred water purification with respectful temple guidance",
-            `<path d="M12 3c3 3.4 5 6.1 5 9a5 5 0 0 1-10 0c0-2.9 2-5.6 5-9Z"/><path d="M9 14c1.6 1.3 4.4 1.3 6 0"/>`
-          ],
-          [
-            "Breathwork",
-            "Guided breathing for release, clarity, and nervous-system reset",
-            `<path d="M4 12c2-3 6-3 8 0s6 3 8 0"/><path d="M4 16c2-3 6-3 8 0s6 3 8 0"/><path d="M4 8c2-3 6-3 8 0s6 3 8 0"/>`
-          ],
-          [
-            "Yoga Therapy",
-            "Gentle movement, mobility, and mindful recovery sessions",
-            `<circle cx="12" cy="5" r="2"/><path d="M12 7v6l-4 5M12 13l4 5M8 10h8"/>`
-          ],
-          [
-            "Meditation",
-            "Private or group sessions for stillness and focus",
-            `<circle cx="12" cy="8" r="2"/><path d="M8 18c1.2-2 2.5-3 4-3s2.8 1 4 3"/><path d="M5 14c2 1.2 4.2 1.8 7 1.8s5-.6 7-1.8"/>`
-          ],
-          [
-            "Intuitive Reading",
-            "Reflective guidance for emotional insight and direction",
-            `<path d="M5 5h14v14H5z"/><path d="M8 9h8M8 13h5"/><path d="M16 16l3 3"/>`
-          ],
-          [
-            "Massage Healing",
-            "Bodywork for relaxation, circulation, and energetic balance",
-            `<path d="M6 12h12"/><path d="M8 8c1.2-1.8 3-2.7 4-2.7S14.8 6.2 16 8"/><path d="M7 16c2.8 2.2 7.2 2.2 10 0"/>`
-          ],
-          [
-            "Couple Healing",
-            "Shared rituals and connection sessions for two people",
-            `<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>`
-          ],
-          [
-            "Retreat Package",
-            "Multi-day healing journeys with curated activities",
-            `<path d="M3 19h18"/><path d="M5 19V9l7-5 7 5v10"/><path d="M9 19v-6h6v6"/>`
-          ],
-          [
-            "Astrology",
-            "Birth chart reading and timing guidance",
-            `<circle cx="12" cy="12" r="7"/><path d="M12 5v14M5 12h14"/><path d="m8 8 8 8M16 8l-8 8"/>`
-          ],
-          [
-            "Tarot Reading",
-            "Symbolic card reading for reflection and decision support",
-            `<rect x="7" y="3" width="10" height="16" rx="2"/><path d="M10 7h4M10 11h4M9 21h8"/>`
-          ],
-          [
-            "Reiki",
-            "Light-touch energy session for calm and restoration",
-            `<path d="M12 21c-3-2.2-5-5.2-5-8a5 5 0 0 1 10 0c0 2.8-2 5.8-5 8Z"/><path d="M9 12h6M12 9v6"/>`
-          ],
-          [
-            "Life Coaching",
-            "Goal clarity, integration, and supportive personal guidance",
-            `<path d="M12 19v-7"/><path d="M8 15l4 4 4-4"/><path d="M5 5h14v6H5z"/>`
-          ]
-        ].map(([title, description, icon]) => `
-          <article class="group relative overflow-hidden rounded-xl border border-gold/10 bg-gradient-to-br from-black/55 via-[#16120d]/70 to-black/35 p-px transition hover:-translate-y-0.5 hover:border-gold/35 hover:shadow-[0_18px_45px_rgba(214,170,67,0.13)]">
-            <div class="absolute inset-0 opacity-0 transition group-hover:opacity-100 bg-[radial-gradient(circle_at_15%_15%,rgba(244,217,135,0.16),transparent_34%)]"></div>
-            <div class="relative flex h-full items-start gap-4 rounded-[11px] bg-black/45 p-5 ring-1 ring-white/5">
-            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-gold/25 bg-gold/10 text-goldSoft shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition group-hover:border-gold/45 group-hover:bg-gold/15">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon}</svg>
-            </span>
-            <div>
-              <h3 class="text-base font-semibold text-white">${title}</h3>
-              <p class="mt-1 text-sm leading-6 text-mist/55">${description}</p>
-            </div>
-            </div>
-          </article>
-        `).join("")}
-        </div>
-      </div>
-    </section>
-
     <section class="mx-auto max-w-7xl px-4 py-14 lg:px-8">
       <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
@@ -495,7 +385,7 @@ export function render() {
                 </div>
                 <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
                   <p class="text-xs text-mist/45">Starting price</p>
-                  <p data-booking-price class="mt-1 font-semibold text-goldSoft"></p>
+                  <p data-booking-price data-price-idr="" class="mt-1 font-semibold text-goldSoft"></p>
                 </div>
               </div>
             </div>
@@ -581,6 +471,7 @@ export function init() {
   const bookingForm = document.querySelector("[data-booking-form]");
   const closeBookingButtons = [...document.querySelectorAll("[data-close-booking]")];
   const dateInputs = [...document.querySelectorAll("[data-date-picker]")];
+  const datePickerContainers = [...document.querySelectorAll("[data-date-picker-container]")];
   if (!track || slides.length === 0) return;
 
   let active = 0;
@@ -589,6 +480,7 @@ export function init() {
   let testimonialTimer;
   let activeDateInput;
   let calendarDate = new Date();
+  let ignoreOutsideClickUntil = 0;
   const calendar = document.createElement("div");
   calendar.dataset.dateCalendar = "true";
   calendar.className = "fixed z-[80] hidden w-[292px] rounded-lg border border-gold/30 bg-[#111] p-4 text-sm text-mist shadow-[0_22px_70px_rgba(0,0,0,0.5)]";
@@ -689,6 +581,7 @@ export function init() {
     bookingModal.querySelector("[data-booking-description]").textContent = profile.description;
     bookingModal.querySelector("[data-booking-location]").textContent = profile.location;
     bookingModal.querySelector("[data-booking-price]").textContent = service.price;
+    bookingModal.querySelector("[data-booking-price]").dataset.priceIdr = service.price;
     bookingModal.querySelector("[data-booking-provider]").textContent = service.providerType;
 
     const modeBadge = bookingModal.querySelector("[data-booking-mode]");
@@ -696,6 +589,7 @@ export function init() {
     modeBadge.className = `rounded-full border px-3 py-1 text-xs font-semibold ${badge.className}`;
 
     modeSelect.innerHTML = `<option value="">Select mode</option>${modeOptions.map((mode) => `<option>${mode}</option>`).join("")}`;
+    document.dispatchEvent(new CustomEvent("prices:refresh"));
     bookingForm?.reset();
     bookingForm?.querySelectorAll("[data-date-picker]").forEach((input) => {
       input.value = "";
@@ -842,14 +736,25 @@ export function init() {
     `;
   };
 
-  const openDatePicker = (event) => {
-    event.stopPropagation();
-    activeDateInput = event.currentTarget;
+  const openDatePickerForInput = (input) => {
+    ignoreOutsideClickUntil = Date.now() + 180;
+    activeDateInput = input;
     const selected = selectedDate();
     calendarDate = selected || new Date();
     renderCalendar();
     calendar.classList.remove("hidden");
     positionCalendar();
+  };
+
+  const openDatePicker = (event) => {
+    event.stopPropagation();
+    openDatePickerForInput(event.currentTarget);
+  };
+
+  const openDatePickerFromContainer = (event) => {
+    event.stopPropagation();
+    const input = event.currentTarget.querySelector("[data-date-picker]");
+    if (input) openDatePickerForInput(input);
   };
 
   const closeDatePicker = () => {
@@ -922,6 +827,7 @@ export function init() {
 
   const handleDatePickerOutsideClick = (event) => {
     if (calendar.classList.contains("hidden")) return;
+    if (Date.now() < ignoreOutsideClickUntil) return;
     if (
       event.target.closest("[data-date-calendar]") ||
       event.target.closest("[data-date-picker-container]")
@@ -944,9 +850,10 @@ export function init() {
   bookingForm?.addEventListener("submit", handleBookingSubmit);
   closeBookingButtons.forEach((button) => button.addEventListener("click", closeBooking));
   dateInputs.forEach((input) => {
+    input.addEventListener("pointerdown", openDatePicker);
     input.addEventListener("click", openDatePicker);
-    input.addEventListener("focus", openDatePicker);
   });
+  datePickerContainers.forEach((container) => container.addEventListener("click", openDatePickerFromContainer));
 
   render();
   renderTestimonials();
@@ -968,9 +875,10 @@ export function init() {
     bookingForm?.removeEventListener("submit", handleBookingSubmit);
     closeBookingButtons.forEach((button) => button.removeEventListener("click", closeBooking));
     dateInputs.forEach((input) => {
+      input.removeEventListener("pointerdown", openDatePicker);
       input.removeEventListener("click", openDatePicker);
-      input.removeEventListener("focus", openDatePicker);
     });
+    datePickerContainers.forEach((container) => container.removeEventListener("click", openDatePickerFromContainer));
     calendar.remove();
     document.body.classList.remove("overflow-hidden");
   };
@@ -1024,7 +932,7 @@ function serviceCard(service, isHidden = false) {
             <svg class="h-3.5 w-3.5 text-gold" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8-6.1-3.4-6.1 3.4 1.4-6.8-5.1-4.7 6.9-.8L12 2Z"/></svg>
             ${service.rating} (${profile.reviews} reviews)
           </span>
-          <span class="text-right font-semibold text-goldSoft">${service.price}</span>
+          <span data-price-idr="${service.price}" class="text-right font-semibold text-goldSoft">${service.price}</span>
         </div>
 
         <div class="mt-4 flex items-center justify-end gap-3">

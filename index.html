@@ -100,6 +100,30 @@
         opacity: 1;
         transition: opacity 180ms ease;
       }
+
+      * {
+        scrollbar-color: rgba(214, 170, 67, 0.8) rgba(214, 170, 67, 0.12);
+        scrollbar-width: thin;
+      }
+
+      *::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+      }
+
+      *::-webkit-scrollbar-track {
+        background: rgba(214, 170, 67, 0.1);
+        border-radius: 999px;
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #f4d987, #d6aa43);
+        border-radius: 999px;
+      }
+
+      *::-webkit-scrollbar-thumb:hover {
+        background: #f4d987;
+      }
     </style>
   </head>
   <body class="app-booting min-h-screen bg-night text-mist">
@@ -125,6 +149,28 @@
         </nav>
 
         <div class="flex items-center gap-2">
+          <div class="hidden items-center gap-2 lg:flex">
+            <label class="flex items-center gap-2 rounded-lg border border-gold/20 bg-black px-3 py-2 text-goldSoft">
+              <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+              <select data-language-select aria-label="Choose language" class="cursor-pointer bg-transparent text-xs font-bold text-mist outline-none">
+                <option class="bg-night text-mist" value="id-ID">ID</option>
+                <option class="bg-night text-mist" value="en-US">EN</option>
+                <option class="bg-night text-mist" value="en-AU">AU</option>
+                <option class="bg-night text-mist" value="ja-JP">JP</option>
+                <option class="bg-night text-mist" value="de-DE">DE</option>
+              </select>
+            </label>
+            <label class="flex items-center gap-2 rounded-lg border border-gold/20 bg-black px-3 py-2 text-goldSoft">
+              <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <select data-currency-select aria-label="Choose currency" class="cursor-pointer bg-transparent text-xs font-bold text-mist outline-none">
+                <option class="bg-night text-mist" value="IDR">IDR</option>
+                <option class="bg-night text-mist" value="USD">USD</option>
+                <option class="bg-night text-mist" value="AUD">AUD</option>
+                <option class="bg-night text-mist" value="JPY">JPY</option>
+                <option class="bg-night text-mist" value="EUR">EUR</option>
+              </select>
+            </label>
+          </div>
           <span class="mx-2 hidden h-7 w-px bg-gold/35 lg:block"></span>
           <button class="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-mist/70 transition hover:text-goldSoft lg:flex">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -143,7 +189,51 @@
         <a href="#services" data-page="services" data-nav="true" class="page-link shrink-0 rounded-md px-3 py-2 text-sm text-mist/80">Services</a>
         <a href="#about" data-page="spec" data-nav="true" class="page-link shrink-0 rounded-md px-3 py-2 text-sm text-mist/80">About</a>
       </nav>
+
+      <div class="border-t border-gold/10 bg-[#070604]">
+        <div class="mx-auto flex max-w-6xl justify-start gap-2 overflow-x-auto px-4 py-3 md:justify-center lg:px-6">
+          <button data-open-category-menu class="flex shrink-0 items-center gap-2 rounded-lg border border-gold/35 bg-gold px-4 py-2 text-sm font-extrabold text-black transition hover:bg-goldSoft">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            All Categories
+          </button>
+          <button data-category-filter="Energy Healing" class="category-link flex shrink-0 items-center gap-2 rounded-lg border border-gold/15 px-4 py-2 text-sm font-semibold text-mist/75 transition hover:border-gold/40 hover:text-goldSoft">
+            <svg class="h-4 w-4 text-goldSoft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 8c3.5 0 7 2.4 7 6.2C12 10.4 15.5 8 19 8"/><path d="M7 16c2.2 0 4-1.4 5-3 1 1.6 2.8 3 5 3"/></svg>
+            Energy Healing
+          </button>
+          <button data-category-filter="Chakra Balancing" class="category-link flex shrink-0 items-center gap-2 rounded-lg border border-gold/15 px-4 py-2 text-sm font-semibold text-mist/75 transition hover:border-gold/40 hover:text-goldSoft">
+            <svg class="h-4 w-4 text-goldSoft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M19.1 4.9l-2.8 2.8M7.7 16.3l-2.8 2.8"/></svg>
+            Chakra Balancing
+          </button>
+          <button data-category-filter="Sound Bath" class="category-link flex shrink-0 items-center gap-2 rounded-lg border border-gold/15 px-4 py-2 text-sm font-semibold text-mist/75 transition hover:border-gold/40 hover:text-goldSoft">
+            <svg class="h-4 w-4 text-goldSoft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h16"/><path d="M7 14a5 5 0 0 0 10 0"/><path d="M9 8c1.5-1.4 4.5-1.4 6 0M6 5c3-2.6 9-2.6 12 0"/></svg>
+            Sound Bath
+          </button>
+          <button data-category-filter="Melukat Ritual" class="category-link flex shrink-0 items-center gap-2 rounded-lg border border-gold/15 px-4 py-2 text-sm font-semibold text-mist/75 transition hover:border-gold/40 hover:text-goldSoft">
+            <svg class="h-4 w-4 text-goldSoft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 3.4 5 6.1 5 9a5 5 0 0 1-10 0c0-2.9 2-5.6 5-9Z"/><path d="M9 14c1.6 1.3 4.4 1.3 6 0"/></svg>
+            Melukat Ritual
+          </button>
+          <button data-category-filter="Breathwork" class="category-link flex shrink-0 items-center gap-2 rounded-lg border border-gold/15 px-4 py-2 text-sm font-semibold text-mist/75 transition hover:border-gold/40 hover:text-goldSoft">
+            <svg class="h-4 w-4 text-goldSoft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12c2-3 6-3 8 0s6 3 8 0"/><path d="M4 16c2-3 6-3 8 0s6 3 8 0"/><path d="M4 8c2-3 6-3 8 0s6 3 8 0"/></svg>
+            Breathwork
+          </button>
+        </div>
+      </div>
     </header>
+
+    <div data-category-modal class="fixed inset-0 z-[70] hidden items-start justify-center bg-black/70 px-4 py-20 backdrop-blur-sm">
+      <div class="w-full max-w-5xl rounded-lg border border-gold/25 bg-[#11100e] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.65)] md:p-7">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-goldSoft">Healing Categories</p>
+            <h2 class="mt-2 text-2xl font-semibold text-white">Choose a category</h2>
+          </div>
+          <button data-close-category-menu class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-gold/20 text-goldSoft transition hover:bg-gold hover:text-black" aria-label="Close category menu">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div data-category-menu-list class="mt-6 grid max-h-[62vh] gap-3 overflow-y-auto pr-2 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </div>
+    </div>
 
     <main class="relative z-10">
       <div id="app"></div>
