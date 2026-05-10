@@ -190,7 +190,7 @@ export function render() {
       </div>
     </section>
 
-    <section class="border-y border-gold/15 bg-black py-10">
+    <section class="border-t border-gold/15 bg-black py-10">
       <div class="mx-auto max-w-7xl px-4 lg:px-8">
         <div class="mb-6 flex items-center justify-center gap-4">
           <span class="hidden h-px w-44 bg-gradient-to-r from-transparent to-gold/45 sm:block"></span>
@@ -1523,9 +1523,6 @@ function promoSlide(promo, index) {
 
         <div class="absolute right-6 top-6 hidden rounded-full border border-gold/20 bg-black/50 px-4 py-2 text-xs font-medium text-mist/65 backdrop-blur md:block">
           Sponsored - ${promo.vendor}
-        </div>
-        <div class="absolute bottom-6 right-6 hidden text-xs text-mist/45 md:block">
-          Banner ${index + 1} / ${promotions.length}
         </div>
       </div>
     </article>

@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Discover Your Healing Journey in Bali | Bali Healer</title>
     <meta name="description" content="Discover your healing journey in Bali with trusted Balinese healers, spiritual wellness sessions, sound baths, chakra balancing, melukat rituals, breathwork, yoga therapy, and online or offline healing services." />
-    <meta name="keywords" content="healing journey in Bali, Bali healer, Balinese healing, spiritual wellness Bali, melukat ritual, energy healing Bali, chakra balancing, sound bath Bali, breathwork Bali, wellness marketplace" />
+    <meta name="keywords" content="Bali healer, Balinese healer, Bali healing services, spiritual healer Bali, Ubud healer, Canggu wellness, melukat ceremony Bali, energy healing Bali, chakra balancing Bali, sound healing Bali, sound bath Bali, breathwork Bali, yoga therapy Bali, reiki Bali, astrology reading Bali, tarot reading Bali, Bali wellness marketplace, online healing session, Bali retreat booking" />
     <meta name="author" content="Bali Healer Marketplace" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#050505" />
+    <meta name="application-name" content="Bali Healer" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="geo.region" content="ID-BA" />
+    <meta name="geo.placename" content="Bali, Indonesia" />
+    <meta name="geo.position" content="-8.3405;115.0920" />
+    <meta name="ICBM" content="-8.3405, 115.0920" />
     <link rel="canonical" href="https://balihealer.com/" />
     <link rel="icon" type="image/png" href="./assets/images/logo-bali-healer.png" />
     <link rel="apple-touch-icon" href="./assets/images/logo-bali-healer.png" />
@@ -16,6 +22,7 @@
     <link rel="preload" href="./assets/images/logo-bali-healer.png" as="image" />
     <link rel="preload" href="./assets/videos/hero-bali-healer.mp4" as="video" type="video/mp4" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Bali Healer" />
     <meta property="og:title" content="Discover Your Healing Journey in Bali | Bali Healer" />
     <meta property="og:description" content="Connect with trusted Balinese healers and book online, offline, or hybrid spiritual wellness sessions across Bali." />
@@ -65,6 +72,50 @@
           { "@type": "ListItem", "position": 4, "name": "Melukat Purification Ritual", "url": "https://balihealer.com/#services" },
           { "@type": "ListItem", "position": 5, "name": "Breathwork, Yoga Therapy, Reiki, Retreats, and Corporate Wellness", "url": "https://balihealer.com/#services" }
         ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Bali healing and spiritual wellness booking",
+        "serviceType": "Healing marketplace",
+        "provider": {
+          "@type": "Organization",
+          "name": "Bali Healer Marketplace",
+          "url": "https://balihealer.com/"
+        },
+        "areaServed": [
+          { "@type": "Place", "name": "Bali" },
+          { "@type": "Place", "name": "Ubud" },
+          { "@type": "Place", "name": "Canggu" },
+          { "@type": "Place", "name": "Seminyak" },
+          { "@type": "Place", "name": "Sanur" }
+        ],
+        "availableChannel": [
+          {
+            "@type": "ServiceChannel",
+            "serviceLocation": { "@type": "Place", "name": "Bali, Indonesia" }
+          },
+          {
+            "@type": "ServiceChannel",
+            "serviceUrl": "https://balihealer.com/#services"
+          }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Healing service categories",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Energy Healing" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Chakra Balancing" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Sound Bath" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Melukat Ritual" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Breathwork" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Yoga Therapy" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Reiki" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Retreats" } }
+          ]
+        }
       }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -199,6 +250,7 @@
         transition: opacity 220ms ease;
         pointer-events: none;
         -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
         -webkit-mask-composite: xor;
         mask-composite: exclude;
       }

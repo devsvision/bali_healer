@@ -12,6 +12,10 @@ let selectedCurrency = localStorage.getItem("baliHealerCurrency") || "IDR";
 const splashStartedAt = performance.now();
 const splashMinimumDuration = 2300;
 
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
 const routes = {
   home: {
     hash: "home",
@@ -403,9 +407,11 @@ function revealInitialRender() {
   const remaining = Math.max(0, splashMinimumDuration - elapsed);
 
   window.setTimeout(() => requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     requestAnimationFrame(() => {
       document.body.classList.remove("app-booting");
       document.body.classList.add("app-ready");
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     });
   }), remaining);
 }
@@ -590,7 +596,7 @@ async function loadPage(page, updateHash = true) {
   const isInitialRender = !initialRenderDone;
   revealInitialRender();
 
-  window.scrollTo({ top: 0, behavior: isInitialRender ? "auto" : "smooth" });
+  window.scrollTo({ top: 0, left: 0, behavior: isInitialRender ? "auto" : "smooth" });
 }
 
 function chooseCategory(category) {
