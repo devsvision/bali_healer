@@ -119,8 +119,8 @@ const testimonials = [
 
 export function render() {
   return `
-    <section class="relative -mt-[1px] min-h-[calc(100vh-72px)] overflow-hidden">
-      <video class="absolute inset-0 h-full w-full object-cover opacity-75" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&w=2200&q=90">
+    <section data-home-hero class="relative -mt-[1px] min-h-[calc(100vh-72px)] overflow-hidden">
+      <video class="absolute inset-0 h-full w-full object-cover opacity-75" autoplay muted loop playsinline>
         <source src="./assets/videos/hero-bali-healer.mp4" type="video/mp4" />
       </video>
       <div class="absolute inset-0 bg-black/55"></div>
@@ -236,7 +236,7 @@ export function render() {
         </div>
         <button data-show-all-services class="rounded-lg border border-gold/35 px-5 py-3 text-sm font-bold text-goldSoft transition hover:border-gold hover:bg-gold/10">View all</button>
       </div>
-      <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div class="mt-8 grid auto-rows-fr gap-5 md:grid-cols-2 lg:grid-cols-4">
         ${services.map((service, index) => serviceCard(service, index >= 8)).join("")}
       </div>
     </section>
@@ -351,9 +351,86 @@ export function render() {
       </div>
     </section>
 
-    <div data-booking-modal class="fixed inset-0 z-50 hidden items-center justify-center px-4 py-8">
+    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center px-4 py-8">
+      <button data-close-profile class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close profile"></button>
+      <section class="relative max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
+        <div class="sticky top-0 z-10 flex items-center justify-between border-b border-gold/15 bg-[#0d0c0b]/95 px-5 py-4 backdrop-blur">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-goldSoft">Vendor Profile</p>
+            <h3 data-profile-category class="mt-1 text-xl font-semibold text-white"></h3>
+          </div>
+          <button data-close-profile class="flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-mist/70 transition hover:border-gold hover:text-goldSoft">
+            <span class="sr-only">Close</span>
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="grid gap-0 lg:grid-cols-[0.9fr_1.25fr]">
+          <aside class="border-b border-gold/15 bg-black/30 p-5 lg:border-b-0 lg:border-r">
+            <div class="overflow-hidden rounded-xl border border-gold/15 bg-black">
+              <img data-profile-image src="" alt="" class="h-72 w-full object-cover opacity-90" />
+            </div>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span data-profile-mode class="rounded-full border px-3 py-1 text-xs font-semibold"></span>
+              <span data-profile-provider class="rounded-full border border-gold/25 bg-gold/10 px-3 py-1 text-xs font-semibold text-goldSoft"></span>
+            </div>
+            <h4 data-profile-healer class="mt-4 text-2xl font-semibold text-white"></h4>
+            <p data-profile-title class="mt-2 text-sm font-semibold text-gold"></p>
+            <p data-profile-location class="mt-4 flex items-center gap-2 text-sm text-mist/65">
+              <svg class="h-4 w-4 shrink-0 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span></span>
+            </p>
+          </aside>
+
+          <div class="p-5">
+            <p data-profile-description class="text-sm leading-7 text-mist/70"></p>
+
+            <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
+                <p class="text-xs text-mist/45">Experience</p>
+                <p data-profile-experience class="mt-1 font-semibold text-white"></p>
+              </div>
+              <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
+                <p class="text-xs text-mist/45">Sessions</p>
+                <p data-profile-sessions class="mt-1 font-semibold text-white"></p>
+              </div>
+              <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
+                <p class="text-xs text-mist/45">Rating</p>
+                <p data-profile-rating class="mt-1 font-semibold text-white"></p>
+              </div>
+              <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
+                <p class="text-xs text-mist/45">Starting price</p>
+                <p data-profile-price data-price-idr="" class="mt-1 font-semibold text-goldSoft"></p>
+              </div>
+            </div>
+
+            <div class="mt-6 grid gap-5 md:grid-cols-2">
+              <section>
+                <h5 class="text-sm font-bold uppercase tracking-[0.18em] text-goldSoft">Service Includes</h5>
+                <ul data-profile-includes class="mt-3 space-y-2 text-sm leading-6 text-mist/65"></ul>
+              </section>
+              <section>
+                <h5 class="text-sm font-bold uppercase tracking-[0.18em] text-goldSoft">Vendor Details</h5>
+                <ul data-profile-details class="mt-3 space-y-2 text-sm leading-6 text-mist/65"></ul>
+              </section>
+            </div>
+
+            <div class="mt-6 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/70">
+              Verified marketplace profile with session information, provider type, service mode, availability request, and guest aftercare guidance.
+            </div>
+
+            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button data-close-profile class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Close</button>
+              <button data-profile-book-service class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Book This Service</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div data-booking-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-32 md:pt-36">
       <button data-close-booking class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close booking"></button>
-      <section class="relative max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
+      <section class="relative max-h-[calc(100vh-9rem)] w-full max-w-4xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
         <div class="sticky top-0 z-10 flex items-center justify-between border-b border-gold/15 bg-[#0d0c0b]/95 px-5 py-4 backdrop-blur">
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-goldSoft">Booking Service</p>
@@ -399,7 +476,7 @@ export function render() {
               </label>
               <label class="block">
                 <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Time</span>
-                <select required class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
+                <select data-booking-time required class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
                   <option value="">Select time</option>
                   <option>09:00</option>
                   <option>11:00</option>
@@ -416,7 +493,7 @@ export function render() {
               </label>
               <label class="block">
                 <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Guests</span>
-                <select required class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
+                <select data-booking-guests required class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
                   <option>1 guest</option>
                   <option>2 guests</option>
                   <option>3 guests</option>
@@ -426,29 +503,173 @@ export function render() {
               </label>
               <label class="block">
                 <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Full name</span>
-                <input required type="text" placeholder="Your name" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+                <input data-booking-full-name required type="text" placeholder="Your name" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
               </label>
               <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">WhatsApp / Email</span>
-                <input required type="text" placeholder="+62 or email" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">WhatsApp Number</span>
+                <input data-booking-whatsapp required type="tel" placeholder="+62 812 3456 7890" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+              </label>
+              <label class="block">
+                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Email</span>
+                <input data-booking-email required type="email" placeholder="you@example.com" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
               </label>
             </div>
 
             <label class="mt-4 block">
               <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Session notes</span>
-              <textarea rows="4" placeholder="Share your session goals, special conditions, language preferences, or villa/hotel location." class="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-mist/35 focus:border-gold"></textarea>
+              <textarea data-booking-notes required rows="4" placeholder="Share your session goals, special conditions, language preferences, or villa/hotel location." class="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-mist/35 focus:border-gold"></textarea>
             </label>
 
             <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/70">
               This booking will be sent as a request. The healer or marketplace admin will confirm the schedule, location or online link, and payment instructions.
             </div>
 
+            <div class="mt-4 rounded-xl border border-gold/20 bg-black/45 p-4 text-sm leading-6 text-goldSoft">
+              Please make sure every field is filled in correctly and valid. You can continue to checkout only after all required booking details are complete.
+            </div>
+
             <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button type="button" data-close-booking class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Cancel</button>
-              <button type="submit" class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Send Booking</button>
+              <button type="submit" class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Continue to Checkout</button>
             </div>
           </form>
         </div>
+      </section>
+    </div>
+
+    <div data-checkout-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-32 md:pt-36">
+      <button data-close-checkout class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close checkout"></button>
+      <section class="relative max-h-[calc(100vh-9rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
+        <div class="flex items-start justify-between gap-4 border-b border-gold/15 pb-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-goldSoft">Checkout</p>
+            <h3 class="mt-1 text-xl font-semibold text-white">Review your booking request</h3>
+          </div>
+          <button data-close-checkout class="flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-mist/70 transition hover:border-gold hover:text-goldSoft">
+            <span class="sr-only">Close</span>
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/75">
+          Please make sure all booking details are correct before continuing to the next process.
+        </div>
+        <div class="mt-5 grid gap-3 text-sm sm:grid-cols-2">
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3 sm:col-span-2">
+            <span class="text-mist/50">Service</span>
+            <span data-checkout-service class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3 sm:col-span-2">
+            <span class="text-mist/50">Healer</span>
+            <span data-checkout-healer class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">Full name</span>
+            <span data-checkout-name class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">WhatsApp Number</span>
+            <span data-checkout-whatsapp class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">Email</span>
+            <span data-checkout-email class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">Date</span>
+            <span data-checkout-date class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">Time</span>
+            <span data-checkout-time class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">Session mode</span>
+            <span data-checkout-mode class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">Guests</span>
+            <span data-checkout-guests class="text-right font-semibold text-white"></span>
+          </div>
+          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+            <span class="text-mist/50">Starting price</span>
+            <span data-checkout-price data-price-idr="" class="text-right font-extrabold text-goldSoft"></span>
+          </div>
+          <div class="rounded-lg border border-gold/10 bg-black/35 p-3 sm:col-span-2">
+            <span class="text-mist/50">Session notes</span>
+            <p data-checkout-notes class="mt-2 whitespace-pre-line font-semibold leading-6 text-white"></p>
+          </div>
+        </div>
+        <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/70">
+          Payment will be confirmed after the healer or admin approves the requested schedule and session details.
+        </div>
+        <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <button data-close-checkout class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Back</button>
+          <button data-open-payment type="button" class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Proceed to Payment</button>
+        </div>
+      </section>
+    </div>
+
+    <div data-payment-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-32 md:pt-36">
+      <button data-close-payment class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close payment"></button>
+      <section class="relative max-h-[calc(100vh-9rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
+        <div class="flex items-start justify-between gap-4 border-b border-gold/15 pb-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-goldSoft">Payment</p>
+            <h3 class="mt-1 text-xl font-semibold text-white">Complete payment details</h3>
+          </div>
+          <button data-close-payment class="flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-mist/70 transition hover:border-gold hover:text-goldSoft">
+            <span class="sr-only">Close</span>
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <form data-payment-form class="mt-5">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Billing name</span>
+              <input data-payment-name required type="text" placeholder="Name on billing" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Billing email</span>
+              <input data-payment-email required type="email" placeholder="billing@example.com" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Phone number</span>
+              <input data-payment-phone required type="tel" placeholder="+62 812 3456 7890" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Amount</span>
+              <input data-payment-amount required readonly type="text" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm font-semibold text-goldSoft outline-none focus:border-gold" />
+            </label>
+          </div>
+
+          <div class="mt-5">
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Payment gateway</p>
+            <div class="mt-3 grid gap-3 sm:grid-cols-3">
+              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gold/20 bg-black/40 p-4 text-sm font-semibold text-white transition hover:border-gold/45">
+                <input required type="radio" name="payment_gateway" value="Midtrans" class="accent-[#d6aa43]" />
+                Midtrans
+              </label>
+              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gold/20 bg-black/40 p-4 text-sm font-semibold text-white transition hover:border-gold/45">
+                <input required type="radio" name="payment_gateway" value="HitPay" class="accent-[#d6aa43]" />
+                HitPay
+              </label>
+              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gold/20 bg-black/40 p-4 text-sm font-semibold text-white transition hover:border-gold/45">
+                <input required type="radio" name="payment_gateway" value="Stripe" class="accent-[#d6aa43]" />
+                Stripe
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/70">
+            Payment gateway integration is prepared for Midtrans, HitPay, and Stripe. The selected gateway will handle the secure payment step.
+          </div>
+
+          <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button data-close-payment type="button" class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Back</button>
+            <button type="submit" class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Start Payment</button>
+          </div>
+        </form>
       </section>
     </div>
   `;
@@ -467,9 +688,19 @@ export function init() {
   const testimonialNext = document.querySelector("[data-testimonial-next]");
   const showAllServices = document.querySelector("[data-show-all-services]");
   const hiddenServices = [...document.querySelectorAll("[data-service-card].hidden")];
+  const serviceCards = [...document.querySelectorAll("[data-service-card]")];
+  const profileModal = document.querySelector("[data-profile-modal]");
+  const closeProfileButtons = [...document.querySelectorAll("[data-close-profile]")];
+  const profileBookButton = document.querySelector("[data-profile-book-service]");
   const bookingModal = document.querySelector("[data-booking-modal]");
   const bookingForm = document.querySelector("[data-booking-form]");
   const closeBookingButtons = [...document.querySelectorAll("[data-close-booking]")];
+  const checkoutModal = document.querySelector("[data-checkout-modal]");
+  const closeCheckoutButtons = [...document.querySelectorAll("[data-close-checkout]")];
+  const openPaymentButton = document.querySelector("[data-open-payment]");
+  const paymentModal = document.querySelector("[data-payment-modal]");
+  const paymentForm = document.querySelector("[data-payment-form]");
+  const closePaymentButtons = [...document.querySelectorAll("[data-close-payment]")];
   const dateInputs = [...document.querySelectorAll("[data-date-picker]")];
   const datePickerContainers = [...document.querySelectorAll("[data-date-picker-container]")];
   if (!track || slides.length === 0) return;
@@ -481,6 +712,7 @@ export function init() {
   let activeDateInput;
   let calendarDate = new Date();
   let ignoreOutsideClickUntil = 0;
+  let activeBookingService;
   const calendar = document.createElement("div");
   calendar.dataset.dateCalendar = "true";
   calendar.className = "fixed z-[80] hidden w-[292px] rounded-lg border border-gold/30 bg-[#111] p-4 text-sm text-mist shadow-[0_22px_70px_rgba(0,0,0,0.5)]";
@@ -568,11 +800,34 @@ export function init() {
 
   showAllServices?.addEventListener("click", revealServices);
 
+  const handleServiceCardGlow = (event) => {
+    const card = event.currentTarget;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty("--glow-x", `${event.clientX - rect.left}px`);
+    card.style.setProperty("--glow-y", `${event.clientY - rect.top}px`);
+  };
+
+  const serviceDetails = (service, profile) => ({
+    includes: [
+      `${service.category} session with ${profile.name}`,
+      `${service.mode} service option`,
+      "Pre-session intake and intention setting",
+      "Aftercare notes after the session"
+    ],
+    details: [
+      `Provider: ${service.providerType}`,
+      `Area: ${service.area}`,
+      `Vendor: ${service.vendor}`,
+      "Marketplace verification: Verified"
+    ]
+  });
+
   const openBooking = (service) => {
     const profile = serviceProfile(service);
     const badge = serviceModeBadge(service.mode);
     const modeSelect = bookingModal?.querySelector("[data-booking-mode-select]");
     const modeOptions = service.mode === "Hybrid" ? ["Online", "Offline"] : [service.mode];
+    activeBookingService = service;
 
     bookingModal.querySelector("[data-booking-image]").src = profile.image;
     bookingModal.querySelector("[data-booking-image]").alt = profile.name;
@@ -600,9 +855,104 @@ export function init() {
     document.body.classList.add("overflow-hidden");
   };
 
+  const openProfile = (service) => {
+    if (!profileModal) return;
+    const profile = serviceProfile(service);
+    const badge = serviceModeBadge(service.mode);
+    const details = serviceDetails(service, profile);
+
+    profileModal.querySelector("[data-profile-image]").src = profile.image;
+    profileModal.querySelector("[data-profile-image]").alt = profile.name;
+    profileModal.querySelector("[data-profile-category]").textContent = service.category;
+    profileModal.querySelector("[data-profile-healer]").textContent = profile.name;
+    profileModal.querySelector("[data-profile-title]").textContent = profile.title;
+    profileModal.querySelector("[data-profile-description]").textContent = profile.description;
+    profileModal.querySelector("[data-profile-location] span").textContent = profile.location;
+    profileModal.querySelector("[data-profile-provider]").textContent = service.providerType;
+    profileModal.querySelector("[data-profile-experience]").textContent = `${profile.experience} exp`;
+    profileModal.querySelector("[data-profile-sessions]").textContent = `${profile.sessions} sessions`;
+    profileModal.querySelector("[data-profile-rating]").textContent = `${service.rating} (${profile.reviews} reviews)`;
+    profileModal.querySelector("[data-profile-price]").textContent = service.price;
+    profileModal.querySelector("[data-profile-price]").dataset.priceIdr = service.price;
+    if (profileBookButton) profileBookButton.dataset.profileBookService = service.name;
+
+    const modeBadge = profileModal.querySelector("[data-profile-mode]");
+    modeBadge.textContent = badge.label;
+    modeBadge.className = `rounded-full border px-3 py-1 text-xs font-semibold ${badge.className}`;
+
+    profileModal.querySelector("[data-profile-includes]").innerHTML = details.includes.map((item) => `
+      <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold"></span><span>${item}</span></li>
+    `).join("");
+    profileModal.querySelector("[data-profile-details]").innerHTML = details.details.map((item) => `
+      <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold"></span><span>${item}</span></li>
+    `).join("");
+
+    profileModal.classList.remove("hidden");
+    profileModal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+    document.dispatchEvent(new CustomEvent("prices:refresh"));
+  };
+
   const closeBooking = () => {
     bookingModal?.classList.add("hidden");
     bookingModal?.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  const openCheckout = () => {
+    if (!checkoutModal || !activeBookingService) return;
+    const profile = serviceProfile(activeBookingService);
+    const value = (selector) => bookingForm?.querySelector(selector)?.value?.trim() || "";
+    checkoutModal.querySelector("[data-checkout-service]").textContent = activeBookingService.name;
+    checkoutModal.querySelector("[data-checkout-healer]").textContent = profile.name;
+    checkoutModal.querySelector("[data-checkout-name]").textContent = value("[data-booking-full-name]");
+    checkoutModal.querySelector("[data-checkout-whatsapp]").textContent = value("[data-booking-whatsapp]");
+    checkoutModal.querySelector("[data-checkout-email]").textContent = value("[data-booking-email]");
+    checkoutModal.querySelector("[data-checkout-date]").textContent = value("[data-date-picker]");
+    checkoutModal.querySelector("[data-checkout-time]").textContent = value("[data-booking-time]");
+    checkoutModal.querySelector("[data-checkout-mode]").textContent = value("[data-booking-mode-select]");
+    checkoutModal.querySelector("[data-checkout-guests]").textContent = value("[data-booking-guests]");
+    checkoutModal.querySelector("[data-checkout-notes]").textContent = value("[data-booking-notes]");
+    checkoutModal.querySelector("[data-checkout-price]").textContent = activeBookingService.price;
+    checkoutModal.querySelector("[data-checkout-price]").dataset.priceIdr = activeBookingService.price;
+    checkoutModal.classList.remove("hidden");
+    checkoutModal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+    document.dispatchEvent(new CustomEvent("prices:refresh"));
+  };
+
+  const closeCheckout = () => {
+    checkoutModal?.classList.add("hidden");
+    checkoutModal?.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  const openPayment = () => {
+    if (!paymentModal || !activeBookingService) return;
+    paymentForm?.querySelector("[data-payment-name]") && (paymentForm.querySelector("[data-payment-name]").value = bookingForm?.querySelector("[data-booking-full-name]")?.value || "");
+    paymentForm?.querySelector("[data-payment-email]") && (paymentForm.querySelector("[data-payment-email]").value = bookingForm?.querySelector("[data-booking-email]")?.value || "");
+    paymentForm?.querySelector("[data-payment-phone]") && (paymentForm.querySelector("[data-payment-phone]").value = bookingForm?.querySelector("[data-booking-whatsapp]")?.value || "");
+    const amount = paymentForm?.querySelector("[data-payment-amount]");
+    if (amount) {
+      amount.value = activeBookingService.price;
+      amount.dataset.priceIdr = activeBookingService.price;
+    }
+    closeCheckout();
+    paymentModal.classList.remove("hidden");
+    paymentModal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+    document.dispatchEvent(new CustomEvent("prices:refresh"));
+  };
+
+  const closePayment = () => {
+    paymentModal?.classList.add("hidden");
+    paymentModal?.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  const closeProfile = () => {
+    profileModal?.classList.add("hidden");
+    profileModal?.classList.remove("flex");
     document.body.classList.remove("overflow-hidden");
   };
 
@@ -613,21 +963,48 @@ export function init() {
     if (service) openBooking(service);
   };
 
+  const handleProfileClick = (event) => {
+    const button = event.target.closest("[data-view-profile]");
+    if (!button) return;
+    const service = services.find((item) => item.name === button.dataset.viewProfile);
+    if (service) openProfile(service);
+  };
+
+  const handleProfileBook = () => {
+    const service = services.find((item) => item.name === profileBookButton?.dataset.profileBookService);
+    if (!service) return;
+    closeProfile();
+    openBooking(service);
+  };
+
   const handleBookingSubmit = (event) => {
     event.preventDefault();
-    const submit = bookingForm?.querySelector("button[type='submit']");
-    if (!submit) return;
-    submit.textContent = "Booking Sent";
-    submit.classList.add("bg-goldSoft");
-    window.setTimeout(() => {
-      submit.textContent = "Send Booking";
-      submit.classList.remove("bg-goldSoft");
-      closeBooking();
-    }, 1200);
+    if (!bookingForm?.checkValidity()) {
+      bookingForm?.reportValidity();
+      return;
+    }
+    closeBooking();
+    openCheckout();
   };
 
   const handleEscape = (event) => {
-    if (event.key === "Escape") closeBooking();
+    if (event.key !== "Escape") return;
+    closeProfile();
+    closeBooking();
+    closeCheckout();
+    closePayment();
+  };
+
+  const handlePaymentSubmit = (event) => {
+    event.preventDefault();
+    if (!paymentForm?.checkValidity()) {
+      paymentForm?.reportValidity();
+      return;
+    }
+    const submit = paymentForm.querySelector("button[type='submit']");
+    if (!submit) return;
+    submit.textContent = "Payment Started";
+    submit.classList.add("bg-goldSoft");
   };
 
   const formatDate = (date) => `${datePickerMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
@@ -840,6 +1217,7 @@ export function init() {
   };
 
   document.addEventListener("click", handleBookingClick);
+  document.addEventListener("click", handleProfileClick);
   document.addEventListener("keydown", handleEscape);
   document.addEventListener("click", handleDatePickerOutsideClick);
   document.addEventListener("keydown", handleDatePickerEscape);
@@ -849,6 +1227,13 @@ export function init() {
   calendar.addEventListener("change", handleCalendarChange);
   bookingForm?.addEventListener("submit", handleBookingSubmit);
   closeBookingButtons.forEach((button) => button.addEventListener("click", closeBooking));
+  closeCheckoutButtons.forEach((button) => button.addEventListener("click", closeCheckout));
+  openPaymentButton?.addEventListener("click", openPayment);
+  closePaymentButtons.forEach((button) => button.addEventListener("click", closePayment));
+  paymentForm?.addEventListener("submit", handlePaymentSubmit);
+  closeProfileButtons.forEach((button) => button.addEventListener("click", closeProfile));
+  profileBookButton?.addEventListener("click", handleProfileBook);
+  serviceCards.forEach((card) => card.addEventListener("pointermove", handleServiceCardGlow));
   dateInputs.forEach((input) => {
     input.addEventListener("pointerdown", openDatePicker);
     input.addEventListener("click", openDatePicker);
@@ -865,6 +1250,7 @@ export function init() {
     window.clearInterval(testimonialTimer);
     showAllServices?.removeEventListener("click", revealServices);
     document.removeEventListener("click", handleBookingClick);
+    document.removeEventListener("click", handleProfileClick);
     document.removeEventListener("keydown", handleEscape);
     document.removeEventListener("click", handleDatePickerOutsideClick);
     document.removeEventListener("keydown", handleDatePickerEscape);
@@ -874,6 +1260,13 @@ export function init() {
     calendar.removeEventListener("change", handleCalendarChange);
     bookingForm?.removeEventListener("submit", handleBookingSubmit);
     closeBookingButtons.forEach((button) => button.removeEventListener("click", closeBooking));
+    closeCheckoutButtons.forEach((button) => button.removeEventListener("click", closeCheckout));
+    openPaymentButton?.removeEventListener("click", openPayment);
+    closePaymentButtons.forEach((button) => button.removeEventListener("click", closePayment));
+    paymentForm?.removeEventListener("submit", handlePaymentSubmit);
+    closeProfileButtons.forEach((button) => button.removeEventListener("click", closeProfile));
+    profileBookButton?.removeEventListener("click", handleProfileBook);
+    serviceCards.forEach((card) => card.removeEventListener("pointermove", handleServiceCardGlow));
     dateInputs.forEach((input) => {
       input.removeEventListener("pointerdown", openDatePicker);
       input.removeEventListener("click", openDatePicker);
@@ -888,12 +1281,15 @@ function serviceCard(service, isHidden = false) {
   const badge = serviceModeBadge(service.mode);
   const profile = serviceProfile(service);
   const providerLabel = service.providerType === "Business Healer" ? "Business" : "Individual";
+  const providerBadgeClass = service.providerType === "Business Healer"
+    ? "bg-cyan-200 text-cyan-950"
+    : "bg-rose-200 text-rose-950";
   return `
-    <article data-service-card class="${isHidden ? "hidden" : ""} group overflow-hidden rounded-xl border border-gold/15 bg-[#10100f] transition hover:-translate-y-1 hover:border-gold/35 hover:shadow-[0_24px_60px_rgba(214,170,67,0.13)]">
+    <article data-service-card class="${isHidden ? "hidden" : ""} service-glow-card group relative flex h-full flex-col overflow-hidden rounded-xl border border-gold/15 bg-[#10100f] transition hover:-translate-y-1 hover:border-gold/35 hover:shadow-[0_24px_60px_rgba(214,170,67,0.13)]">
       <div class="relative aspect-[4/3] overflow-hidden bg-black">
         <img src="${profile.image}" alt="${profile.name}" class="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-105" />
         <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#10100f] to-transparent"></div>
-        <span class="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-3 py-1 text-[11px] font-extrabold text-black">
+        <span class="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-extrabold ${providerBadgeClass}">
           <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="3"/><path d="M6 21a6 6 0 0 1 12 0"/></svg>
           ${providerLabel}
         </span>
@@ -903,41 +1299,45 @@ function serviceCard(service, isHidden = false) {
         </button>
       </div>
 
-      <div class="p-5">
-        <div class="flex items-center gap-2 text-sm font-medium text-gold">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>${profile.location}</span>
-        </div>
-
-        <div class="mt-3 flex items-start justify-between gap-3">
-          <div>
-            <h4 class="text-xl font-semibold text-white">${profile.name}</h4>
-            <p class="mt-1 text-sm leading-5 text-mist/65">${profile.title}</p>
-          </div>
+      <div class="flex flex-1 flex-col p-5">
+        <div class="flex items-center justify-between gap-3 text-sm font-medium">
+          <span class="flex min-w-0 items-center gap-2 text-gold">
+            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="truncate">${profile.location}</span>
+          </span>
           <span class="shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${badge.className}">${badge.label}</span>
         </div>
 
-        <p class="mt-3 line-clamp-2 text-sm leading-6 text-mist/55">${profile.description}</p>
-
-        <div class="mt-4 grid grid-cols-2 gap-3 border-y border-gold/10 py-4 text-xs text-mist/55">
-          <span class="flex items-center gap-2">
-            <svg class="h-3.5 w-3.5 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-            ${profile.experience} exp
-          </span>
-          <span class="flex items-center gap-2">
-            <svg class="h-3.5 w-3.5 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
-            ${profile.sessions} sessions
-          </span>
-          <span class="flex items-center gap-2">
-            <svg class="h-3.5 w-3.5 text-gold" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8-6.1-3.4-6.1 3.4 1.4-6.8-5.1-4.7 6.9-.8L12 2Z"/></svg>
-            ${service.rating} (${profile.reviews} reviews)
-          </span>
-          <span data-price-idr="${service.price}" class="text-right font-semibold text-goldSoft">${service.price}</span>
+        <div class="mt-3 flex min-h-[76px] items-start justify-between gap-3">
+          <div class="min-w-0">
+            <h4 class="text-xl font-semibold text-white">${service.category}</h4>
+            <p class="mt-1 text-sm leading-5 text-mist/65">${profile.name}</p>
+          </div>
         </div>
 
-        <div class="mt-4 flex items-center justify-end gap-3">
-          <button class="text-sm font-extrabold text-gold transition hover:text-goldSoft">View Profile</button>
-          <button data-book-service="${service.name}" class="rounded-lg bg-gold px-4 py-2 text-sm font-extrabold text-black transition hover:bg-goldSoft">Book</button>
+        <p class="mt-3 min-h-[48px] line-clamp-2 text-sm leading-6 text-mist/55">${profile.description}</p>
+
+        <div class="mt-auto pt-4">
+          <div class="grid min-h-[78px] grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-4 gap-y-3 border-y border-gold/10 py-4 text-xs text-mist/55">
+            <span class="flex min-w-0 items-center gap-2">
+              <svg class="h-3.5 w-3.5 shrink-0 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span class="truncate">${profile.experience} exp</span>
+            </span>
+            <span class="flex min-w-0 items-center justify-end gap-2 text-right">
+              <svg class="h-3.5 w-3.5 shrink-0 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span class="truncate">${profile.sessions} sessions</span>
+            </span>
+            <span class="flex min-w-0 items-center gap-2">
+              <svg class="h-3.5 w-3.5 shrink-0 text-gold" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8-6.1-3.4-6.1 3.4 1.4-6.8-5.1-4.7 6.9-.8L12 2Z"/></svg>
+              <span class="truncate">${service.rating} (${profile.reviews} reviews)</span>
+            </span>
+            <span data-price-idr="${service.price}" class="self-center text-right text-sm font-extrabold leading-none text-goldSoft">${service.price}</span>
+          </div>
+
+          <div class="flex min-h-[48px] items-end justify-between gap-3 pt-4">
+            <button data-view-profile="${service.name}" class="min-w-0 rounded-md px-1 py-2 text-left text-sm font-extrabold text-gold transition duration-200 hover:text-goldSoft hover:[text-shadow:0_0_16px_rgba(244,217,135,0.45)]">View Profile</button>
+            <button data-book-service="${service.name}" class="shrink-0 rounded-lg bg-gold px-4 py-2 text-sm font-extrabold text-black transition hover:bg-goldSoft">Book</button>
+          </div>
         </div>
       </div>
     </article>

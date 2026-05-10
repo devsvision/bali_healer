@@ -5,9 +5,12 @@ const links = () => [...document.querySelectorAll(".page-link")];
 const categoryButtons = () => [...document.querySelectorAll(".category-link[data-category-filter]")];
 let cleanupPage;
 let initialRenderDone = false;
+let currentPage = "home";
 let selectedCategory = "";
 let selectedLanguage = localStorage.getItem("baliHealerLanguage") || "en-US";
 let selectedCurrency = localStorage.getItem("baliHealerCurrency") || "IDR";
+const splashStartedAt = performance.now();
+const splashMinimumDuration = 2300;
 
 const routes = {
   home: {
@@ -83,7 +86,15 @@ const translations = {
     "Testimonials": "Testimoni",
     "Why Choose Bali Healer?": "Mengapa Memilih Bali Healer?",
     "Booking Service": "Pemesanan Layanan",
+    "Vendor Profile": "Profil Vendor",
     "Complete your reservation details": "Lengkapi detail reservasi Anda",
+    "Experience": "Pengalaman",
+    "Sessions": "Sesi",
+    "Rating": "Rating",
+    "Service Includes": "Termasuk Layanan",
+    "Vendor Details": "Detail Vendor",
+    "Book This Service": "Pesan Layanan Ini",
+    "Close": "Tutup",
     "Starting price": "Harga mulai",
     "Date": "Tanggal",
     "Time": "Waktu",
@@ -91,9 +102,32 @@ const translations = {
     "Guests": "Tamu",
     "Full name": "Nama lengkap",
     "WhatsApp / Email": "WhatsApp / Email",
+    "WhatsApp Number": "Nomor WhatsApp",
+    "Email": "Email",
     "Session notes": "Catatan sesi",
     "Cancel": "Batal",
     "Send Booking": "Kirim Pesanan",
+    "Continue to Checkout": "Lanjut ke Checkout",
+    "Checkout": "Checkout",
+    "Review your booking request": "Periksa permintaan booking Anda",
+    "Please make sure all booking details are correct before continuing to the next process.": "Pastikan semua detail booking sudah benar sebelum melanjutkan ke proses berikutnya.",
+    "Service": "Layanan",
+    "Healer": "Healer",
+    "Back": "Kembali",
+    "Complete Request": "Selesaikan Permintaan",
+    "Proceed to Payment": "Lanjut ke Pembayaran",
+    "Payment": "Pembayaran",
+    "Complete payment details": "Lengkapi detail pembayaran",
+    "Billing name": "Nama penagihan",
+    "Billing email": "Email penagihan",
+    "Phone number": "Nomor telepon",
+    "Amount": "Jumlah",
+    "Payment gateway": "Payment gateway",
+    "Start Payment": "Mulai Pembayaran",
+    "Payment Started": "Pembayaran Dimulai",
+    "Payment gateway integration is prepared for Midtrans, HitPay, and Stripe. The selected gateway will handle the secure payment step.": "Integrasi payment gateway disiapkan untuk Midtrans, HitPay, dan Stripe. Gateway yang dipilih akan menangani langkah pembayaran aman.",
+    "Payment will be confirmed after the healer or admin approves the requested schedule and session details.": "Pembayaran akan dikonfirmasi setelah healer atau admin menyetujui jadwal dan detail sesi yang diminta.",
+    "Please make sure every field is filled in correctly and valid. You can continue to checkout only after all required booking details are complete.": "Pastikan setiap kolom terisi dengan benar dan valid. Anda hanya bisa lanjut ke checkout setelah semua detail booking wajib lengkap.",
     "Booking Sent": "Pesanan Terkirim",
     "Select time": "Pilih waktu",
     "Select mode": "Pilih mode",
@@ -166,6 +200,14 @@ const translations = {
     "All categories": "すべてのカテゴリー",
     "Bali area": "バリのエリア",
     "Booking": "予約",
+    "Vendor Profile": "ベンダープロフィール",
+    "Experience": "経験",
+    "Sessions": "セッション",
+    "Rating": "評価",
+    "Service Includes": "サービス内容",
+    "Vendor Details": "ベンダー詳細",
+    "Book This Service": "このサービスを予約",
+    "Close": "閉じる",
     "Online": "オンライン",
     "Offline": "対面",
     "Hybrid": "ハイブリッド",
@@ -181,6 +223,8 @@ const translations = {
     "Session mode": "セッション形式",
     "Guests": "人数",
     "Full name": "氏名",
+    "WhatsApp Number": "WhatsApp番号",
+    "Email": "メール",
     "Session notes": "セッションメモ",
     "Select time": "時間を選択",
     "Select mode": "形式を選択",
@@ -189,6 +233,27 @@ const translations = {
     "Book": "予約",
     "Cancel": "キャンセル",
     "Send Booking": "予約を送信",
+    "Continue to Checkout": "チェックアウトへ進む",
+    "Checkout": "チェックアウト",
+    "Review your booking request": "予約リクエストを確認",
+    "Please make sure all booking details are correct before continuing to the next process.": "次の手順に進む前に、すべての予約内容が正しいことを確認してください。",
+    "Service": "サービス",
+    "Healer": "ヒーラー",
+    "Back": "戻る",
+    "Complete Request": "リクエストを完了",
+    "Proceed to Payment": "支払いへ進む",
+    "Payment": "支払い",
+    "Complete payment details": "支払い情報を入力",
+    "Billing name": "請求名",
+    "Billing email": "請求メール",
+    "Phone number": "電話番号",
+    "Amount": "金額",
+    "Payment gateway": "決済ゲートウェイ",
+    "Start Payment": "支払い開始",
+    "Payment Started": "支払い開始済み",
+    "Payment gateway integration is prepared for Midtrans, HitPay, and Stripe. The selected gateway will handle the secure payment step.": "Midtrans、HitPay、Stripe の決済連携を準備しています。選択したゲートウェイが安全な支払い手順を処理します。",
+    "Payment will be confirmed after the healer or admin approves the requested schedule and session details.": "支払いは、ヒーラーまたは管理者が希望日時とセッション内容を承認した後に確認されます。",
+    "Please make sure every field is filled in correctly and valid. You can continue to checkout only after all required booking details are complete.": "すべての項目が正しく有効に入力されていることを確認してください。必須の予約情報がすべて完了した後にのみチェックアウトへ進めます。",
     "Booking Sent": "送信済み",
     "Energy Healing": "エネルギーヒーリング",
     "Chakra Balancing": "チャクラ調整",
@@ -224,6 +289,14 @@ const translations = {
     "All categories": "Alle Kategorien",
     "Bali area": "Bali-Region",
     "Booking": "Buchen",
+    "Vendor Profile": "Anbieterprofil",
+    "Experience": "Erfahrung",
+    "Sessions": "Sitzungen",
+    "Rating": "Bewertung",
+    "Service Includes": "Leistungsumfang",
+    "Vendor Details": "Anbieterdetails",
+    "Book This Service": "Diese Leistung buchen",
+    "Close": "Schließen",
     "Online": "Online",
     "Offline": "Vor Ort",
     "Hybrid": "Hybrid",
@@ -239,6 +312,8 @@ const translations = {
     "Session mode": "Sitzungsmodus",
     "Guests": "Gäste",
     "Full name": "Vollständiger Name",
+    "WhatsApp Number": "WhatsApp-Nummer",
+    "Email": "E-Mail",
     "Session notes": "Sitzungsnotizen",
     "Select time": "Uhrzeit wählen",
     "Select mode": "Modus wählen",
@@ -247,6 +322,27 @@ const translations = {
     "Book": "Buchen",
     "Cancel": "Abbrechen",
     "Send Booking": "Buchung senden",
+    "Continue to Checkout": "Weiter zum Checkout",
+    "Checkout": "Checkout",
+    "Review your booking request": "Buchungsanfrage prüfen",
+    "Please make sure all booking details are correct before continuing to the next process.": "Bitte stellen Sie sicher, dass alle Buchungsdetails korrekt sind, bevor Sie fortfahren.",
+    "Service": "Leistung",
+    "Healer": "Heiler",
+    "Back": "Zurück",
+    "Complete Request": "Anfrage abschließen",
+    "Proceed to Payment": "Weiter zur Zahlung",
+    "Payment": "Zahlung",
+    "Complete payment details": "Zahlungsdetails ausfüllen",
+    "Billing name": "Rechnungsname",
+    "Billing email": "Rechnungs-E-Mail",
+    "Phone number": "Telefonnummer",
+    "Amount": "Betrag",
+    "Payment gateway": "Payment Gateway",
+    "Start Payment": "Zahlung starten",
+    "Payment Started": "Zahlung gestartet",
+    "Payment gateway integration is prepared for Midtrans, HitPay, and Stripe. The selected gateway will handle the secure payment step.": "Die Payment-Gateway-Integration ist für Midtrans, HitPay und Stripe vorbereitet. Das ausgewählte Gateway verarbeitet den sicheren Zahlungsschritt.",
+    "Payment will be confirmed after the healer or admin approves the requested schedule and session details.": "Die Zahlung wird bestätigt, nachdem Heiler oder Admin den gewünschten Termin und die Sitzungsdetails genehmigt haben.",
+    "Please make sure every field is filled in correctly and valid. You can continue to checkout only after all required booking details are complete.": "Bitte stellen Sie sicher, dass jedes Feld korrekt und gültig ausgefüllt ist. Sie können erst zum Checkout fortfahren, wenn alle erforderlichen Buchungsdetails vollständig sind.",
     "Booking Sent": "Buchung gesendet",
     "Energy Healing": "Energieheilung",
     "Chakra Balancing": "Chakra-Ausgleich",
@@ -303,12 +399,15 @@ function revealInitialRender() {
   if (initialRenderDone) return;
   initialRenderDone = true;
 
-  requestAnimationFrame(() => {
+  const elapsed = performance.now() - splashStartedAt;
+  const remaining = Math.max(0, splashMinimumDuration - elapsed);
+
+  window.setTimeout(() => requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       document.body.classList.remove("app-booting");
       document.body.classList.add("app-ready");
     });
-  });
+  }), remaining);
 }
 
 function parseIdrPrice(price) {
@@ -426,9 +525,29 @@ function syncLocaleControls() {
   if (currencySelect) currencySelect.value = selectedCurrency;
 }
 
+function updateCategoryBarVisibility(page = currentPage) {
+  const categoryBar = document.querySelector("[data-category-bar]");
+  if (!categoryBar) return;
+
+  const hero = document.querySelector("[data-home-hero]");
+  const heroLimit = hero ? hero.offsetTop + hero.offsetHeight - 120 : 0;
+  const shouldShow = page === "home" && hero && window.scrollY < heroLimit;
+
+  categoryBar.classList.toggle("max-h-24", shouldShow);
+  categoryBar.classList.toggle("translate-y-0", shouldShow);
+  categoryBar.classList.toggle("border-gold/10", shouldShow);
+  categoryBar.classList.toggle("opacity-100", shouldShow);
+  categoryBar.classList.toggle("max-h-0", !shouldShow);
+  categoryBar.classList.toggle("-translate-y-2", !shouldShow);
+  categoryBar.classList.toggle("border-transparent", !shouldShow);
+  categoryBar.classList.toggle("opacity-0", !shouldShow);
+  categoryBar.classList.toggle("pointer-events-none", !shouldShow);
+}
+
 async function loadPage(page, updateHash = true) {
   const route = routes[page] || routes.home;
   const nextPage = routes[page] ? page : "home";
+  currentPage = nextPage;
   if (typeof cleanupPage === "function") {
     cleanupPage();
     cleanupPage = undefined;
@@ -466,6 +585,7 @@ async function loadPage(page, updateHash = true) {
   });
   syncLocaleControls();
   applyLocalization();
+  updateCategoryBarVisibility(nextPage);
 
   const isInitialRender = !initialRenderDone;
   revealInitialRender();
@@ -565,6 +685,8 @@ document.addEventListener("change", (event) => {
 });
 
 document.addEventListener("prices:refresh", () => applyLocalization());
+
+window.addEventListener("scroll", () => updateCategoryBarVisibility(), { passive: true });
 
 window.addEventListener("hashchange", () => {
   const page = hashToPage[window.location.hash.slice(1)] || "home";

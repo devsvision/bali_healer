@@ -101,6 +101,64 @@
         transition: opacity 180ms ease;
       }
 
+      html.js body.app-booting {
+        overflow: hidden;
+      }
+
+      #splash-screen {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 620ms ease, visibility 620ms ease;
+      }
+
+      html.js body.app-ready #splash-screen {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      @keyframes splash-spin {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+
+        50% {
+          transform: rotate(180deg) scale(1.06);
+        }
+
+        100% {
+          transform: rotate(360deg) scale(1);
+        }
+      }
+
+      @keyframes splash-glow {
+        0%, 100% {
+          box-shadow: 0 0 0 rgba(214, 170, 67, 0), 0 18px 70px rgba(214, 170, 67, 0.18);
+        }
+
+        50% {
+          box-shadow: 0 0 42px rgba(244, 217, 135, 0.38), 0 18px 90px rgba(214, 170, 67, 0.28);
+        }
+      }
+
+      @keyframes splash-progress {
+        0% {
+          transform: translateX(-100%);
+        }
+
+        100% {
+          transform: translateX(0%);
+        }
+      }
+
+      .splash-logo {
+        animation: splash-spin 2600ms cubic-bezier(0.7, 0, 0.2, 1) infinite, splash-glow 2600ms ease-in-out infinite;
+      }
+
+      .splash-progress {
+        animation: splash-progress 2300ms ease-out forwards;
+      }
+
       * {
         scrollbar-color: rgba(214, 170, 67, 0.8) rgba(214, 170, 67, 0.12);
         scrollbar-width: thin;
@@ -124,9 +182,47 @@
       *::-webkit-scrollbar-thumb:hover {
         background: #f4d987;
       }
+
+      .service-glow-card {
+        --glow-x: 50%;
+        --glow-y: 50%;
+      }
+
+      .service-glow-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: radial-gradient(180px circle at var(--glow-x) var(--glow-y), rgba(244, 217, 135, 0.82), rgba(214, 170, 67, 0.32) 34%, transparent 68%);
+        opacity: 0;
+        transition: opacity 220ms ease;
+        pointer-events: none;
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+      }
+
+      .service-glow-card:hover::before {
+        opacity: 1;
+      }
+
     </style>
   </head>
   <body class="app-booting min-h-screen bg-night text-mist">
+    <div id="splash-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-night">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(214,170,67,0.2),transparent_38%),linear-gradient(rgba(214,170,67,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(214,170,67,0.05)_1px,transparent_1px)] bg-[size:auto,72px_72px,72px_72px]"></div>
+      <div class="relative flex flex-col items-center px-6 text-center">
+        <div class="splash-logo flex h-28 w-28 items-center justify-center rounded-full border border-gold/55 bg-black p-3 ring-1 ring-gold/25 md:h-32 md:w-32">
+          <img src="./assets/images/logo-bali-healer.png" alt="BALI HEALER logo" class="h-full w-full rounded-full object-contain" />
+        </div>
+        <h1 class="mt-7 text-2xl font-extrabold uppercase tracking-[0.32em] text-gold md:text-3xl">BALI HEALER</h1>
+        <div class="mt-7 h-2 w-64 overflow-hidden rounded-full border border-gold/25 bg-black shadow-[inset_0_0_18px_rgba(214,170,67,0.12)]">
+          <div class="splash-progress h-full w-full rounded-full bg-gradient-to-r from-bronze via-gold to-goldSoft"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="pointer-events-none fixed inset-0 opacity-70">
       <div class="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(circle_at_50%_0%,rgba(214,170,67,0.22),transparent_58%)]"></div>
       <div class="absolute inset-0 bg-[linear-gradient(rgba(214,170,67,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(214,170,67,0.05)_1px,transparent_1px)] bg-[size:72px_72px]"></div>
@@ -190,7 +286,7 @@
         <a href="#about" data-page="spec" data-nav="true" class="page-link shrink-0 rounded-md px-3 py-2 text-sm text-mist/80">About</a>
       </nav>
 
-      <div class="border-t border-gold/10 bg-[#070604]">
+      <div data-category-bar class="max-h-24 translate-y-0 overflow-hidden border-t border-gold/10 bg-[#070604] opacity-100 transition-[max-height,opacity,transform,border-color] duration-500 ease-out">
         <div class="mx-auto flex max-w-6xl justify-start gap-2 overflow-x-auto px-4 py-3 md:justify-center lg:px-6">
           <button data-open-category-menu class="flex shrink-0 items-center gap-2 rounded-lg border border-gold/35 bg-gold px-4 py-2 text-sm font-extrabold text-black transition hover:bg-goldSoft">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
