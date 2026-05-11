@@ -42,6 +42,58 @@ const datePickerMonths = [
 
 const datePickerDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const promoBadges = [
+  { icon: "&#127919;", text: "Exclusive Deals" },
+  { icon: "&#9889;", text: "Limited Time Only" },
+  { icon: "&#128737;", text: "Verified Vendors" },
+  { icon: "&#11088;", text: "Top Rated" }
+];
+
+const promoThemes = [
+  {
+    name: "sun",
+    accent: "#f5cf42",
+    accentSoft: "rgba(245, 207, 66, 0.16)",
+    accentLine: "rgba(245, 207, 66, 0.7)",
+    text: "#ffd84d"
+  },
+  {
+    name: "lavender",
+    accent: "#c47aff",
+    accentSoft: "rgba(196, 122, 255, 0.17)",
+    accentLine: "rgba(196, 122, 255, 0.76)",
+    text: "#d7a0ff"
+  },
+  {
+    name: "mint",
+    accent: "#35e4b1",
+    accentSoft: "rgba(53, 228, 177, 0.16)",
+    accentLine: "rgba(53, 228, 177, 0.74)",
+    text: "#56f1c4"
+  },
+  {
+    name: "coral",
+    accent: "#ffad8a",
+    accentSoft: "rgba(255, 173, 138, 0.16)",
+    accentLine: "rgba(255, 173, 138, 0.74)",
+    text: "#ffc0a7"
+  },
+  {
+    name: "sky",
+    accent: "#7dc8ff",
+    accentSoft: "rgba(125, 200, 255, 0.16)",
+    accentLine: "rgba(125, 200, 255, 0.74)",
+    text: "#a9dcff"
+  },
+  {
+    name: "rose",
+    accent: "#ff93c7",
+    accentSoft: "rgba(255, 147, 199, 0.16)",
+    accentLine: "rgba(255, 147, 199, 0.74)",
+    text: "#ffb4d8"
+  }
+];
+
 const testimonials = [
   {
     name: "Amelia Hart",
@@ -190,19 +242,24 @@ export function render() {
       </div>
     </section>
 
-    <section class="border-t border-gold/15 bg-black py-10">
-      <div class="mx-auto max-w-7xl px-4 lg:px-8">
-        <div class="mb-6 flex items-center justify-center gap-4">
-          <span class="hidden h-px w-44 bg-gradient-to-r from-transparent to-gold/45 sm:block"></span>
-          <span class="rounded-full border border-gold/30 bg-gold/10 px-6 py-2 text-xs font-extrabold uppercase tracking-[0.28em] text-goldSoft">
-            Featured Promotions
+    <section class="border-t border-gold/15 bg-black pt-10">
+      <div class="mx-auto max-w-7xl px-4 pb-7 lg:px-8">
+        <div class="flex items-center justify-center gap-4">
+          <span class="hidden h-px w-44 bg-gradient-to-r from-transparent to-gold/40 sm:block"></span>
+          <span class="flex items-center gap-2 rounded-full border border-gold/35 bg-gold/10 px-6 py-2 text-xs font-extrabold uppercase tracking-[0.28em] text-goldSoft shadow-[0_0_30px_rgba(214,170,67,0.14)]">
+            <span aria-hidden="true">✣</span>
+            <span>Featured Promotions</span>
+            <span aria-hidden="true">✣</span>
           </span>
-          <span class="hidden h-px w-44 bg-gradient-to-l from-transparent to-gold/45 sm:block"></span>
+          <span class="hidden h-px w-44 bg-gradient-to-l from-transparent to-gold/40 sm:block"></span>
         </div>
 
-        <div class="mb-6 flex flex-wrap justify-center gap-3 text-xs text-mist/70">
-          ${["Exclusive Deals", "Limited Time Only", "Verified Vendors", "Top Rated"].map((item) => `
-            <span class="rounded-full border border-mist/40 px-4 py-2">${item}</span>
+        <div class="mt-6 flex flex-wrap justify-center gap-3 text-xs text-mist/70">
+          ${promoBadges.map((item) => `
+            <span class="flex items-center gap-2 rounded-full border border-white/70 bg-black/35 px-4 py-2 shadow-[inset_0_0_18px_rgba(255,255,255,0.04)]">
+              <span aria-hidden="true">${item.icon}</span>
+              <span>${item.text}</span>
+            </span>
           `).join("")}
         </div>
       </div>
@@ -212,17 +269,17 @@ export function render() {
           ${promotions.map((promo, index) => promoSlide(promo, index)).join("")}
         </div>
 
-        <button data-promo-prev class="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-gold/45 bg-black/55 text-goldSoft backdrop-blur transition hover:bg-gold hover:text-black">
+        <button data-promo-prev class="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-gold/45 bg-black/45 text-goldSoft backdrop-blur transition hover:bg-gold hover:text-black">
           <span class="sr-only">Previous promo</span>
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <button data-promo-next class="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-gold/45 bg-black/55 text-goldSoft backdrop-blur transition hover:bg-gold hover:text-black">
+        <button data-promo-next class="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-gold/45 bg-black/45 text-goldSoft backdrop-blur transition hover:bg-gold hover:text-black">
           <span class="sr-only">Next promo</span>
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
         </button>
 
-        <div class="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-          ${promotions.map((_, index) => `<button data-promo-dot="${index}" class="h-2.5 rounded-full bg-white/40 transition-all"></button>`).join("")}
+        <div class="absolute bottom-12 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+          ${promotions.map((_, index) => `<button data-promo-dot="${index}" data-accent="${promoThemes[index % promoThemes.length].accent}" class="h-2 rounded-full bg-white/40 transition-all"></button>`).join("")}
         </div>
       </div>
     </section>
@@ -675,6 +732,45 @@ export function render() {
   `;
 }
 
+function bejiPromoSlide(promo, theme) {
+  return `
+    <article data-promo-slide class="relative min-h-[430px] w-full shrink-0 overflow-hidden bg-black md:min-h-[520px]" style="--promo-accent: ${theme.accent}; --promo-soft: ${theme.accentSoft}; --promo-line: ${theme.accentLine}; --promo-text: ${theme.text};">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(245,207,66,0.12),transparent_32%),radial-gradient(circle_at_50%_18%,rgba(28,130,73,0.16),transparent_24%)]"></div>
+      <div class="absolute inset-x-0 bottom-0 h-px bg-[var(--promo-line)]"></div>
+
+      <div class="relative mx-auto flex min-h-[430px] max-w-6xl flex-col items-center justify-center px-6 py-14 text-center md:min-h-[520px]">
+        <div class="mb-7 flex flex-col items-center">
+          <div class="relative flex h-24 w-28 items-end justify-center md:h-28 md:w-32">
+            <span class="absolute bottom-5 left-5 h-12 w-8 rotate-[-34deg] rounded-[80%_20%_80%_20%] border border-gold/80 bg-gradient-to-br from-[#69b84f] via-[#143d23] to-black shadow-[0_0_18px_rgba(245,207,66,0.28)]"></span>
+            <span class="absolute bottom-5 right-5 h-12 w-8 rotate-[34deg] rounded-[20%_80%_20%_80%] border border-gold/80 bg-gradient-to-bl from-[#69b84f] via-[#143d23] to-black shadow-[0_0_18px_rgba(245,207,66,0.28)]"></span>
+            <span class="absolute bottom-7 h-16 w-11 rounded-[80%_80%_45%_45%] border border-gold bg-gradient-to-b from-[#6fd6ff] via-[#0d78a8] to-[#07131d] shadow-[0_0_22px_rgba(245,207,66,0.34)]"></span>
+            <span class="absolute bottom-2 h-9 w-24 rounded-[0_0_80px_80px] border-b-2 border-gold bg-gradient-to-t from-[#244817] to-transparent"></span>
+            <span class="absolute bottom-12 h-3 w-3 rounded-full bg-black ring-2 ring-gold"></span>
+          </div>
+          <p class="mt-2 text-2xl font-extrabold uppercase tracking-wide text-goldSoft md:text-3xl">Beji Healing</p>
+          <p class="mt-1 text-sm font-extrabold uppercase tracking-[0.18em] text-gold">${promo.offer}</p>
+        </div>
+
+        <h3 class="max-w-5xl text-4xl font-extrabold leading-tight text-white md:text-6xl">${promo.title}</h3>
+        <p class="mt-6 max-w-3xl text-base leading-7 text-white/82 md:text-lg">${promo.description}</p>
+
+        <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <button data-page="services" class="page-link rounded-lg border border-gold bg-black/70 px-7 py-3 text-sm font-extrabold uppercase tracking-wide text-gold shadow-[0_0_24px_rgba(245,207,66,0.34)] transition hover:bg-gold hover:text-black">
+            ${promo.cta}
+          </button>
+          <button data-page="services" class="page-link rounded-lg border border-gold/80 bg-black/70 px-7 py-3 text-sm font-extrabold uppercase tracking-wide text-gold shadow-[0_0_24px_rgba(245,207,66,0.24)] transition hover:bg-gold hover:text-black">
+            ${promo.secondaryCta || "Explore Services"}
+          </button>
+        </div>
+
+        <div class="absolute right-6 top-6 hidden rounded-full border border-gold/25 bg-black/65 px-4 py-2 text-xs font-medium text-goldSoft backdrop-blur md:block">
+          Sponsored - ${promo.vendor}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
 export function init() {
   const track = document.querySelector("#promo-track");
   const slides = [...document.querySelectorAll("[data-promo-slide]")];
@@ -722,9 +818,9 @@ export function init() {
     track.style.transform = `translateX(-${active * 100}%)`;
     dots.forEach((dot, index) => {
       dot.classList.toggle("w-8", index === active);
-      dot.classList.toggle("w-2.5", index !== active);
-      dot.classList.toggle("bg-gold", index === active);
+      dot.classList.toggle("w-2", index !== active);
       dot.classList.toggle("bg-white/40", index !== active);
+      dot.style.backgroundColor = index === active ? dot.dataset.accent : "";
     });
   };
 
@@ -1500,29 +1596,43 @@ function testimonialSlide(group) {
 }
 
 function promoSlide(promo, index) {
-  return `
-    <article data-promo-slide class="relative min-h-[430px] w-full shrink-0 overflow-hidden bg-black md:min-h-[500px]">
-      <img src="${promo.image}" alt="${promo.title}" class="absolute inset-0 h-full w-full object-cover opacity-65" />
-      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/25"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
+  const theme = promoThemes[index % promoThemes.length];
 
-      <div class="relative mx-auto flex min-h-[430px] max-w-6xl items-center px-8 py-16 md:min-h-[500px] lg:px-10">
+  if (promo.layout === "beji") {
+    return bejiPromoSlide(promo, theme);
+  }
+
+  return `
+    <article data-promo-slide class="relative min-h-[380px] w-full shrink-0 overflow-hidden bg-black md:min-h-[430px]" style="--promo-accent: ${theme.accent}; --promo-soft: ${theme.accentSoft}; --promo-line: ${theme.accentLine}; --promo-text: ${theme.text};">
+      <img src="${promo.image}" alt="${promo.title}" class="absolute inset-0 h-full w-full object-cover opacity-70" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/20"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/15"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_26%_48%,var(--promo-soft),transparent_34%)]"></div>
+      <div class="absolute inset-x-0 bottom-0 h-px bg-[var(--promo-line)]"></div>
+
+      <div class="relative mx-auto flex min-h-[380px] max-w-6xl items-center px-8 py-14 md:min-h-[430px] lg:px-10">
         <div class="max-w-2xl">
-          <p class="mb-3 text-sm font-semibold text-gold/70">${promo.label}</p>
           <div class="flex flex-wrap items-center gap-3">
-            <span class="rounded-full border border-gold/35 bg-gold/10 px-4 py-2 text-xs font-extrabold text-goldSoft">${promo.tag}</span>
-            <span class="rounded-md bg-gold px-4 py-2 text-xs font-extrabold text-black">${promo.offer}</span>
+            <span class="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-extrabold" style="border-color: color-mix(in srgb, var(--promo-accent) 45%, transparent); background: var(--promo-soft); color: var(--promo-text);">
+              <span aria-hidden="true">✣</span>
+              <span>${promo.tag}</span>
+            </span>
+            <span class="rounded-md px-4 py-2 text-xs font-extrabold text-black" style="background: var(--promo-accent);">${promo.offer}</span>
           </div>
           <h3 class="mt-5 text-4xl font-extrabold leading-tight text-white md:text-6xl">${promo.title}</h3>
-          <p class="mt-3 text-sm font-bold text-gold">${promo.vendor} - ${promo.area}</p>
+          <p class="mt-3 text-sm font-bold" style="color: var(--promo-text);">${promo.vendor} - ${promo.area}</p>
           <p class="mt-3 max-w-xl text-base leading-7 text-white/75">${promo.description}</p>
-          <button data-page="services" class="page-link mt-7 rounded-full bg-gold px-7 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">
+          <button data-page="services" class="page-link mt-7 rounded-full px-7 py-3 text-sm font-extrabold text-black shadow-[0_18px_55px_rgba(0,0,0,0.32)] transition hover:brightness-110" style="background: var(--promo-accent);">
             ${promo.cta}
           </button>
         </div>
 
-        <div class="absolute right-6 top-6 hidden rounded-full border border-gold/20 bg-black/50 px-4 py-2 text-xs font-medium text-mist/65 backdrop-blur md:block">
-          Sponsored - ${promo.vendor}
+        <div class="absolute right-6 top-6 hidden rounded-full border border-white/10 bg-black/45 px-4 py-2 text-xs font-medium text-mist/70 backdrop-blur md:block">
+          <span aria-hidden="true">☞</span> Sponsored - ${promo.vendor}
+        </div>
+
+        <div class="absolute bottom-5 left-1/2 hidden -translate-x-1/2 rounded-full border border-white/10 bg-black/45 px-4 py-2 text-[11px] font-medium text-mist/60 backdrop-blur md:block">
+          <span aria-hidden="true">☞</span> Advertise your business here - Contact Admin
         </div>
       </div>
     </article>

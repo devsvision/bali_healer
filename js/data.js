@@ -281,14 +281,16 @@ export const bookings = [
 
 export const promotions = [
   {
-    title: "Sacred Sound Healing",
-    vendor: "Ubud Healing Sanctuary",
-    area: "Ubud",
-    offer: "30% OFF",
-    tag: "Special Offer",
-    label: "Limited Promo",
-    description: "Experience Tibetan singing bowls, crystal sound baths, and Balinese cleansing in a private sanctuary.",
-    cta: "Book Now - Save 30%",
+    title: "Begin Your Healing Journey",
+    vendor: "Beji Healing",
+    area: "Bali",
+    offer: "Release - Heal - Rebalance",
+    tag: "Sacred Healing",
+    label: "Featured Center",
+    description: "Experience authentic Balinese healing traditions in a sacred space. Let expert healers guide you through transformative spiritual and physical healing sessions.",
+    cta: "Book Your Session",
+    secondaryCta: "Explore Services",
+    layout: "beji",
     image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1800&q=90"
   },
   {
