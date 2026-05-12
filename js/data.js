@@ -7,6 +7,7 @@ export const services = [
     area: "Ubud",
     vendor: "Ubud Sacred Hands",
     price: "Rp850,000",
+    duration: "90 min",
     rating: "4.9",
     image: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?auto=format&fit=crop&w=900&q=80"
   },
@@ -18,6 +19,7 @@ export const services = [
     area: "Online",
     vendor: "Lotus Breath Studio",
     price: "Rp450,000",
+    duration: "60 min",
     rating: "4.8",
     image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=80"
   },
@@ -29,6 +31,7 @@ export const services = [
     area: "Canggu",
     vendor: "Canggu Healing Co.",
     price: "Rp650,000",
+    duration: "75 min",
     rating: "4.7",
     image: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?auto=format&fit=crop&w=900&q=80"
   },
@@ -40,6 +43,7 @@ export const services = [
     area: "Seminyak",
     vendor: "Bali Wellness Agent",
     price: "Rp4,500,000",
+    duration: "Half day",
     rating: "4.9",
     image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=80"
   },
@@ -51,6 +55,7 @@ export const services = [
     area: "Tampaksiring",
     vendor: "Melukat Temple Guide",
     price: "Rp725,000",
+    duration: "2 hours",
     rating: "4.9",
     image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=900&q=80"
   },
@@ -62,6 +67,7 @@ export const services = [
     area: "Canggu",
     vendor: "Canggu Breath Studio",
     price: "Rp520,000",
+    duration: "90 min",
     rating: "4.8",
     image: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=900&q=80"
   },
@@ -73,6 +79,7 @@ export const services = [
     area: "Uluwatu",
     vendor: "Surya Bodywork",
     price: "Rp600,000",
+    duration: "75 min",
     rating: "4.7",
     image: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?auto=format&fit=crop&w=900&q=80"
   },
@@ -84,6 +91,7 @@ export const services = [
     area: "Online",
     vendor: "Still Mind Bali",
     price: "Rp350,000",
+    duration: "45 min",
     rating: "4.8",
     image: "https://images.unsplash.com/photo-1528319725582-ddc096101511?auto=format&fit=crop&w=900&q=80"
   },
@@ -95,6 +103,7 @@ export const services = [
     area: "Online",
     vendor: "Maya Inner Guide",
     price: "Rp500,000",
+    duration: "60 min",
     rating: "4.7",
     image: "https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&w=900&q=80"
   },
@@ -106,6 +115,7 @@ export const services = [
     area: "Sanur",
     vendor: "Taksu Healing Spa",
     price: "Rp780,000",
+    duration: "90 min",
     rating: "4.9",
     image: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=900&q=80"
   },
@@ -117,6 +127,7 @@ export const services = [
     area: "Ubud",
     vendor: "Sacred Pair Bali",
     price: "Rp1,200,000",
+    duration: "2 hours",
     rating: "4.8",
     image: "https://images.unsplash.com/photo-1545389336-cf090694435e?auto=format&fit=crop&w=900&q=80"
   },
@@ -128,6 +139,7 @@ export const services = [
     area: "Ubud",
     vendor: "Bali Retreat House",
     price: "Rp6,500,000",
+    duration: "3 days",
     rating: "4.9",
     image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80"
   },
@@ -139,6 +151,7 @@ export const services = [
     area: "Online",
     vendor: "Star Path Bali",
     price: "Rp420,000",
+    duration: "60 min",
     rating: "4.6",
     image: "https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?auto=format&fit=crop&w=900&q=80"
   },
@@ -150,8 +163,9 @@ export const services = [
     area: "Ubud",
     vendor: "Luna Tarot Bali",
     price: "Rp380,000",
+    duration: "45 min",
     rating: "4.8",
-    image: "https://images.unsplash.com/photo-1600058644231-c996103d6023?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80"
   },
   {
     name: "Reiki Restoration",
@@ -161,6 +175,7 @@ export const services = [
     area: "Seminyak",
     vendor: "Nadi Reiki Space",
     price: "Rp560,000",
+    duration: "60 min",
     rating: "4.9",
     image: "https://images.unsplash.com/photo-1528715471579-d1bcf0ba5e83?auto=format&fit=crop&w=900&q=80"
   },
@@ -172,8 +187,177 @@ export const services = [
     area: "Online",
     vendor: "Bali Growth Studio",
     price: "Rp650,000",
+    duration: "75 min",
     rating: "4.7",
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Herbal Body Balancing",
+    category: "Herbal Healing",
+    mode: "Offline",
+    providerType: "Individual Healer",
+    area: "Ubud",
+    vendor: "Ni Luh Herbals",
+    price: "Rp540,000",
+    duration: "75 min",
+    rating: "4.8",
+    image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Trauma Release Breath Session",
+    category: "Breathwork",
+    mode: "Hybrid",
+    providerType: "Individual Healer",
+    area: "Pererenan",
+    vendor: "Aruna Breath Bali",
+    price: "Rp680,000",
+    duration: "90 min",
+    rating: "4.9",
+    image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Crystal Energy Reading",
+    category: "Energy Healing",
+    mode: "Online",
+    providerType: "Individual Healer",
+    area: "Online",
+    vendor: "Dewi Crystal Guide",
+    price: "Rp390,000",
+    duration: "50 min",
+    rating: "4.7",
+    image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Temple Blessing Walk",
+    category: "Melukat Ritual",
+    mode: "Offline",
+    providerType: "Business Healer",
+    area: "Gianyar",
+    vendor: "Sacred Steps Bali",
+    price: "Rp920,000",
+    duration: "3 hours",
+    rating: "4.8",
+    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Somatic Grounding Therapy",
+    category: "Somatic Therapy",
+    mode: "Hybrid",
+    providerType: "Individual Healer",
+    area: "Sanur",
+    vendor: "Ayu Somatic Care",
+    price: "Rp700,000",
+    duration: "80 min",
+    rating: "4.9",
+    image: "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Moon Circle Ceremony",
+    category: "Ceremony",
+    mode: "Offline",
+    providerType: "Business Healer",
+    area: "Canggu",
+    vendor: "Moon House Bali",
+    price: "Rp480,000",
+    duration: "2 hours",
+    rating: "4.6",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Mindful Sleep Reset",
+    category: "Meditation",
+    mode: "Online",
+    providerType: "Business Healer",
+    area: "Online",
+    vendor: "Restful Bali Studio",
+    price: "Rp320,000",
+    duration: "45 min",
+    rating: "4.8",
+    image: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Ancestral Lineage Healing",
+    category: "Energy Healing",
+    mode: "Hybrid",
+    providerType: "Individual Healer",
+    area: "Ubud",
+    vendor: "Mangku Putra Healing",
+    price: "Rp880,000",
+    duration: "100 min",
+    rating: "4.9",
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Postpartum Mother Care",
+    category: "Women Wellness",
+    mode: "Offline",
+    providerType: "Individual Healer",
+    area: "Denpasar",
+    vendor: "Bunda Healing Bali",
+    price: "Rp760,000",
+    duration: "90 min",
+    rating: "4.7",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Chanting and Mantra Class",
+    category: "Meditation",
+    mode: "Hybrid",
+    providerType: "Business Healer",
+    area: "Ubud",
+    vendor: "Mantra Grove",
+    price: "Rp410,000",
+    duration: "60 min",
+    rating: "4.8",
+    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Emotional Release Coaching",
+    category: "Life Coaching",
+    mode: "Online",
+    providerType: "Individual Healer",
+    area: "Online",
+    vendor: "Sari Inner Work",
+    price: "Rp570,000",
+    duration: "70 min",
+    rating: "4.6",
+    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Ayurvedic Wellness Consult",
+    category: "Ayurveda",
+    mode: "Online",
+    providerType: "Business Healer",
+    area: "Online",
+    vendor: "Prana Ayurveda Bali",
+    price: "Rp620,000",
+    duration: "75 min",
+    rating: "4.7",
+    image: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Family Harmony Session",
+    category: "Family Healing",
+    mode: "Hybrid",
+    providerType: "Individual Healer",
+    area: "Seminyak",
+    vendor: "Rahayu Family Guide",
+    price: "Rp1,150,000",
+    duration: "2 hours",
+    rating: "4.8",
+    image: "https://images.unsplash.com/photo-1545389336-cf090694435e?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    name: "Waterfall Meditation Trip",
+    category: "Retreat Package",
+    mode: "Offline",
+    providerType: "Business Healer",
+    area: "Munduk",
+    vendor: "North Bali Retreats",
+    price: "Rp1,450,000",
+    duration: "Full day",
+    rating: "4.9",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80"
   }
 ];
 

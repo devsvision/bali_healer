@@ -40,7 +40,7 @@ const datePickerMonths = [
   "December"
 ];
 
-const datePickerDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const datePickerDays = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 
 const promoBadges = [
   { icon: "&#127919;", text: "Exclusive Deals" },
@@ -180,7 +180,7 @@ export function render() {
       <div class="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-night to-transparent"></div>
 
       <div class="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-6xl flex-col items-center justify-center px-4 pb-16 pt-20 text-center">
-        <h1 class="max-w-5xl text-5xl font-extrabold leading-[0.98] tracking-tight text-white md:text-7xl">
+        <h1 class="font-cinzel max-w-5xl text-5xl font-extrabold leading-[0.98] text-white md:text-7xl">
           Discover Your <span class="text-gold">Healing</span> Journey<br class="hidden md:block" /> in Bali
         </h1>
         <p class="mt-7 max-w-2xl text-xl leading-8 text-white/78 md:text-2xl">
@@ -291,10 +291,21 @@ export function render() {
           <h3 class="mt-2 text-3xl font-semibold text-white">Healing services for every need</h3>
           <p class="mt-3 max-w-2xl text-sm leading-6 text-mist/55">Services can be offered by individual healers or registered wellness businesses, with online, offline, or hybrid session options.</p>
         </div>
-        <button data-show-all-services class="rounded-lg border border-gold/35 px-5 py-3 text-sm font-bold text-goldSoft transition hover:border-gold hover:bg-gold/10">View all</button>
       </div>
-      <div class="mt-8 grid auto-rows-fr gap-5 md:grid-cols-2 lg:grid-cols-4">
+      <div data-service-grid class="mt-8 grid auto-rows-fr gap-5 md:grid-cols-2 lg:grid-cols-4">
         ${services.map((service, index) => serviceCard(service, index >= 8)).join("")}
+      </div>
+      <div class="mt-8 flex justify-center">
+        <button data-show-all-services class="w-full max-w-xl border border-gold/20 bg-black/35 px-6 py-4 text-sm font-semibold text-mist/80 transition hover:border-gold/45 hover:bg-gold/10 hover:text-goldSoft">View More</button>
+      </div>
+      <div data-service-pagination class="mt-8 hidden items-center justify-center gap-8">
+        <button type="button" data-service-prev class="flex h-10 w-10 items-center justify-center text-mist/45 transition hover:text-goldSoft disabled:cursor-not-allowed disabled:text-mist/20" aria-label="Previous services page">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div data-service-pages class="flex items-center justify-center gap-5 text-sm font-medium text-mist/55"></div>
+        <button type="button" data-service-next class="flex h-10 w-10 items-center justify-center text-mist/45 transition hover:text-goldSoft disabled:cursor-not-allowed disabled:text-mist/20" aria-label="Next services page">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
       </div>
     </section>
 
@@ -594,74 +605,116 @@ export function render() {
       </section>
     </div>
 
-    <div data-checkout-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-32 md:pt-36">
+    <div data-checkout-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-24 md:pt-28">
       <button data-close-checkout class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close checkout"></button>
-      <section class="relative max-h-[calc(100vh-9rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
-        <div class="flex items-start justify-between gap-4 border-b border-gold/15 pb-4">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-goldSoft">Checkout</p>
-            <h3 class="mt-1 text-xl font-semibold text-white">Review your booking request</h3>
-          </div>
+      <section class="relative max-h-[calc(100vh-7rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] p-5 text-mist shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
+        <div class="flex items-center justify-between gap-4">
+          <h3 class="text-2xl font-semibold text-white">Checkout</h3>
           <button data-close-checkout class="flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-mist/70 transition hover:border-gold hover:text-goldSoft">
             <span class="sr-only">Close</span>
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
-        <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/75">
-          Please make sure all booking details are correct before continuing to the next process.
+
+        <div class="mt-6">
+          <p class="text-sm font-semibold text-mist/85">Order Summary</p>
+          <div class="mt-3 rounded-xl border border-gold/15 bg-black/45 p-4 shadow-[inset_0_1px_0_rgba(244,217,135,0.08)]">
+            <div class="flex gap-3">
+              <img data-checkout-image src="" alt="" class="h-20 w-20 shrink-0 rounded-lg border border-gold/15 object-cover" />
+              <div class="min-w-0 flex-1">
+                <p data-checkout-service class="line-clamp-2 text-sm font-semibold leading-5 text-white"></p>
+                <div class="mt-2 flex items-center gap-2 text-xs font-medium text-mist/70">
+                  <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-extrabold text-black">OK</span>
+                  <span data-checkout-mode></span>
+                </div>
+                <p data-checkout-healer class="mt-1 truncate text-xs text-mist/45"></p>
+              </div>
+            </div>
+
+            <details class="mt-4 border-t border-gold/10 pt-3">
+              <summary class="flex cursor-pointer list-none items-center justify-center gap-2 text-xs font-semibold text-mist/65 transition hover:text-goldSoft">
+                Show More
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="mt-3 grid gap-2 text-xs">
+                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+                  <span class="text-mist/50">Full name</span>
+                  <span data-checkout-name class="text-right font-semibold text-white"></span>
+                </div>
+                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+                  <span class="text-mist/50">WhatsApp</span>
+                  <span data-checkout-whatsapp class="text-right font-semibold text-white"></span>
+                </div>
+                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+                  <span class="text-mist/50">Email</span>
+                  <span data-checkout-email class="text-right font-semibold text-white"></span>
+                </div>
+                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+                  <span class="text-mist/50">Date</span>
+                  <span data-checkout-date class="text-right font-semibold text-white"></span>
+                </div>
+                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+                  <span class="text-mist/50">Time</span>
+                  <span data-checkout-time class="text-right font-semibold text-white"></span>
+                </div>
+                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
+                  <span class="text-mist/50">Guests</span>
+                  <span data-checkout-guests class="text-right font-semibold text-white"></span>
+                </div>
+                <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
+                  <span class="text-mist/50">Session notes</span>
+                  <p data-checkout-notes class="mt-2 whitespace-pre-line font-semibold leading-5 text-white"></p>
+                </div>
+              </div>
+            </details>
+          </div>
         </div>
-        <div class="mt-5 grid gap-3 text-sm sm:grid-cols-2">
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3 sm:col-span-2">
-            <span class="text-mist/50">Service</span>
-            <span data-checkout-service class="text-right font-semibold text-white"></span>
+
+        <div class="mt-6">
+          <p class="text-sm font-semibold text-mist/85">Select Payment Method</p>
+          <div class="mt-3 grid grid-cols-2 gap-3">
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="rounded border border-gold/45 px-1.5 py-0.5 text-[10px] font-extrabold text-gold">CC</span><span class="truncate">Credit Card</span></span>
+              <input checked type="radio" name="checkout_gateway" value="Credit Card" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="text-base font-extrabold text-gold">G</span><span class="truncate">Pay</span></span>
+              <input type="radio" name="checkout_gateway" value="Google Pay" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="text-base font-extrabold text-gold">P</span><span class="truncate">PayPal</span></span>
+              <input type="radio" name="checkout_gateway" value="PayPal" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="text-base font-extrabold text-white">A</span><span class="truncate">Pay</span></span>
+              <input type="radio" name="checkout_gateway" value="Apple Pay" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-gold px-1.5 py-0.5 text-[10px] font-extrabold text-black">B</span><span class="truncate">Bank Transfer</span></span>
+              <input type="radio" name="checkout_gateway" value="Bank Transfer" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-gold px-1.5 py-0.5 text-[10px] font-extrabold text-black">V</span><span class="truncate">E-Wallet</span></span>
+              <input type="radio" name="checkout_gateway" value="E-Wallet" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-emerald-500 px-1.5 py-0.5 text-[10px] font-extrabold text-black">$</span><span class="truncate">Cash App</span></span>
+              <input type="radio" name="checkout_gateway" value="Cash App" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
+            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
+              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-gold/20 px-1.5 py-0.5 text-[10px] font-extrabold text-goldSoft">IDR</span><span class="truncate">Cash</span></span>
+              <input type="radio" name="checkout_gateway" value="Cash" class="h-4 w-4 accent-[#d6aa43]" />
+            </label>
           </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3 sm:col-span-2">
-            <span class="text-mist/50">Healer</span>
-            <span data-checkout-healer class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">Full name</span>
-            <span data-checkout-name class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">WhatsApp Number</span>
-            <span data-checkout-whatsapp class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">Email</span>
-            <span data-checkout-email class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">Date</span>
-            <span data-checkout-date class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">Time</span>
-            <span data-checkout-time class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">Session mode</span>
-            <span data-checkout-mode class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">Guests</span>
-            <span data-checkout-guests class="text-right font-semibold text-white"></span>
-          </div>
-          <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-            <span class="text-mist/50">Starting price</span>
+        </div>
+
+        <div class="mt-6 border-t border-gold/15 pt-4">
+          <div class="flex items-center justify-between gap-4 text-sm">
+            <span class="text-mist/70">Total:</span>
             <span data-checkout-price data-price-idr="" class="text-right font-extrabold text-goldSoft"></span>
           </div>
-          <div class="rounded-lg border border-gold/10 bg-black/35 p-3 sm:col-span-2">
-            <span class="text-mist/50">Session notes</span>
-            <p data-checkout-notes class="mt-2 whitespace-pre-line font-semibold leading-6 text-white"></p>
-          </div>
-        </div>
-        <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/70">
-          Payment will be confirmed after the healer or admin approves the requested schedule and session details.
-        </div>
-        <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <button data-close-checkout class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Back</button>
-          <button data-open-payment type="button" class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Proceed to Payment</button>
+          <button data-open-payment type="button" class="mt-4 w-full rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Continue</button>
+          <button data-close-checkout class="mt-3 w-full rounded-full border border-gold/20 px-6 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Back</button>
         </div>
       </section>
     </div>
@@ -783,7 +836,10 @@ export function init() {
   const testimonialPrev = document.querySelector("[data-testimonial-prev]");
   const testimonialNext = document.querySelector("[data-testimonial-next]");
   const showAllServices = document.querySelector("[data-show-all-services]");
-  const hiddenServices = [...document.querySelectorAll("[data-service-card].hidden")];
+  const servicePagination = document.querySelector("[data-service-pagination]");
+  const servicePrev = document.querySelector("[data-service-prev]");
+  const serviceNext = document.querySelector("[data-service-next]");
+  const servicePages = document.querySelector("[data-service-pages]");
   const serviceCards = [...document.querySelectorAll("[data-service-card]")];
   const profileModal = document.querySelector("[data-profile-modal]");
   const closeProfileButtons = [...document.querySelectorAll("[data-close-profile]")];
@@ -803,6 +859,8 @@ export function init() {
 
   let active = 0;
   let activeTestimonial = 0;
+  let serviceExpanded = false;
+  let servicePage = 0;
   let timer;
   let testimonialTimer;
   let activeDateInput;
@@ -811,7 +869,7 @@ export function init() {
   let activeBookingService;
   const calendar = document.createElement("div");
   calendar.dataset.dateCalendar = "true";
-  calendar.className = "fixed z-[80] hidden w-[292px] rounded-lg border border-gold/30 bg-[#111] p-4 text-sm text-mist shadow-[0_22px_70px_rgba(0,0,0,0.5)]";
+  calendar.className = "fixed z-[80] hidden w-[320px] max-w-[calc(100vw-24px)] rounded-2xl border border-gold/20 bg-[#0d0c0b] p-4 text-sm text-mist shadow-[0_24px_80px_rgba(0,0,0,0.62)]";
   document.body.appendChild(calendar);
 
   const render = () => {
@@ -889,12 +947,62 @@ export function init() {
     });
   });
 
-  const revealServices = () => {
-    hiddenServices.forEach((card) => card.classList.remove("hidden"));
+  const renderServiceCards = () => {
+    const initialLimit = 8;
+    const pageSize = 8;
+    const totalPages = Math.max(1, Math.ceil(serviceCards.length / pageSize));
+
+    if (!serviceExpanded) {
+      serviceCards.forEach((card, index) => card.classList.toggle("hidden", index >= initialLimit));
+      showAllServices?.classList.toggle("hidden", serviceCards.length <= initialLimit);
+      servicePagination?.classList.add("hidden");
+      servicePagination?.classList.remove("flex");
+      return;
+    }
+
+    servicePage = Math.min(Math.max(0, servicePage), totalPages - 1);
+    const start = servicePage * pageSize;
+    const end = start + pageSize;
+    serviceCards.forEach((card, index) => card.classList.toggle("hidden", index < start || index >= end));
     showAllServices?.classList.add("hidden");
+    servicePagination?.classList.toggle("hidden", totalPages <= 1);
+    servicePagination?.classList.toggle("flex", totalPages > 1);
+    if (servicePages) {
+      servicePages.innerHTML = servicePageItems(totalPages, servicePage)
+        .map((item) => item === "..."
+          ? `<span class="px-2 text-mist/45">...</span>`
+          : `<button type="button" data-service-page="${item}" class="${item === servicePage ? "bg-gold text-black" : "text-mist/55 hover:text-goldSoft"} flex h-10 min-w-10 items-center justify-center rounded-sm px-3 transition">${item + 1}</button>`)
+        .join("");
+    }
+    if (servicePrev) servicePrev.disabled = servicePage === 0;
+    if (serviceNext) serviceNext.disabled = servicePage === totalPages - 1;
+  };
+
+  const revealServices = () => {
+    serviceExpanded = true;
+    servicePage = 0;
+    renderServiceCards();
+  };
+
+  const goToServicesPage = (direction) => {
+    if (!serviceExpanded) return;
+    servicePage += direction;
+    renderServiceCards();
+  };
+
+  const goToPreviousServicesPage = () => goToServicesPage(-1);
+  const goToNextServicesPage = () => goToServicesPage(1);
+  const chooseServicesPage = (event) => {
+    const button = event.target.closest("[data-service-page]");
+    if (!button) return;
+    servicePage = Number(button.dataset.servicePage);
+    renderServiceCards();
   };
 
   showAllServices?.addEventListener("click", revealServices);
+  servicePrev?.addEventListener("click", goToPreviousServicesPage);
+  serviceNext?.addEventListener("click", goToNextServicesPage);
+  servicePages?.addEventListener("click", chooseServicesPage);
 
   const handleServiceCardGlow = (event) => {
     const card = event.currentTarget;
@@ -999,6 +1107,11 @@ export function init() {
     if (!checkoutModal || !activeBookingService) return;
     const profile = serviceProfile(activeBookingService);
     const value = (selector) => bookingForm?.querySelector(selector)?.value?.trim() || "";
+    const image = checkoutModal.querySelector("[data-checkout-image]");
+    if (image) {
+      image.src = profile.image;
+      image.alt = activeBookingService.name;
+    }
     checkoutModal.querySelector("[data-checkout-service]").textContent = activeBookingService.name;
     checkoutModal.querySelector("[data-checkout-healer]").textContent = profile.name;
     checkoutModal.querySelector("[data-checkout-name]").textContent = value("[data-booking-full-name]");
@@ -1123,8 +1236,8 @@ export function init() {
     if (!activeDateInput || calendar.classList.contains("hidden")) return;
     const rect = activeDateInput.getBoundingClientRect();
     const gap = 8;
-    const calendarWidth = 292;
-    const calendarHeight = 360;
+    const calendarWidth = 320;
+    const calendarHeight = 340;
     const left = Math.min(Math.max(12, rect.left), window.innerWidth - calendarWidth - 12);
     const hasBottomSpace = rect.bottom + gap + calendarHeight <= window.innerHeight;
     const top = hasBottomSpace ? rect.bottom + gap : Math.max(12, rect.top - calendarHeight - gap);
@@ -1138,7 +1251,7 @@ export function init() {
     const month = calendarDate.getMonth();
     const today = new Date();
     const selected = selectedDate();
-    const firstDay = new Date(year, month, 1).getDay();
+    const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const previousMonthDays = new Date(year, month, 0).getDate();
     const cells = [];
@@ -1155,56 +1268,38 @@ export function init() {
       cells.push({ day: cells.length - firstDay - daysInMonth + 1, offset: 1 });
     }
 
-    const firstYear = Math.min(today.getFullYear() - 5, year - 5);
-    const lastYear = Math.max(today.getFullYear() + 10, year + 5);
-    const years = [];
-    for (let yearOption = firstYear; yearOption <= lastYear; yearOption += 1) {
-      years.push(yearOption);
-    }
-
     calendar.innerHTML = `
-      <div class="mb-3 flex items-center justify-between gap-2">
-        <button type="button" data-calendar-prev class="flex h-9 w-9 items-center justify-center rounded-md border border-gold/20 text-goldSoft transition hover:bg-gold hover:text-black" aria-label="Previous month">
+      <div class="mb-5 grid grid-cols-[34px_minmax(0,1fr)_34px] items-center gap-2">
+        <button type="button" data-calendar-prev class="flex h-8 w-8 items-center justify-center rounded-lg border border-gold/10 bg-black/35 text-mist/60 transition hover:border-gold/35 hover:bg-gold hover:text-black" aria-label="Previous month">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <div class="grid min-w-0 flex-1 grid-cols-[1fr_76px] gap-2">
-          <select data-calendar-month aria-label="Choose month" class="min-w-0 rounded-md border border-gold/20 bg-black px-2 py-2 text-sm font-semibold text-white outline-none focus:border-gold">
-            ${datePickerMonths.map((monthName, index) => `<option value="${index}" ${index === month ? "selected" : ""}>${monthName}</option>`).join("")}
-          </select>
-          <select data-calendar-year aria-label="Choose year" class="rounded-md border border-gold/20 bg-black px-2 py-2 text-sm font-semibold text-white outline-none focus:border-gold">
-            ${years.map((yearOption) => `<option value="${yearOption}" ${yearOption === year ? "selected" : ""}>${yearOption}</option>`).join("")}
-          </select>
-        </div>
-        <button type="button" data-calendar-next class="flex h-9 w-9 items-center justify-center rounded-md border border-gold/20 text-goldSoft transition hover:bg-gold hover:text-black" aria-label="Next month">
+        <p class="text-center text-sm font-semibold text-mist/80">${datePickerMonths[month]} ${year}</p>
+        <button type="button" data-calendar-next class="flex h-8 w-8 items-center justify-center rounded-lg border border-gold/10 bg-black/35 text-mist/60 transition hover:border-gold/35 hover:bg-gold hover:text-black" aria-label="Next month">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       </div>
-      <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-goldSoft">
+      <div class="grid grid-cols-7 gap-2 text-center text-[11px] font-semibold text-mist/45">
         ${datePickerDays.map((day) => `<span>${day}</span>`).join("")}
       </div>
-      <div class="mt-2 grid grid-cols-7 gap-1">
+      <div class="mt-3 grid grid-cols-7 gap-2">
         ${cells.map((cell) => {
           const cellDate = new Date(year, month + cell.offset, cell.day);
           const isSelected = sameDate(cellDate, selected);
           const isToday = sameDate(cellDate, today);
           const dateValue = `${cellDate.getFullYear()}-${String(cellDate.getMonth() + 1).padStart(2, "0")}-${String(cellDate.getDate()).padStart(2, "0")}`;
           const stateClass = isSelected
-            ? "bg-gold text-black"
+            ? "border-gold bg-gold text-black shadow-[0_10px_24px_rgba(214,170,67,0.24)]"
             : isToday
-              ? "border-gold/60 text-goldSoft"
-              : "border-transparent text-mist hover:border-gold/30 hover:bg-gold/10";
-          const mutedClass = cell.offset === 0 ? "" : "opacity-35";
+              ? "border-gold/45 bg-gold/10 text-goldSoft"
+              : "border-transparent text-mist/70 hover:border-gold/25 hover:bg-gold/10 hover:text-goldSoft";
+          const mutedClass = cell.offset === 0 ? "" : "text-mist/25 hover:text-mist/45";
 
           return `
-            <button type="button" data-calendar-day="${dateValue}" class="flex h-9 items-center justify-center rounded-md border ${stateClass} ${mutedClass}">
+            <button type="button" data-calendar-day="${dateValue}" class="flex h-9 items-center justify-center rounded-lg border text-sm font-medium transition ${stateClass} ${mutedClass}">
               ${cellDate.getDate()}
             </button>
           `;
         }).join("")}
-      </div>
-      <div class="mt-4 flex justify-between border-t border-gold/10 pt-3">
-        <button type="button" data-calendar-clear class="text-xs font-semibold text-mist/55 transition hover:text-goldSoft">Clear</button>
-        <button type="button" data-calendar-today class="text-xs font-semibold text-goldSoft transition hover:text-gold">Today</button>
       </div>
     `;
   };
@@ -1338,6 +1433,7 @@ export function init() {
 
   render();
   renderTestimonials();
+  renderServiceCards();
   restart();
   restartTestimonials();
 
@@ -1345,6 +1441,9 @@ export function init() {
     window.clearInterval(timer);
     window.clearInterval(testimonialTimer);
     showAllServices?.removeEventListener("click", revealServices);
+    servicePrev?.removeEventListener("click", goToPreviousServicesPage);
+    serviceNext?.removeEventListener("click", goToNextServicesPage);
+    servicePages?.removeEventListener("click", chooseServicesPage);
     document.removeEventListener("click", handleBookingClick);
     document.removeEventListener("click", handleProfileClick);
     document.removeEventListener("keydown", handleEscape);
@@ -1414,7 +1513,7 @@ function serviceCard(service, isHidden = false) {
         <p class="mt-3 min-h-[48px] line-clamp-2 text-sm leading-6 text-mist/55">${profile.description}</p>
 
         <div class="mt-auto pt-4">
-          <div class="grid min-h-[78px] grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-4 gap-y-3 border-y border-gold/10 py-4 text-xs text-mist/55">
+          <div class="grid min-h-[88px] grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-4 gap-y-3 border-t border-gold/10 pt-4 text-xs text-mist/55">
             <span class="flex min-w-0 items-center gap-2">
               <svg class="h-3.5 w-3.5 shrink-0 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
               <span class="truncate">${profile.experience} exp</span>
@@ -1427,8 +1526,12 @@ function serviceCard(service, isHidden = false) {
               <svg class="h-3.5 w-3.5 shrink-0 text-gold" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8-6.1-3.4-6.1 3.4 1.4-6.8-5.1-4.7 6.9-.8L12 2Z"/></svg>
               <span class="truncate">${service.rating} (${profile.reviews} reviews)</span>
             </span>
-            <span data-price-idr="${service.price}" class="self-center text-right text-sm font-extrabold leading-none text-goldSoft">${service.price}</span>
+            <span class="flex min-w-0 items-center justify-end gap-2 text-right">
+              <svg class="h-3.5 w-3.5 shrink-0 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 6v6h4"/></svg>
+              <span class="truncate">${service.duration}</span>
+            </span>
           </div>
+          <p data-price-idr="${service.price}" class="border-b border-gold/10 py-4 text-center text-sm font-extrabold leading-none text-goldSoft">${service.price}</p>
 
           <div class="flex min-h-[48px] items-end justify-between gap-3 pt-4">
             <button data-view-profile="${service.name}" class="min-w-0 rounded-md px-1 py-2 text-left text-sm font-extrabold text-gold transition duration-200 hover:text-goldSoft hover:[text-shadow:0_0_16px_rgba(244,217,135,0.45)]">View Profile</button>
@@ -1521,6 +1624,16 @@ function serviceProfile(service) {
       sessions: "110",
       reviews: "33",
       image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=80"
+    },
+    "Tarot Reflection Reading": {
+      name: "Luna Tarot Bali",
+      title: "Tarot & Intuitive Reading Guide",
+      description: "Reflective tarot reading for emotional clarity, relationship questions, and grounded next steps.",
+      location: "Ubud, Bali",
+      experience: "8y",
+      sessions: "86",
+      reviews: "27",
+      image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80"
     }
   };
 
@@ -1534,6 +1647,23 @@ function serviceProfile(service) {
     reviews: "18",
     image: service.image
   };
+}
+
+function servicePageItems(totalPages, currentPage) {
+  if (totalPages <= 6) {
+    return Array.from({ length: totalPages }, (_, index) => index);
+  }
+
+  const pages = new Set([0, totalPages - 1, currentPage]);
+  if (currentPage > 0) pages.add(currentPage - 1);
+  if (currentPage < totalPages - 1) pages.add(currentPage + 1);
+
+  const orderedPages = [...pages].sort((first, second) => first - second);
+  return orderedPages.flatMap((page, index) => {
+    if (index === 0) return [page];
+    const previous = orderedPages[index - 1];
+    return page - previous > 1 ? ["...", page] : [page];
+  });
 }
 
 function serviceModeBadge(mode) {
