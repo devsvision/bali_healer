@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bali Healer Admin</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/png" href="../assets/images/logo-bali-healer.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              night: "#050505",
+              panel: "#181512",
+              gold: "#d6aa43",
+              goldSoft: "#f4d987",
+              mist: "#f8f1df"
+            },
+            fontFamily: {
+              cinzel: ["Cinzel", "serif"]
+            },
+            boxShadow: {
+              gold: "0 20px 70px rgba(214, 170, 67, 0.18)"
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-night text-mist">
+    <div class="pointer-events-none fixed inset-0 opacity-70">
+      <div class="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(circle_at_50%_0%,rgba(214,170,67,0.22),transparent_58%)]"></div>
+      <div class="absolute inset-0 bg-[linear-gradient(rgba(214,170,67,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(214,170,67,0.05)_1px,transparent_1px)] bg-[size:72px_72px]"></div>
+    </div>
+
+    <main id="admin-app" class="relative z-10"></main>
+    <script type="module" src="./admin.js"></script>
+  </body>
+</html>
