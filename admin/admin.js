@@ -5,6 +5,7 @@ const AUTH_KEY = "baliHealerAdminSession";
 const SETTINGS_KEY = "baliHealerAdminSettings";
 const GATEWAYS_KEY = "baliHealerPaymentGateways";
 const LANGUAGE_KEY = "baliHealerAdminLanguage";
+const BANNERS_KEY = "baliHealerHomepageBanners";
 
 const credentials = {
   username: "superadmin",
@@ -39,6 +40,7 @@ let activeSection = "command";
 let settings = readJson(SETTINGS_KEY, defaultSettings);
 let gateways = readJson(GATEWAYS_KEY, defaultGateways);
 let selectedLanguage = localStorage.getItem(LANGUAGE_KEY) || "en";
+let editingBannerId = "";
 
 const translations = {
   en: {
@@ -302,6 +304,25 @@ const campaigns = [
   { name: "Online Chakra Promo", channel: "Email", budget: 2200000, status: "Draft", conversion: "5.1%" },
   { name: "Retreat Partner Push", channel: "Social", budget: 5000000, status: "Running", conversion: "6.8%" }
 ];
+
+const defaultBanners = promotions.map((promotion, index) => ({
+  id: createId(),
+  title: promotion.title,
+  vendor: promotion.vendor,
+  area: promotion.area,
+  badge: promotion.tag || promotion.label || "Featured",
+  offer: promotion.offer || "Special Offer",
+  discount: index === 0 ? "Release - Heal - Rebalance" : "Save 15%",
+  description: promotion.description,
+  cta: promotion.cta || "Book Now",
+  secondaryCta: promotion.secondaryCta || "Explore",
+  image: promotion.image,
+  status: index === 0 ? "Active" : "Scheduled",
+  placement: index === 0 ? "Hero carousel" : "Promotion carousel",
+  priority: String(index + 1)
+}));
+
+let homepageBanners = readJson(BANNERS_KEY, defaultBanners);
 
 function readJson(key, fallback) {
   try {
@@ -665,6 +686,10 @@ function contentSection() {
               Choose Logo From Device
               <input data-logo-upload name="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" />
             </label>
+            <label class="cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">
+              Take Photo
+              <input data-logo-upload name="logoCamera" type="file" accept="image/*" capture="environment" class="hidden" />
+            </label>
           </div>
           <p class="mt-3 text-xs leading-5 text-mist/45">Recommended: square PNG/WebP, transparent background, under 1 MB.</p>
         </div>
@@ -817,7 +842,11 @@ function marketingSection() {
       ${card("Campaigns", campaigns.length, "active planning")}
       ${card("Promo budget", formatIdr(campaigns.reduce((sum, item) => sum + item.budget, 0)), "this month")}
       ${card("Avg conversion", "6.8%", "campaign blend")}
-      ${card("Promotions", promotions.length, "homepage assets")}
+      ${card("Homepage banners", homepageBanners.length, "managed assets")}
+    </div>
+    <div class="mt-6 grid gap-6 xl:grid-cols-[430px_minmax(0,1fr)]">
+      ${bannerFormPanel()}
+      ${bannerManagerPanel()}
     </div>
     <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_0.9fr]">
       ${panel("Campaign planner", table(
@@ -827,6 +856,96 @@ function marketingSection() {
       ${panel("Growth modules", list(["Coupon and voucher rules", "Homepage banner scheduler", "SEO content calendar", "Newsletter audience segments", "Partner referral tracking", "Abandoned checkout recovery"]))}
     </div>
   `;
+}
+
+function bannerFormPanel() {
+  const banner = homepageBanners.find((item) => item.id === editingBannerId) || {
+    title: "",
+    vendor: "",
+    area: "Bali",
+    badge: "Featured",
+    offer: "Special Offer",
+    discount: "",
+    description: "",
+    cta: "Book Now",
+    secondaryCta: "Explore Services",
+    image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1800&q=90",
+    status: "Draft",
+    placement: "Promotion carousel",
+    priority: String(homepageBanners.length + 1)
+  };
+
+  return panel(editingBannerId ? "Edit homepage banner" : "Add homepage banner", `
+    <form data-banner-form>
+      <input type="hidden" name="id" value="${editingBannerId}" />
+      <div class="rounded-lg border border-gold/15 bg-black/35 p-4">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Banner image preview</p>
+        <img data-banner-image-preview src="${banner.image}" alt="Banner preview" class="mt-3 aspect-[16/9] w-full rounded-lg border border-gold/20 object-cover" />
+        <label class="mt-3 inline-flex cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">
+          Choose Banner Image
+          <input data-banner-image-upload name="imageFile" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" />
+        </label>
+        <label class="ml-0 mt-3 inline-flex cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10 sm:ml-2">
+          Take Photo
+          <input data-banner-image-upload name="imageCamera" type="file" accept="image/*" capture="environment" class="hidden" />
+        </label>
+      </div>
+      ${inputField("Image URL", "image", banner.image)}
+      ${inputField("Title", "title", banner.title)}
+      ${inputField("Vendor / brand", "vendor", banner.vendor)}
+      ${inputField("Area", "area", banner.area)}
+      ${inputField("Badge text", "badge", banner.badge)}
+      ${inputField("Offer text", "offer", banner.offer)}
+      ${inputField("Discount / promo text", "discount", banner.discount)}
+      <label class="mt-4 block">
+        <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Description</span>
+        <textarea name="description" rows="4" class="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">${banner.description}</textarea>
+      </label>
+      <div class="grid gap-3 md:grid-cols-2">
+        ${inputField("Primary CTA", "cta", banner.cta)}
+        ${inputField("Secondary CTA", "secondaryCta", banner.secondaryCta)}
+      </div>
+      <div class="grid gap-3 md:grid-cols-3">
+        ${selectField("Placement", "placement", ["Hero carousel", "Promotion carousel", "Category banner", "Mobile spotlight"], banner.placement)}
+        ${selectField("Status", "status", ["Active", "Scheduled", "Draft", "Disabled"], banner.status)}
+        ${inputField("Priority", "priority", banner.priority)}
+      </div>
+      <div class="mt-5 grid gap-3 md:grid-cols-2">
+        <button class="rounded-lg bg-gold px-5 py-3 text-sm font-extrabold text-black transition hover:bg-goldSoft">${editingBannerId ? "Save Banner" : "Add Banner"}</button>
+        <button data-cancel-banner-edit type="button" class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Clear</button>
+      </div>
+    </form>
+  `);
+}
+
+function bannerManagerPanel() {
+  return panel("Homepage banner section manager", `
+    <div class="grid gap-4">
+      ${homepageBanners
+        .slice()
+        .sort((first, second) => Number(first.priority) - Number(second.priority))
+        .map((banner) => `
+          <article class="grid gap-4 rounded-lg border border-gold/10 bg-black/35 p-4 lg:grid-cols-[180px_minmax(0,1fr)]">
+            <img src="${banner.image}" alt="${banner.title}" class="aspect-[16/10] w-full rounded-lg object-cover" />
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                ${statusPill(banner.status)}
+                ${statusPill(banner.placement)}
+                <span class="rounded-full border border-gold/15 px-3 py-1 text-xs text-mist/55">Priority ${banner.priority}</span>
+              </div>
+              <h3 class="mt-3 text-lg font-semibold text-white">${banner.title || "Untitled banner"}</h3>
+              <p class="mt-1 text-sm text-goldSoft">${banner.badge} - ${banner.offer} - ${banner.discount}</p>
+              <p class="mt-2 line-clamp-2 text-sm leading-6 text-mist/60">${banner.description}</p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button data-edit-banner="${banner.id}" class="rounded-md border border-gold/20 px-3 py-2 text-xs font-bold text-goldSoft">Edit</button>
+                <button data-duplicate-banner="${banner.id}" class="rounded-md border border-gold/20 px-3 py-2 text-xs font-bold text-goldSoft">Duplicate</button>
+                <button data-delete-banner="${banner.id}" class="rounded-md border border-red-400/25 px-3 py-2 text-xs font-bold text-red-200">Delete</button>
+              </div>
+            </div>
+          </article>
+        `).join("")}
+    </div>
+  `);
 }
 
 function rolesSection() {
@@ -878,6 +997,17 @@ function inputField(label, name, value) {
     <label class="mt-4 block">
       <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">${label}</span>
       <input name="${name}" value="${value}" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold" />
+    </label>
+  `;
+}
+
+function selectField(label, name, options, value) {
+  return `
+    <label class="mt-4 block">
+      <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">${label}</span>
+      <select name="${name}" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
+        ${options.map((option) => `<option ${option === value ? "selected" : ""}>${option}</option>`).join("")}
+      </select>
     </label>
   `;
 }
@@ -961,9 +1091,39 @@ function handleGatewayCreate(event) {
   renderDashboard();
 }
 
+function handleBannerSave(event) {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  const id = data.get("id") || createId();
+  const banner = {
+    id,
+    title: data.get("title").trim(),
+    vendor: data.get("vendor").trim(),
+    area: data.get("area").trim(),
+    badge: data.get("badge").trim(),
+    offer: data.get("offer").trim(),
+    discount: data.get("discount").trim(),
+    description: data.get("description").trim(),
+    cta: data.get("cta").trim(),
+    secondaryCta: data.get("secondaryCta").trim(),
+    image: data.get("image").trim(),
+    status: data.get("status"),
+    placement: data.get("placement"),
+    priority: data.get("priority").trim() || "99"
+  };
+
+  homepageBanners = homepageBanners.some((item) => item.id === id)
+    ? homepageBanners.map((item) => item.id === id ? banner : item)
+    : [...homepageBanners, banner];
+  editingBannerId = "";
+  writeJson(BANNERS_KEY, homepageBanners);
+  renderDashboard();
+}
+
 document.addEventListener("submit", (event) => {
   if (event.target.matches("[data-settings-form]")) handleSettingsSave(event);
   if (event.target.matches("[data-gateway-form]")) handleGatewayCreate(event);
+  if (event.target.matches("[data-banner-form]")) handleBannerSave(event);
 });
 
 document.addEventListener("change", (event) => {
@@ -1004,6 +1164,23 @@ document.addEventListener("change", (event) => {
     return;
   }
 
+  const bannerImageUpload = event.target.closest("[data-banner-image-upload]");
+  if (bannerImageUpload) {
+    const file = bannerImageUpload.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      const imageValue = String(reader.result || "");
+      const form = bannerImageUpload.closest("form");
+      const imageInput = form?.querySelector('input[name="image"]');
+      const preview = form?.querySelector("[data-banner-image-preview]");
+      if (imageInput) imageInput.value = imageValue;
+      if (preview) preview.src = imageValue;
+    });
+    reader.readAsDataURL(file);
+    return;
+  }
+
   const languageSelect = event.target.closest("[data-admin-language]");
   if (!languageSelect) return;
   selectedLanguage = languageSelect.value;
@@ -1022,6 +1199,39 @@ document.addEventListener("click", (event) => {
   if (event.target.closest("[data-logout]")) {
     localStorage.setItem(AUTH_KEY, JSON.stringify({ username: credentials.username, role: "superadmin", loginAt: new Date().toISOString() }));
     activeSection = "command";
+    renderDashboard();
+    return;
+  }
+
+  const editBanner = event.target.closest("[data-edit-banner]");
+  if (editBanner) {
+    editingBannerId = editBanner.dataset.editBanner;
+    renderDashboard();
+    return;
+  }
+
+  const duplicateBanner = event.target.closest("[data-duplicate-banner]");
+  if (duplicateBanner) {
+    const source = homepageBanners.find((banner) => banner.id === duplicateBanner.dataset.duplicateBanner);
+    if (source) {
+      homepageBanners = [...homepageBanners, { ...source, id: createId(), title: `${source.title} Copy`, status: "Draft", priority: String(homepageBanners.length + 1) }];
+      writeJson(BANNERS_KEY, homepageBanners);
+      renderDashboard();
+    }
+    return;
+  }
+
+  const deleteBanner = event.target.closest("[data-delete-banner]");
+  if (deleteBanner) {
+    homepageBanners = homepageBanners.filter((banner) => banner.id !== deleteBanner.dataset.deleteBanner);
+    if (editingBannerId === deleteBanner.dataset.deleteBanner) editingBannerId = "";
+    writeJson(BANNERS_KEY, homepageBanners);
+    renderDashboard();
+    return;
+  }
+
+  if (event.target.closest("[data-cancel-banner-edit]")) {
+    editingBannerId = "";
     renderDashboard();
     return;
   }

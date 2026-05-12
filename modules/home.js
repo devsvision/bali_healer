@@ -179,17 +179,17 @@ export function render() {
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(214,170,67,0.24),transparent_34%),linear-gradient(to_bottom,rgba(0,0,0,0.25),rgba(0,0,0,0.78))]"></div>
       <div class="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-night to-transparent"></div>
 
-      <div class="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-6xl flex-col items-center justify-center px-4 pb-16 pt-20 text-center">
-        <h1 class="font-cinzel max-w-5xl text-5xl font-extrabold leading-[0.98] text-white md:text-7xl">
+      <div class="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-6xl flex-col items-center justify-center px-4 pb-12 pt-16 text-center sm:pb-16 sm:pt-20">
+        <h1 class="font-cinzel max-w-5xl text-4xl font-extrabold leading-[1.02] text-white sm:text-5xl md:text-7xl">
           Discover Your <span class="text-gold">Healing</span> Journey<br class="hidden md:block" /> in Bali
         </h1>
-        <p class="mt-7 max-w-2xl text-xl leading-8 text-white/78 md:text-2xl">
+        <p class="mt-5 max-w-2xl text-base leading-7 text-white/78 sm:text-xl md:mt-7 md:text-2xl md:leading-8">
           Connect with Bali's most authentic healers and discover ancient rituals for your body, mind, and soul.
         </p>
 
-        <div class="mt-10 w-full max-w-4xl rounded-full border border-gold/20 bg-[#15110d]/95 p-3 shadow-gold backdrop-blur">
+        <div class="mt-8 w-full max-w-4xl rounded-3xl border border-gold/20 bg-[#15110d]/95 p-3 shadow-gold backdrop-blur md:mt-10 md:rounded-full">
           <div class="grid gap-2 md:grid-cols-[1fr_1fr_1fr_auto] md:items-center">
-            <label class="flex items-center gap-4 rounded-full px-5 py-3 text-left">
+            <label class="flex items-center gap-4 rounded-2xl border border-gold/10 bg-black/35 px-4 py-3 text-left md:rounded-full md:border-0 md:bg-transparent md:px-5">
               <span class="text-gold">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
               </span>
@@ -202,7 +202,7 @@ export function render() {
               </span>
             </label>
 
-            <label class="flex items-center gap-4 border-gold/15 px-5 py-3 text-left md:border-l">
+            <label class="flex items-center gap-4 rounded-2xl border border-gold/10 bg-black/35 px-4 py-3 text-left md:rounded-none md:border-y-0 md:border-r-0 md:border-gold/15 md:bg-transparent md:px-5 md:border-l">
               <span class="text-gold">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
               </span>
@@ -215,7 +215,7 @@ export function render() {
               </span>
             </label>
 
-            <label data-date-picker-container class="flex items-center gap-4 border-gold/15 px-5 py-3 text-left md:border-l">
+            <label data-date-picker-container class="flex items-center gap-4 rounded-2xl border border-gold/10 bg-black/35 px-4 py-3 text-left md:rounded-none md:border-y-0 md:border-r-0 md:border-gold/15 md:bg-transparent md:px-5 md:border-l">
               <span class="text-gold">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
               </span>
@@ -225,13 +225,14 @@ export function render() {
               </span>
             </label>
 
-            <button data-page="services" class="page-link flex h-14 w-14 items-center justify-center rounded-full bg-gold text-black transition hover:bg-goldSoft md:ml-1">
+            <button data-page="services" class="page-link flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gold px-5 text-sm font-extrabold text-black transition hover:bg-goldSoft md:ml-1 md:w-14 md:rounded-full md:px-0">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+              <span class="md:hidden">Search services</span>
             </button>
           </div>
         </div>
 
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-white/85">
+        <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-white/85 sm:mt-6 sm:gap-x-8 sm:text-sm">
           ${["Best price, guaranteed", "FREE cancellation available", "No booking fees"].map((item) => `
             <span class="flex items-center gap-2">
               <span class="flex h-5 w-5 items-center justify-center rounded-full border border-gold/40 bg-gold/15 text-xs text-gold">✓</span>

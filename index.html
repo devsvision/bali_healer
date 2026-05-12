@@ -330,19 +330,15 @@
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
             My Bookings
           </button>
-          <button class="flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">
+          <button class="hidden items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft sm:flex">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
             Sign In
           </button>
+          <button data-open-mobile-menu class="flex h-11 w-11 items-center justify-center rounded-lg border border-gold/25 text-goldSoft transition hover:bg-gold/10 md:hidden" aria-label="Open menu">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
         </div>
       </div>
-
-      <nav class="flex gap-1 overflow-x-auto border-t border-gold/10 px-4 py-2 md:hidden">
-        <a href="#home" data-page="home" data-nav="true" class="page-link shrink-0 rounded-md px-3 py-2 text-sm text-mist/80">Home</a>
-        <a href="#healers" data-page="vendor" data-nav="true" class="page-link shrink-0 rounded-md px-3 py-2 text-sm text-mist/80">Healers</a>
-        <a href="#services" data-page="services" data-nav="true" class="page-link shrink-0 rounded-md px-3 py-2 text-sm text-mist/80">Services</a>
-        <a href="#about" data-page="spec" data-nav="true" class="page-link shrink-0 rounded-md px-3 py-2 text-sm text-mist/80">About</a>
-      </nav>
 
       <div data-category-bar class="max-h-24 translate-y-0 overflow-hidden border-t border-gold/10 bg-[#070604] opacity-100 transition-[max-height,opacity,transform,border-color] duration-500 ease-out">
         <div class="mx-auto flex max-w-6xl justify-start gap-2 overflow-x-auto px-4 py-3 md:justify-center lg:px-6">
@@ -373,6 +369,58 @@
         </div>
       </div>
     </header>
+
+    <div data-mobile-menu class="fixed inset-0 z-[75] hidden bg-black/70 backdrop-blur-sm md:hidden">
+      <button data-close-mobile-menu class="absolute inset-0 cursor-default" aria-label="Close mobile menu"></button>
+      <aside class="absolute right-0 top-0 flex h-full w-full max-w-sm flex-col border-l border-gold/20 bg-[#0d0c0b] shadow-[0_28px_90px_rgba(0,0,0,0.65)]">
+        <div class="flex items-center justify-between border-b border-gold/15 p-4">
+          <div class="flex items-center gap-3">
+            <img src="./assets/images/logo-bali-healer.png" alt="BALI HEALER logo" class="h-10 w-10 rounded-full bg-black object-contain ring-1 ring-gold/70" />
+            <span class="font-cinzel text-base font-extrabold uppercase tracking-normal text-gold">BALI HEALER</span>
+          </div>
+          <button data-close-mobile-menu class="flex h-10 w-10 items-center justify-center rounded-lg border border-gold/20 text-goldSoft" aria-label="Close menu">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <nav class="grid gap-2 p-4">
+          <a href="#home" data-page="home" data-nav="true" class="page-link rounded-lg border border-gold/10 bg-black/35 px-4 py-3 text-sm font-semibold text-mist/80">Home</a>
+          <a href="#healers" data-page="vendor" data-nav="true" class="page-link rounded-lg border border-gold/10 bg-black/35 px-4 py-3 text-sm font-semibold text-mist/80">Healers</a>
+          <a href="#services" data-page="services" data-nav="true" class="page-link rounded-lg border border-gold/10 bg-black/35 px-4 py-3 text-sm font-semibold text-mist/80">Services</a>
+          <a href="#about" data-page="spec" data-nav="true" class="page-link rounded-lg border border-gold/10 bg-black/35 px-4 py-3 text-sm font-semibold text-mist/80">About</a>
+          <button data-open-category-menu data-close-mobile-menu class="rounded-lg border border-gold/25 bg-gold/10 px-4 py-3 text-left text-sm font-bold text-goldSoft">Browse Categories</button>
+        </nav>
+
+        <div class="mt-auto border-t border-gold/15 p-4">
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center gap-2 rounded-lg border border-gold/20 bg-black px-3 py-3 text-goldSoft">
+              <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+              <select data-language-select aria-label="Choose language" class="min-w-0 cursor-pointer bg-transparent text-xs font-bold text-mist outline-none">
+                <option class="bg-night text-mist" value="id-ID">ID</option>
+                <option class="bg-night text-mist" value="en-US">EN</option>
+                <option class="bg-night text-mist" value="en-AU">AU</option>
+                <option class="bg-night text-mist" value="ja-JP">JP</option>
+                <option class="bg-night text-mist" value="de-DE">DE</option>
+              </select>
+            </label>
+            <label class="flex items-center gap-2 rounded-lg border border-gold/20 bg-black px-3 py-3 text-goldSoft">
+              <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <select data-currency-select aria-label="Choose currency" class="min-w-0 cursor-pointer bg-transparent text-xs font-bold text-mist outline-none">
+                <option class="bg-night text-mist" value="IDR">IDR</option>
+                <option class="bg-night text-mist" value="USD">USD</option>
+                <option class="bg-night text-mist" value="AUD">AUD</option>
+                <option class="bg-night text-mist" value="JPY">JPY</option>
+                <option class="bg-night text-mist" value="EUR">EUR</option>
+              </select>
+            </label>
+          </div>
+          <button class="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+            Sign In
+          </button>
+        </div>
+      </aside>
+    </div>
 
     <div data-category-modal class="fixed inset-0 z-[70] hidden items-start justify-center bg-black/70 px-4 py-20 backdrop-blur-sm">
       <div class="w-full max-w-5xl rounded-lg border border-gold/25 bg-[#11100e] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.65)] md:p-7">

@@ -525,10 +525,12 @@ function applyLocalization(root = document.body) {
 }
 
 function syncLocaleControls() {
-  const languageSelect = document.querySelector("[data-language-select]");
-  const currencySelect = document.querySelector("[data-currency-select]");
-  if (languageSelect) languageSelect.value = selectedLanguage;
-  if (currencySelect) currencySelect.value = selectedCurrency;
+  document.querySelectorAll("[data-language-select]").forEach((languageSelect) => {
+    languageSelect.value = selectedLanguage;
+  });
+  document.querySelectorAll("[data-currency-select]").forEach((currencySelect) => {
+    currencySelect.value = selectedCurrency;
+  });
 }
 
 function updateCategoryBarVisibility(page = currentPage) {
@@ -621,6 +623,20 @@ function closeCategoryMenu() {
   document.body.classList.remove("overflow-hidden");
 }
 
+function openMobileMenu() {
+  const menu = document.querySelector("[data-mobile-menu]");
+  if (!menu) return;
+  menu.classList.remove("hidden");
+  document.body.classList.add("overflow-hidden");
+}
+
+function closeMobileMenu() {
+  const menu = document.querySelector("[data-mobile-menu]");
+  if (!menu) return;
+  menu.classList.add("hidden");
+  document.body.classList.remove("overflow-hidden");
+}
+
 function renderCategoryMenu() {
   const list = document.querySelector("[data-category-menu-list]");
   if (!list) return;
@@ -641,6 +657,7 @@ document.addEventListener("click", (event) => {
   const link = event.target.closest(".page-link");
   if (link) {
     event.preventDefault();
+    closeMobileMenu();
     loadPage(link.dataset.page);
     return;
   }
@@ -651,7 +668,17 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  if (event.target.closest("[data-open-mobile-menu]")) {
+    openMobileMenu();
+    return;
+  }
+
+  if (event.target.closest("[data-close-mobile-menu]")) {
+    closeMobileMenu();
+  }
+
   if (event.target.closest("[data-open-category-menu]")) {
+    closeMobileMenu();
     openCategoryMenu();
     return;
   }
@@ -662,7 +689,10 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeCategoryMenu();
+  if (event.key === "Escape") {
+    closeCategoryMenu();
+    closeMobileMenu();
+  }
 });
 
 document.addEventListener("change", (event) => {
