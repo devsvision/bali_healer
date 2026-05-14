@@ -15,6 +15,7 @@ Static frontend prototype for a multi-vendor Balinese healing and spiritual well
 
 ```text
 Bali Healer/
+  404.html
   index.html
   README.md
   robots.txt
@@ -31,10 +32,12 @@ Bali Healer/
     app.js
     data.js
   modules/
+    booking-system.js
     home.js
     services.js
     vendor.js
     dashboard.js
+    healing-space.js
     spec.js
 ```
 

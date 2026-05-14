@@ -1,4 +1,5 @@
 import { promotions, services } from "../js/data.js";
+import { availabilityDays as bookingAvailabilityDays, bookingModal as bookingSystemModal, initBookingModal, packageItems as bookingPackageItems } from "./booking-system.js";
 
 const heroLocations = [
   "All locations",
@@ -290,7 +291,7 @@ export function render() {
         <div>
           <p class="text-sm font-semibold uppercase tracking-[0.28em] text-goldSoft">Services</p>
           <h3 class="mt-2 text-3xl font-semibold text-white">Healing services for every need</h3>
-          <p class="mt-3 max-w-2xl text-sm leading-6 text-mist/55">Services can be offered by individual healers or registered wellness businesses, with online, offline, or hybrid session options.</p>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-mist/55">Services can be offered by healers or registered wellness partners, with online, offline, or hybrid session options.</p>
         </div>
       </div>
       <div data-service-grid class="mt-8 grid auto-rows-fr gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -412,7 +413,7 @@ export function render() {
             <p class="mt-6 max-w-lg text-base leading-7 text-white/78">
               Experience sacred traditions passed down through generations. Our master healers guide you through rituals that have supported the Balinese people for centuries.
             </p>
-            <button data-page="services" class="page-link mt-8 rounded-full bg-gold px-7 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">
+            <button data-book-service="${services[0].name}" class="mt-8 rounded-full bg-gold px-7 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">
               Book Your Experience
             </button>
           </div>
@@ -787,6 +788,8 @@ export function render() {
 }
 
 function bejiPromoSlide(promo, theme) {
+  const promoService = promoServiceName(promo);
+
   return `
     <article data-promo-slide class="relative min-h-[430px] w-full shrink-0 overflow-hidden bg-black md:min-h-[520px]" style="--promo-accent: ${theme.accent}; --promo-soft: ${theme.accentSoft}; --promo-line: ${theme.accentLine}; --promo-text: ${theme.text};">
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(245,207,66,0.12),transparent_32%),radial-gradient(circle_at_50%_18%,rgba(28,130,73,0.16),transparent_24%)]"></div>
@@ -809,7 +812,7 @@ function bejiPromoSlide(promo, theme) {
         <p class="mt-6 max-w-3xl text-base leading-7 text-white/82 md:text-lg">${promo.description}</p>
 
         <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <button data-page="services" class="page-link rounded-lg border border-gold bg-black/70 px-7 py-3 text-sm font-extrabold uppercase tracking-wide text-gold shadow-[0_0_24px_rgba(245,207,66,0.34)] transition hover:bg-gold hover:text-black">
+          <button data-book-service="${promoService}" class="rounded-lg border border-gold bg-black/70 px-7 py-3 text-sm font-extrabold uppercase tracking-wide text-gold shadow-[0_0_24px_rgba(245,207,66,0.34)] transition hover:bg-gold hover:text-black">
             ${promo.cta}
           </button>
           <button data-page="services" class="page-link rounded-lg border border-gold/80 bg-black/70 px-7 py-3 text-sm font-extrabold uppercase tracking-wide text-gold shadow-[0_0_24px_rgba(245,207,66,0.24)] transition hover:bg-gold hover:text-black">
@@ -868,6 +871,7 @@ export function init() {
   let calendarDate = new Date();
   let ignoreOutsideClickUntil = 0;
   let activeBookingService;
+  let activeBookingCleanup;
   const calendar = document.createElement("div");
   calendar.dataset.dateCalendar = "true";
   calendar.className = "fixed z-[80] hidden w-[320px] max-w-[calc(100vw-24px)] rounded-2xl border border-gold/20 bg-[#0d0c0b] p-4 text-sm text-mist shadow-[0_24px_80px_rgba(0,0,0,0.62)]";
@@ -1028,36 +1032,28 @@ export function init() {
   });
 
   const openBooking = (service) => {
+    activeBookingCleanup?.();
+    document.querySelector("[data-dynamic-booking-root]")?.remove();
+
     const profile = serviceProfile(service);
-    const badge = serviceModeBadge(service.mode);
-    const modeSelect = bookingModal?.querySelector("[data-booking-mode-select]");
-    const modeOptions = service.mode === "Hybrid" ? ["Online", "Offline"] : [service.mode];
-    activeBookingService = service;
-
-    bookingModal.querySelector("[data-booking-image]").src = profile.image;
-    bookingModal.querySelector("[data-booking-image]").alt = profile.name;
-    bookingModal.querySelector("[data-booking-service]").textContent = service.name;
-    bookingModal.querySelector("[data-booking-healer]").textContent = `${profile.name} - ${profile.title}`;
-    bookingModal.querySelector("[data-booking-description]").textContent = profile.description;
-    bookingModal.querySelector("[data-booking-location]").textContent = profile.location;
-    bookingModal.querySelector("[data-booking-price]").textContent = service.price;
-    bookingModal.querySelector("[data-booking-price]").dataset.priceIdr = service.price;
-    bookingModal.querySelector("[data-booking-provider]").textContent = service.providerType;
-
-    const modeBadge = bookingModal.querySelector("[data-booking-mode]");
-    modeBadge.textContent = badge.label;
-    modeBadge.className = `rounded-full border px-3 py-1 text-xs font-semibold ${badge.className}`;
-
-    modeSelect.innerHTML = `<option value="">Select mode</option>${modeOptions.map((mode) => `<option>${mode}</option>`).join("")}`;
-    document.dispatchEvent(new CustomEvent("prices:refresh"));
-    bookingForm?.reset();
-    bookingForm?.querySelectorAll("[data-date-picker]").forEach((input) => {
-      input.value = "";
-      delete input.dataset.isoDate;
+    const bookingRoot = document.createElement("div");
+    bookingRoot.dataset.dynamicBookingRoot = "true";
+    bookingRoot.innerHTML = bookingSystemModal(
+      service,
+      profile,
+      bookingPackageItems(service),
+      bookingAvailabilityDays()
+    );
+    document.body.appendChild(bookingRoot);
+    activeBookingCleanup = initBookingModal(bookingRoot, {
+      autoOpen: true,
+      onClose: () => {
+        activeBookingCleanup?.();
+        activeBookingCleanup = undefined;
+        bookingRoot.remove();
+      }
     });
-    bookingModal.classList.remove("hidden");
-    bookingModal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
+    document.dispatchEvent(new CustomEvent("prices:refresh"));
   };
 
   const openProfile = (service) => {
@@ -1441,6 +1437,8 @@ export function init() {
   return () => {
     window.clearInterval(timer);
     window.clearInterval(testimonialTimer);
+    activeBookingCleanup?.();
+    document.querySelector("[data-dynamic-booking-root]")?.remove();
     showAllServices?.removeEventListener("click", revealServices);
     servicePrev?.removeEventListener("click", goToPreviousServicesPage);
     serviceNext?.removeEventListener("click", goToNextServicesPage);
@@ -1476,8 +1474,8 @@ export function init() {
 function serviceCard(service, isHidden = false) {
   const badge = serviceModeBadge(service.mode);
   const profile = serviceProfile(service);
-  const providerLabel = service.providerType === "Business Healer" ? "Business" : "Individual";
-  const providerBadgeClass = service.providerType === "Business Healer"
+  const providerLabel = service.providerType === "Partner" ? "Partner" : "Healer";
+  const providerBadgeClass = service.providerType === "Partner"
     ? "bg-cyan-200 text-cyan-950"
     : "bg-rose-200 text-rose-950";
   return `
@@ -1535,7 +1533,7 @@ function serviceCard(service, isHidden = false) {
           <p data-price-idr="${service.price}" class="border-b border-gold/10 py-4 text-center text-sm font-extrabold leading-none text-goldSoft">${service.price}</p>
 
           <div class="flex min-h-[48px] items-end justify-between gap-3 pt-4">
-            <button data-view-profile="${service.name}" class="min-w-0 rounded-md px-1 py-2 text-left text-sm font-extrabold text-gold transition duration-200 hover:text-goldSoft hover:[text-shadow:0_0_16px_rgba(244,217,135,0.45)]">View Profile</button>
+            <a href="#healing-space?service=${encodeURIComponent(service.name)}" class="min-w-0 rounded-md px-1 py-2 text-left text-sm font-extrabold text-gold transition duration-200 hover:text-goldSoft hover:[text-shadow:0_0_16px_rgba(244,217,135,0.45)]">Enter Healing Space</a>
             <button data-book-service="${service.name}" class="shrink-0 rounded-lg bg-gold px-4 py-2 text-sm font-extrabold text-black transition hover:bg-goldSoft">Book</button>
           </div>
         </div>
@@ -1544,7 +1542,7 @@ function serviceCard(service, isHidden = false) {
   `;
 }
 
-function serviceProfile(service) {
+export function serviceProfile(service) {
   const profiles = {
     "Balinese Energy Healing": {
       name: "I Wayan Suardana",
@@ -1667,7 +1665,7 @@ function servicePageItems(totalPages, currentPage) {
   });
 }
 
-function serviceModeBadge(mode) {
+export function serviceModeBadge(mode) {
   const badges = {
     Online: {
       label: "Online",
@@ -1728,6 +1726,7 @@ function testimonialSlide(group) {
 
 function promoSlide(promo, index) {
   const theme = promoThemes[index % promoThemes.length];
+  const promoService = promoServiceName(promo);
 
   if (promo.layout === "beji") {
     return bejiPromoSlide(promo, theme);
@@ -1753,7 +1752,7 @@ function promoSlide(promo, index) {
           <h3 class="mt-5 text-4xl font-extrabold leading-tight text-white md:text-6xl">${promo.title}</h3>
           <p class="mt-3 text-sm font-bold" style="color: var(--promo-text);">${promo.vendor} - ${promo.area}</p>
           <p class="mt-3 max-w-xl text-base leading-7 text-white/75">${promo.description}</p>
-          <button data-page="services" class="page-link mt-7 rounded-full px-7 py-3 text-sm font-extrabold text-black shadow-[0_18px_55px_rgba(0,0,0,0.32)] transition hover:brightness-110" style="background: var(--promo-accent);">
+          <button data-book-service="${promoService}" class="mt-7 rounded-full px-7 py-3 text-sm font-extrabold text-black shadow-[0_18px_55px_rgba(0,0,0,0.32)] transition hover:brightness-110" style="background: var(--promo-accent);">
             ${promo.cta}
           </button>
         </div>
@@ -1763,9 +1762,15 @@ function promoSlide(promo, index) {
         </div>
 
         <div class="absolute bottom-5 left-1/2 hidden -translate-x-1/2 rounded-full border border-white/10 bg-black/45 px-4 py-2 text-[11px] font-medium text-mist/60 backdrop-blur md:block">
-          <span aria-hidden="true">☞</span> Advertise your business here - Contact Admin
+          <span aria-hidden="true">☞</span> Advertise your partner service here - Contact Admin
         </div>
       </div>
     </article>
   `;
+}
+
+function promoServiceName(promo) {
+  return services.find((service) => service.vendor === promo.vendor)?.name
+    || services.find((service) => service.area === promo.area)?.name
+    || services[0].name;
 }

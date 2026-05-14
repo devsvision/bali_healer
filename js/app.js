@@ -27,10 +27,15 @@ const routes = {
     title: "Healing Services in Bali | Bali Healer",
     description: "Browse online, offline, and hybrid healing services in Bali, including energy healing, sound bath meditation, melukat rituals, breathwork, yoga therapy, and retreats."
   },
+  "healing-space": {
+    hash: "healing-space",
+    title: "Healing Space | Bali Healer",
+    description: "Explore a healer's healing space with session packages, availability, philosophy, reviews, gallery, booking, and chat options."
+  },
   vendor: {
     hash: "healers",
-    title: "Verified Healers & Wellness Vendors | Bali Healer",
-    description: "Discover individual healers, wellness studios, retreat companies, and healing organizers available through Bali Healer."
+    title: "Verified Healers & Wellness Partners | Bali Healer",
+    description: "Discover healers and wellness partners available through Bali Healer."
   },
   dashboard: {
     hash: "dashboard",
@@ -45,6 +50,7 @@ const routes = {
 };
 
 const hashToPage = Object.fromEntries(Object.entries(routes).map(([page, route]) => [route.hash, page]));
+let selectedHealingService = "";
 const currencyRatesFromIdr = {
   IDR: 1,
   USD: 1 / 16000,
@@ -74,8 +80,8 @@ const translations = {
     "Online": "Online",
     "Offline": "Offline",
     "Hybrid": "Hybrid",
-    "Individual Healer": "Healer Individu",
-    "Business Healer": "Healer Bisnis",
+    "Healer": "Healer",
+    "Partner": "Partner",
     "Discover Your Healing Journey in Bali": "Temukan Perjalanan Healing Anda di Bali",
     "Where are you going?": "Ke mana Anda akan pergi?",
     "What are you seeking?": "Apa yang Anda cari?",
@@ -83,9 +89,9 @@ const translations = {
     "Location": "Lokasi",
     "Category": "Kategori",
     "Dates": "Tanggal",
-    "Services can be offered by individual healers or registered wellness businesses, with online, offline, or hybrid session options.": "Layanan dapat ditawarkan oleh healer individu atau bisnis wellness terdaftar, dengan pilihan sesi online, offline, atau hybrid.",
+    "Services can be offered by healers or registered wellness partners, with online, offline, or hybrid session options.": "Layanan dapat ditawarkan oleh healer atau partner wellness terdaftar, dengan pilihan sesi online, offline, atau hybrid.",
     "View all": "Lihat semua",
-    "View Profile": "Lihat Profil",
+    "Enter Healing Space": "Masuk Healing Space",
     "Book": "Pesan",
     "Testimonials": "Testimoni",
     "Why Choose Bali Healer?": "Mengapa Memilih Bali Healer?",
@@ -215,8 +221,8 @@ const translations = {
     "Online": "オンライン",
     "Offline": "対面",
     "Hybrid": "ハイブリッド",
-    "Individual Healer": "個人ヒーラー",
-    "Business Healer": "ビジネスヒーラー",
+    "Healer": "Healer",
+    "Partner": "Partner",
     "Location": "場所",
     "Category": "カテゴリー",
     "Dates": "日付",
@@ -233,7 +239,7 @@ const translations = {
     "Select time": "時間を選択",
     "Select mode": "形式を選択",
     "View all": "すべて見る",
-    "View Profile": "プロフィール",
+    "Enter Healing Space": "Enter Healing Space",
     "Book": "予約",
     "Cancel": "キャンセル",
     "Send Booking": "予約を送信",
@@ -304,8 +310,8 @@ const translations = {
     "Online": "Online",
     "Offline": "Vor Ort",
     "Hybrid": "Hybrid",
-    "Individual Healer": "Einzelheiler",
-    "Business Healer": "Business-Heiler",
+    "Healer": "Healer",
+    "Partner": "Partner",
     "Location": "Ort",
     "Category": "Kategorie",
     "Dates": "Daten",
@@ -322,7 +328,7 @@ const translations = {
     "Select time": "Uhrzeit wählen",
     "Select mode": "Modus wählen",
     "View all": "Alle anzeigen",
-    "View Profile": "Profil ansehen",
+    "Enter Healing Space": "Enter Healing Space",
     "Book": "Buchen",
     "Cancel": "Abbrechen",
     "Send Booking": "Buchung senden",
@@ -524,6 +530,18 @@ function applyLocalization(root = document.body) {
   applyLocalizedPrices();
 }
 
+function hashState() {
+  const rawHash = window.location.hash.slice(1);
+  const [hashPath, query = ""] = rawHash.split("?");
+  const page = hashToPage[hashPath] || "home";
+  const params = new URLSearchParams(query);
+
+  return {
+    page,
+    service: params.get("service") || ""
+  };
+}
+
 function syncLocaleControls() {
   document.querySelectorAll("[data-language-select]").forEach((languageSelect) => {
     languageSelect.value = selectedLanguage;
@@ -561,13 +579,16 @@ async function loadPage(page, updateHash = true) {
     cleanupPage = undefined;
   }
   const module = await import(`../modules/${nextPage}.js`);
-  app.innerHTML = module.render({ selectedCategory });
+  app.innerHTML = module.render({ selectedCategory, selectedService: selectedHealingService });
   if (typeof module.init === "function") {
     cleanupPage = module.init();
   }
   setMeta(route);
   if (updateHash && window.location.hash.slice(1) !== route.hash) {
-    history.pushState(null, "", `#${route.hash}`);
+    const serviceQuery = nextPage === "healing-space" && selectedHealingService
+      ? `?service=${encodeURIComponent(selectedHealingService)}`
+      : "";
+    history.pushState(null, "", `#${route.hash}${serviceQuery}`);
   }
 
   links().forEach((link) => {
@@ -725,10 +746,13 @@ document.addEventListener("prices:refresh", () => applyLocalization());
 window.addEventListener("scroll", () => updateCategoryBarVisibility(), { passive: true });
 
 window.addEventListener("hashchange", () => {
-  const page = hashToPage[window.location.hash.slice(1)] || "home";
-  loadPage(page, false);
+  const nextState = hashState();
+  selectedHealingService = nextState.service;
+  loadPage(nextState.page, false);
 });
 
 renderCategoryMenu();
 syncLocaleControls();
-loadPage(hashToPage[window.location.hash.slice(1)] || "home", false);
+const initialState = hashState();
+selectedHealingService = initialState.service;
+loadPage(initialState.page, false);

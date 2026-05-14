@@ -268,9 +268,9 @@ const vendorRows = [
     rating: (4.6 + index / 10).toFixed(1),
     payout: 8500000 + index * 2500000
   })),
-  { name: "Canggu Healing Co.", type: "Wellness Company", status: "Verified", services: 4, rating: "4.7", payout: 12400000 },
-  { name: "Luna Tarot Bali", type: "Individual Healer", status: "Verified", services: 1, rating: "4.8", payout: 2800000 },
-  { name: "North Bali Retreats", type: "Agent / Organizer", status: "Review", services: 3, rating: "4.9", payout: 18900000 }
+  { name: "Canggu Healing Co.", type: "Partner", status: "Verified", services: 4, rating: "4.7", payout: 12400000 },
+  { name: "Luna Tarot Bali", type: "Healer", status: "Verified", services: 1, rating: "4.8", payout: 2800000 },
+  { name: "North Bali Retreats", type: "Partner", status: "Review", services: 3, rating: "4.9", payout: 18900000 }
 ];
 
 const customerRows = [

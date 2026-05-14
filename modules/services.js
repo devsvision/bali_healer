@@ -1,4 +1,6 @@
 import { healingCategories, services } from "../js/data.js";
+import { bookingModal, initBookingModal } from "./booking-system.js";
+import { serviceProfile } from "./home.js";
 
 export function render({ selectedCategory = "" } = {}) {
   const visibleServices = selectedCategory
@@ -38,7 +40,7 @@ export function render({ selectedCategory = "" } = {}) {
               <p class="mb-4 mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-mist/40">${service.providerType}</p>
               <div class="mt-auto border-t border-gold/10 pt-5">
                 <p data-price-idr="${service.price}" class="text-center font-semibold text-goldSoft">${service.price}</p>
-                <button class="mt-4 w-full rounded-lg border border-gold/35 px-4 py-2 text-sm font-bold text-goldSoft">Booking</button>
+                <button data-book-service="${service.name}" class="mt-4 w-full rounded-lg border border-gold/35 px-4 py-2 text-sm font-bold text-goldSoft transition hover:border-gold hover:bg-gold/10">Booking</button>
               </div>
             </div>
           </article>
@@ -50,4 +52,43 @@ export function render({ selectedCategory = "" } = {}) {
 
 function categoryDescription(categoryName) {
   return healingCategories.find((category) => category.name === categoryName)?.description || "";
+}
+
+export function init() {
+  let activeBookingCleanup;
+
+  const openBooking = (service) => {
+    activeBookingCleanup?.();
+    document.querySelector("[data-dynamic-booking-root]")?.remove();
+
+    const profile = serviceProfile(service);
+    const bookingRoot = document.createElement("div");
+    bookingRoot.dataset.dynamicBookingRoot = "true";
+    bookingRoot.innerHTML = bookingModal(service, profile);
+    document.body.appendChild(bookingRoot);
+    activeBookingCleanup = initBookingModal(bookingRoot, {
+      autoOpen: true,
+      onClose: () => {
+        activeBookingCleanup?.();
+        activeBookingCleanup = undefined;
+        bookingRoot.remove();
+      }
+    });
+    document.dispatchEvent(new CustomEvent("prices:refresh"));
+  };
+
+  const handleBookingClick = (event) => {
+    const button = event.target.closest("[data-book-service]");
+    if (!button) return;
+    const service = services.find((item) => item.name === button.dataset.bookService);
+    if (service) openBooking(service);
+  };
+
+  document.addEventListener("click", handleBookingClick);
+
+  return () => {
+    document.removeEventListener("click", handleBookingClick);
+    activeBookingCleanup?.();
+    document.querySelector("[data-dynamic-booking-root]")?.remove();
+  };
 }
