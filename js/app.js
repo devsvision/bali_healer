@@ -749,12 +749,15 @@ function clientSignedIn() {
 }
 
 function updateClientHeader() {
+  const signedIn = clientSignedIn();
   document.querySelectorAll("[data-client-signin-button]").forEach((button) => {
     const inMobileMenu = Boolean(button.closest("[data-mobile-menu]"));
-    button.classList.toggle("hidden", !inMobileMenu);
-    button.classList.toggle("sm:flex", !inMobileMenu);
-    button.classList.toggle("flex", inMobileMenu);
+    button.classList.toggle("hidden", signedIn || !inMobileMenu);
+    button.classList.toggle("sm:flex", !signedIn && !inMobileMenu);
+    button.classList.toggle("flex", !signedIn && inMobileMenu);
   });
+  document.querySelector("[data-client-header-actions]")?.classList.toggle("hidden", !signedIn);
+  document.querySelector("[data-client-header-actions]")?.classList.toggle("sm:flex", signedIn);
 }
 
 function openClientAuth(mode = "signin") {
@@ -774,6 +777,24 @@ function closeClientAuth() {
   modal.classList.add("hidden");
   modal.classList.remove("flex");
   document.body.classList.remove("overflow-hidden");
+}
+
+function showClientToast(type, message) {
+  let toast = document.querySelector("[data-client-toast]");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.dataset.clientToast = "true";
+    toast.className = "fixed right-4 top-24 z-[110] max-w-sm rounded-lg border px-4 py-3 text-sm font-bold shadow-[0_24px_70px_rgba(0,0,0,0.45)] transition";
+    document.body.appendChild(toast);
+  }
+  const success = type === "success";
+  toast.className = `fixed right-4 top-24 z-[110] max-w-sm rounded-lg border px-4 py-3 text-sm font-bold shadow-[0_24px_70px_rgba(0,0,0,0.45)] transition ${success ? "border-gold/35 bg-[#0d0c0b] text-goldSoft" : "border-red-400/35 bg-[#220b0b] text-red-100"}`;
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+  window.clearTimeout(showClientToast.timer);
+  showClientToast.timer = window.setTimeout(() => {
+    toast?.classList.add("hidden");
+  }, 3500);
 }
 
 function setClientAuthMode(mode) {
@@ -822,6 +843,7 @@ function completeClientAuth(method = "email", account = demoClientAccount) {
   }));
   closeClientAuth();
   updateClientHeader();
+  showClientToast("success", "Login berhasil. Selamat datang di Bali Healer.");
 }
 
 function toggleClientPassword(button) {
@@ -883,9 +905,13 @@ document.addEventListener("click", (event) => {
       return;
     }
     const button = event.target.closest("[data-client-wishlist]");
-    button.classList.toggle("bg-gold");
-    button.classList.toggle("text-black");
-    button.classList.toggle("bg-black/55");
+    if (button.closest("[data-service-card]")) {
+      button.classList.toggle("bg-gold");
+      button.classList.toggle("text-black");
+      button.classList.toggle("bg-black/55");
+    } else {
+      button.classList.toggle("text-goldSoft");
+    }
     return;
   }
 
@@ -975,7 +1001,9 @@ document.addEventListener("submit", (event) => {
     const registeredMatches = registeredClient && email === registeredClient.email?.toLowerCase() && password === registeredClient.password;
 
     if (!demoMatches && !registeredMatches) {
-      setClientAuthError("Use the demo account or sign up first.");
+      const message = "Login gagal: email dan password tidak sesuai.";
+      setClientAuthError(message);
+      showClientToast("error", message);
       return;
     }
     completeClientAuth("email", demoMatches ? demoClientAccount : registeredClient);
