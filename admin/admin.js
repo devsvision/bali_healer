@@ -1,1268 +1,292 @@
-import { services, bookings, vendors, healingCategories, promotions } from "../js/data.js";
+import { bookings, services, vendors } from "../js/data.js";
 
 const app = document.querySelector("#admin-app");
-const AUTH_KEY = "baliHealerAdminSession";
-const SETTINGS_KEY = "baliHealerAdminSettings";
-const GATEWAYS_KEY = "baliHealerPaymentGateways";
-const LANGUAGE_KEY = "baliHealerAdminLanguage";
-const BANNERS_KEY = "baliHealerHomepageBanners";
+let activeMenu = "Dashboard";
 
-const credentials = {
-  username: "superadmin",
-  password: "BaliHealer@2026"
-};
+const providerCount = Math.max(vendors.length, 4);
+const serviceCount = services.length;
+const bookingCount = Math.max(bookings.length * 4, 12);
+const totalAmount = 1641.6;
 
-function createId() {
-  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
-  return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
-
-const defaultSettings = {
-  logo: "../assets/images/logo-bali-healer.png",
-  heroVideo: "../assets/videos/hero-bali-healer.mp4",
-  siteName: "Bali Healer",
-  heroTitle: "Discover Your Healing Journey in Bali",
-  heroSubtitle: "Connect with Bali's most authentic healers and discover ancient rituals for your body, mind, and soul.",
-  supportEmail: "hello@balihealer.com",
-  phone: "+62 361 123 4567",
-  commission: "12%",
-  cancellationWindow: "24 hours",
-  maintenance: false
-};
-
-const defaultGateways = [
-  { id: createId(), name: "Midtrans", provider: "Card, VA, QRIS", mode: "Production", status: "Active", currency: "IDR", fee: "2.9%", settlement: "T+2", apiKey: "mid-server-key-prod", clientKey: "mid-client-key-prod", webhookUrl: "https://balihealer.com/api/payments/midtrans/webhook", successUrl: "https://balihealer.com/payment/success", failureUrl: "https://balihealer.com/payment/failed", fraudRule: "Manual review above Rp5,000,000", maintenance: false },
-  { id: createId(), name: "HitPay", provider: "Wallet, PayNow", mode: "Sandbox", status: "Testing", currency: "IDR", fee: "2.7%", settlement: "T+3", apiKey: "hitpay-api-key-sandbox", clientKey: "hitpay-salt", webhookUrl: "https://balihealer.com/api/payments/hitpay/webhook", successUrl: "https://balihealer.com/payment/success", failureUrl: "https://balihealer.com/payment/failed", fraudRule: "3DS required for cards", maintenance: false },
-  { id: createId(), name: "Stripe", provider: "Card, Apple Pay", mode: "Sandbox", status: "Disabled", currency: "USD", fee: "3.4%", settlement: "T+7", apiKey: "sk_test_xxx", clientKey: "pk_test_xxx", webhookUrl: "https://balihealer.com/api/payments/stripe/webhook", successUrl: "https://balihealer.com/payment/success", failureUrl: "https://balihealer.com/payment/failed", fraudRule: "Stripe Radar default", maintenance: true }
+const leads = [
+  { name: "Maya Putri", type: "Villa guest", area: "Ubud", status: "Accept" },
+  { name: "Daniel Carter", type: "Online client", area: "London", status: "Accept" },
+  { name: "Retreat Group", type: "Corporate inquiry", area: "Canggu", status: "Review" }
 ];
 
-let activeSection = "command";
-let settings = readJson(SETTINGS_KEY, defaultSettings);
-let gateways = readJson(GATEWAYS_KEY, defaultGateways);
-let selectedLanguage = localStorage.getItem(LANGUAGE_KEY) || "en";
-let editingBannerId = "";
-
-const translations = {
-  en: {
-    adminConsole: "Super Admin Console",
-    signedInAs: "Signed in as",
-    fullAccess: "Full marketplace access",
-    resetSession: "Reset Session",
-    marketplaceBackOffice: "Marketplace Back Office",
-    language: "Language",
-    gateway: "Gateway",
-    orders: "Orders",
-    vendors: "Vendors",
-    services: "Services",
-    active: "Active",
-    open: "Open",
-    managed: "Managed",
-    live: "Live",
-    executive: "Executive",
-    operations: "Operations",
-    finance: "Finance",
-    growth: "Growth",
-    administration: "Administration",
-    command: "Command Center",
-    commandHelp: "Executive overview",
-    ordersMenu: "Orders & Bookings",
-    ordersHelp: "Approvals, schedule, refunds",
-    vendorsMenu: "Vendors & Healers",
-    vendorsHelp: "Verification and payouts",
-    catalog: "Service Catalog",
-    catalogHelp: "Listings, categories, pricing",
-    customers: "Customers",
-    customersHelp: "Profiles, CRM, segments",
-    financeMenu: "Finance",
-    financeHelp: "Payouts, fees, disputes",
-    payments: "Payment Gateway",
-    paymentsHelp: "Gateway CRUD and rules",
-    marketing: "Marketing",
-    marketingHelp: "Campaigns and promotions",
-    analytics: "Analytics",
-    analyticsHelp: "Revenue and behavior",
-    content: "Website CMS",
-    contentHelp: "Logo, hero, menus, SEO",
-    roles: "Users & Roles",
-    rolesHelp: "Staff permission matrix",
-    system: "System",
-    systemHelp: "Audit, security, health",
-    action: "Action"
-  },
-  id: {
-    adminConsole: "Konsol Super Admin",
-    signedInAs: "Masuk sebagai",
-    fullAccess: "Akses marketplace penuh",
-    resetSession: "Reset Sesi",
-    marketplaceBackOffice: "Back Office Marketplace",
-    language: "Bahasa",
-    gateway: "Gateway",
-    orders: "Pesanan",
-    vendors: "Vendor",
-    services: "Layanan",
-    active: "Aktif",
-    open: "Terbuka",
-    managed: "Dikelola",
-    live: "Live",
-    executive: "Eksekutif",
-    operations: "Operasional",
-    finance: "Keuangan",
-    growth: "Pertumbuhan",
-    administration: "Administrasi",
-    command: "Pusat Kendali",
-    commandHelp: "Ringkasan eksekutif",
-    ordersMenu: "Pesanan & Booking",
-    ordersHelp: "Approval, jadwal, refund",
-    vendorsMenu: "Vendor & Healer",
-    vendorsHelp: "Verifikasi dan payout",
-    catalog: "Katalog Layanan",
-    catalogHelp: "Listing, kategori, harga",
-    customers: "Pelanggan",
-    customersHelp: "Profil, CRM, segmentasi",
-    financeMenu: "Keuangan",
-    financeHelp: "Payout, biaya, sengketa",
-    payments: "Payment Gateway",
-    paymentsHelp: "CRUD gateway dan aturan",
-    marketing: "Marketing",
-    marketingHelp: "Campaign dan promosi",
-    analytics: "Analitik",
-    analyticsHelp: "Revenue dan perilaku",
-    content: "CMS Website",
-    contentHelp: "Logo, hero, menu, SEO",
-    roles: "User & Role",
-    rolesHelp: "Matriks izin staff",
-    system: "Sistem",
-    systemHelp: "Audit, keamanan, kesehatan",
-    action: "Aksi"
-  }
-};
-
-const sectionCopy = {
-  en: {
-    command: ["Super Admin Command Center", "A high-level control room for GMV, bookings, risk, vendor health, payment readiness, and operational alerts."],
-    orders: ["Orders, Bookings & Fulfillment", "Review marketplace booking flow from request to payment, confirmation, fulfillment, refund, and dispute escalation."],
-    vendors: ["Vendor and Healer Operations", "Manage healer profiles, verification, compliance status, service quality, payout readiness, and account health."],
-    catalog: ["Service Catalog Management", "Control all services, categories, pricing rules, availability, moderation state, and ranking visibility."],
-    customers: ["Customer Management", "Understand guests, segments, spending, support status, lifetime value, and CRM follow-up needs."],
-    finance: ["Finance, Payouts & Disputes", "Monitor commissions, settlements, vendor payouts, refunds, disputes, invoices, and payment reconciliation."],
-    content: ["Website CMS and Global Settings", "Update logo, hero copy, SEO settings, contact info, marketplace policy copy, and website-wide configuration."],
-    payments: ["Payment Gateway Configuration", "Create, enable, disable, and monitor payment providers, currencies, fee rules, settlement policy, and gateway status."],
-    marketing: ["Marketing and Growth", "Plan promotions, coupons, banners, SEO campaigns, newsletters, and partner growth initiatives."],
-    roles: ["Users, Roles and Access Control", "Define staff access for Super Admin, Admin, Manager, Marketing, support, finance, and vendor operators."],
-    analytics: ["Analytics and Marketplace Intelligence", "Track marketplace performance, conversion, take rate, retention, service demand, and vendor contribution."],
-    system: ["Security, Audit and System Health", "Review admin actions, security posture, integrations, queue health, storage, backups, and release readiness."]
-  },
-  id: {
-    command: ["Pusat Kendali Super Admin", "Ruang kontrol utama untuk GMV, booking, risiko, kesehatan vendor, kesiapan payment, dan alert operasional."],
-    orders: ["Pesanan, Booking & Fulfillment", "Tinjau alur booking marketplace dari request, pembayaran, konfirmasi, fulfillment, refund, sampai eskalasi sengketa."],
-    vendors: ["Operasional Vendor dan Healer", "Kelola profil healer, verifikasi, status compliance, kualitas layanan, kesiapan payout, dan kesehatan akun."],
-    catalog: ["Manajemen Katalog Layanan", "Kontrol semua layanan, kategori, aturan harga, availability, status moderasi, dan ranking listing."],
-    customers: ["Manajemen Pelanggan", "Pahami guest, segmentasi, spending, status support, lifetime value, dan kebutuhan follow-up CRM."],
-    finance: ["Keuangan, Payout & Sengketa", "Monitor komisi, settlement, payout vendor, refund, sengketa, invoice, dan rekonsiliasi payment."],
-    content: ["CMS Website dan Setting Global", "Update logo, teks hero, SEO, kontak, policy marketplace, dan konfigurasi website."],
-    payments: ["Konfigurasi Payment Gateway", "Buat, aktifkan, nonaktifkan, dan monitor provider payment, mata uang, fee, settlement, dan status gateway."],
-    marketing: ["Marketing dan Pertumbuhan", "Rencanakan promosi, kupon, banner, campaign SEO, newsletter, dan inisiatif partner growth."],
-    roles: ["User, Role dan Kontrol Akses", "Atur akses staff untuk Super Admin, Admin, Manager, Marketing, support, finance, dan operator vendor."],
-    analytics: ["Analitik dan Intelijen Marketplace", "Pantau performa marketplace, conversion, take rate, retention, demand layanan, dan kontribusi vendor."],
-    system: ["Keamanan, Audit dan Kesehatan Sistem", "Tinjau aktivitas admin, postur keamanan, integrasi, queue, storage, backup, dan kesiapan rilis."]
-  }
-};
+const adminBookings = [
+  { title: "Balinese Energy Healing", time: "08:52 - 09:52", guest: "Ayu Prameswari", status: "Open", image: services[0]?.image },
+  { title: "Online Chakra Balancing", time: "10:00 - 11:00", guest: "Daniel Carter", status: "Open", image: services[1]?.image },
+  { title: "Sound Bath Meditation", time: "14:00 - 15:30", guest: "Maya Putri", status: "In Progress", image: services[2]?.image },
+  { title: "Melukat Purification Ritual", time: "16:00 - 17:30", guest: "Sofia Martinez", status: "In Progress", image: services[3]?.image },
+  { title: "Corporate Wellness", time: "18:00 - 19:30", guest: "Beji Healing", status: "Open", image: services[4]?.image }
+];
 
 const navGroups = [
   {
-    labelKey: "executive",
+    label: "Main",
+    items: [["Dashboard", "dashboard"]]
+  },
+  {
+    label: "Application",
     items: [
-      ["command", "command", "commandHelp"],
-      ["analytics", "analytics", "analyticsHelp"]
+      ["Bookings", "bookings"],
+      ["Calendar", "calendar"],
+      ["Chat", "chat"],
+      ["WhatsApp Chat", "whatsapp"],
+      ["Chatbot", "bot"],
+      ["Leads", "leads"],
+      ["Services", "services"],
+      ["Notification", "bell"],
+      ["Addons", "plus"],
+      ["Coupon", "percent"]
     ]
   },
   {
-    labelKey: "operations",
+    label: "Content",
     items: [
-      ["orders", "ordersMenu", "ordersHelp"],
-      ["vendors", "vendorsMenu", "vendorsHelp"],
-      ["catalog", "catalog", "catalogHelp"],
-      ["customers", "customers", "customersHelp"]
+      ["Pages", "page"],
+      ["Menu Builder", "menu"],
+      ["Footer Builder", "footer"],
+      ["Testimonials", "quote"],
+      ["FAQ", "help"],
+      ["Newsletter", "mail"],
+      ["Blogs", "blog"]
     ]
   },
   {
-    labelKey: "finance",
+    label: "People",
     items: [
-      ["finance", "financeMenu", "financeHelp"],
-      ["payments", "payments", "paymentsHelp"]
+      ["Providers", "provider"],
+      ["Users", "users"],
+      ["Staffs", "staff"]
     ]
   },
   {
-    labelKey: "growth",
+    label: "Finance",
     items: [
-      ["marketing", "marketing", "marketingHelp"],
-      ["content", "content", "contentHelp"]
+      ["Transactions", "transaction"],
+      ["Provider Earning", "earning"],
+      ["Provider Request", "request"],
+      ["Refund", "refund"],
+      ["Subscription List", "subscription"]
     ]
   },
   {
-    labelKey: "administration",
+    label: "Support",
+    items: [["Tickets", "ticket"]]
+  },
+  {
+    label: "Settings",
     items: [
-      ["roles", "roles", "rolesHelp"],
-      ["system", "system", "systemHelp"]
+      ["General Settings", "settings"],
+      ["Communication Settings", "communication"]
     ]
+  },
+  {
+    label: "Feedback & Disputes",
+    items: [
+      ["Request Dispute List", "dispute"],
+      ["Reviews", "star"]
+    ]
+  },
+  {
+    label: "User Management",
+    items: [["Roles & Permissions", "roles"]]
   }
 ];
 
-function t(key) {
-  return translations[selectedLanguage]?.[key] || translations.en[key] || key;
+function icon(name, className = "h-4 w-4") {
+  const icons = {
+    dashboard: `<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>`,
+    bookings: `<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>`,
+    calendar: `<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>`,
+    chat: `<path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/>`,
+    whatsapp: `<path d="M4 20l1.2-3A8 8 0 1 1 8 19.1Z"/><path d="M9 9c.4 2 2 3.6 4 4l1-1"/>`,
+    bot: `<rect x="5" y="8" width="14" height="10" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M8 21h8"/>`,
+    leads: `<circle cx="12" cy="8" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/>`,
+    services: `<path d="M4 7h16M4 12h16M4 17h16"/><path d="M7 4v16"/>`,
+    bell: `<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>`,
+    plus: `<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>`,
+    percent: `<path d="M19 5 5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/>`,
+    page: `<path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>`,
+    menu: `<path d="M4 6h16M4 12h16M4 18h16"/>`,
+    footer: `<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 15h16"/>`,
+    quote: `<path d="M8 11H5a4 4 0 0 1 4-4v8H5v-4M19 11h-3a4 4 0 0 1 4-4v8h-4v-4"/>`,
+    help: `<circle cx="12" cy="12" r="9"/><path d="M9.5 9a3 3 0 1 1 4.5 2.6c-1.2.7-2 1.3-2 2.4"/><path d="M12 17h.01"/>`,
+    mail: `<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>`,
+    blog: `<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/>`,
+    provider: `<circle cx="12" cy="7" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="M19 8h2M20 7v2"/>`,
+    users: `<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>`,
+    staff: `<circle cx="12" cy="7" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="M12 10v5"/>`,
+    transaction: `<path d="M7 7h11l-2-2M17 17H6l2 2"/><rect x="4" y="9" width="16" height="6" rx="2"/>`,
+    earning: `<circle cx="12" cy="8" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="M12 14v5M9 17h6"/>`,
+    request: `<circle cx="12" cy="8" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="M19 4v4M17 6h4"/>`,
+    refund: `<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 1 1 0 10h-1"/>`,
+    subscription: `<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>`,
+    ticket: `<path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z"/><path d="M9 9h6M9 15h6"/>`,
+    settings: `<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2 3-.2-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V22h-3.4v-.3a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.2.1-2-3 .1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3v-3.4h.3a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2-3 .2.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V2h3.4v.3a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.2-.1 2 3-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.3v3.4h-.3a1.7 1.7 0 0 0-1.5 1Z"/>`,
+    communication: `<path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8M8 13h5"/>`,
+    dispute: `<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h3"/>`,
+    star: `<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 16.9 6.6 19.8l1-6.1-4.4-4.3 6.1-.9Z"/>`,
+    roles: `<path d="M12 3 4 6v6c0 5 3.4 8.2 8 9 4.6-.8 8-4 8-9V6z"/><path d="M9 12l2 2 4-5"/>`
+  };
+
+  return `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.dashboard}</svg>`;
 }
 
-const roleMatrix = [
-  {
-    role: "Super Admin",
-    scope: "All system, billing, payment, content, role, security, finance, and destructive controls.",
-    permissions: ["Full CRUD", "Role policy", "Payment keys", "System health", "Audit logs", "Revenue"]
-  },
-  {
-    role: "Admin",
-    scope: "Daily marketplace operations, customer support, booking moderation, vendor support.",
-    permissions: ["Booking ops", "Vendor review", "Customer support", "Refund review", "Service edits"]
-  },
-  {
-    role: "Manager",
-    scope: "Business performance, quality control, escalation approval, team workload.",
-    permissions: ["Reports", "Approvals", "SLA monitoring", "Dispute escalation", "Team KPI"]
-  },
-  {
-    role: "Marketing",
-    scope: "Campaigns, promotions, SEO content, homepage copy, partner communications.",
-    permissions: ["Promotions", "SEO", "Campaigns", "Newsletter", "Hero content"]
-  }
-];
-
-const adminUsers = [
-  { name: "Root Owner", username: "superadmin", role: "Super Admin", status: "Protected", mfa: "Enabled", lastLogin: "Current session" },
-  { name: "Ayu Permata", username: "admin.ayu", role: "Admin", status: "Active", mfa: "Enabled", lastLogin: "Today, 09:12" },
-  { name: "Made Wirya", username: "manager.made", role: "Manager", status: "Active", mfa: "Pending", lastLogin: "Yesterday, 16:40" },
-  { name: "Clara Dewi", username: "marketing.clara", role: "Marketing", status: "Invited", mfa: "Not set", lastLogin: "Not yet" }
-];
-
-const orderPipeline = [
-  { code: "BH-2041", guest: "Amelia Hart", service: "Melukat Purification Ritual", vendor: "Melukat Temple Guide", amount: 725000, status: "Needs confirmation", payment: "Authorized", risk: "Low" },
-  { code: "BH-2042", guest: "Daniel Carter", service: "Online Chakra Balancing", vendor: "Lotus Breath Studio", amount: 450000, status: "Paid", payment: "Captured", risk: "Low" },
-  { code: "BH-2043", guest: "Maya Putri", service: "Sound Bath Meditation", vendor: "Canggu Healing Co.", amount: 650000, status: "Reschedule requested", payment: "Captured", risk: "Medium" },
-  { code: "BH-2044", guest: "Thomas Reed", service: "Corporate Wellness Day", vendor: "Bali Wellness Agent", amount: 4500000, status: "Vendor review", payment: "Pending", risk: "High" },
-  ...bookings.map((booking, index) => ({
-    code: booking.code,
-    guest: booking.client,
-    service: booking.service,
-    vendor: services[index]?.vendor || "Marketplace vendor",
-    amount: Number((services[index]?.price || "Rp500,000").replace(/[^\d]/g, "")),
-    status: booking.status,
-    payment: booking.status === "Paid" ? "Captured" : "Pending",
-    risk: "Low"
-  }))
-];
-
-const vendorRows = [
-  ...vendors.map((vendor, index) => ({
-    name: vendor.name,
-    type: vendor.type,
-    status: vendor.verified,
-    services: services.filter((service) => service.vendor === vendor.name).length || index + 2,
-    rating: (4.6 + index / 10).toFixed(1),
-    payout: 8500000 + index * 2500000
-  })),
-  { name: "Canggu Healing Co.", type: "Partner", status: "Verified", services: 4, rating: "4.7", payout: 12400000 },
-  { name: "Luna Tarot Bali", type: "Healer", status: "Verified", services: 1, rating: "4.8", payout: 2800000 },
-  { name: "North Bali Retreats", type: "Partner", status: "Review", services: 3, rating: "4.9", payout: 18900000 }
-];
-
-const customerRows = [
-  { name: "Amelia Hart", email: "amelia@example.com", segment: "VIP", orders: 6, spent: 8250000, status: "Active" },
-  { name: "Daniel Carter", email: "daniel@example.com", segment: "Remote guest", orders: 3, spent: 1450000, status: "Active" },
-  { name: "Maya Putri", email: "maya@example.com", segment: "Local", orders: 4, spent: 2600000, status: "Active" },
-  { name: "Thomas Reed", email: "thomas@example.com", segment: "Corporate", orders: 2, spent: 9000000, status: "Escalation" }
-];
-
-const payouts = [
-  { vendor: "Bali Wellness Agent", period: "May 2026", gross: 24500000, commission: 2940000, payout: 21560000, status: "Ready" },
-  { vendor: "Canggu Healing Co.", period: "May 2026", gross: 12400000, commission: 1488000, payout: 10912000, status: "Pending invoice" },
-  { vendor: "Luna Tarot Bali", period: "May 2026", gross: 2800000, commission: 336000, payout: 2464000, status: "Ready" }
-];
-
-const disputes = [
-  { code: "DSP-118", order: "BH-2043", guest: "Maya Putri", issue: "Reschedule request outside policy", priority: "Medium", owner: "Manager" },
-  { code: "DSP-119", order: "BH-2044", guest: "Thomas Reed", issue: "Corporate invoice pending", priority: "High", owner: "Super Admin" },
-  { code: "DSP-120", order: "BH-2038", guest: "Sofia Martinez", issue: "Refund evidence review", priority: "Low", owner: "Admin" }
-];
-
-const auditLogs = [
-  { time: "12 May 2026, 13:10", actor: "superadmin", action: "Updated payment gateway Stripe status", module: "Payment" },
-  { time: "12 May 2026, 12:56", actor: "admin.ayu", action: "Approved service edit for Luna Tarot Bali", module: "Catalog" },
-  { time: "12 May 2026, 11:44", actor: "manager.made", action: "Escalated corporate wellness booking", module: "Booking" },
-  { time: "12 May 2026, 10:30", actor: "marketing.clara", action: "Drafted Ubud Healing Week campaign", module: "Marketing" }
-];
-
-const campaigns = [
-  { name: "Ubud Healing Week", channel: "Homepage banner", budget: 8500000, status: "Scheduled", conversion: "8.4%" },
-  { name: "Online Chakra Promo", channel: "Email", budget: 2200000, status: "Draft", conversion: "5.1%" },
-  { name: "Retreat Partner Push", channel: "Social", budget: 5000000, status: "Running", conversion: "6.8%" }
-];
-
-const defaultBanners = promotions.map((promotion, index) => ({
-  id: createId(),
-  title: promotion.title,
-  vendor: promotion.vendor,
-  area: promotion.area,
-  badge: promotion.tag || promotion.label || "Featured",
-  offer: promotion.offer || "Special Offer",
-  discount: index === 0 ? "Release - Heal - Rebalance" : "Save 15%",
-  description: promotion.description,
-  cta: promotion.cta || "Book Now",
-  secondaryCta: promotion.secondaryCta || "Explore",
-  image: promotion.image,
-  status: index === 0 ? "Active" : "Scheduled",
-  placement: index === 0 ? "Hero carousel" : "Promotion carousel",
-  priority: String(index + 1)
-}));
-
-let homepageBanners = readJson(BANNERS_KEY, defaultBanners);
-
-function readJson(key, fallback) {
-  try {
-    return JSON.parse(localStorage.getItem(key)) || fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function writeJson(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
-function formatIdr(value) {
-  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
-}
-
-function parsePrice(price) {
-  return Number(String(price).replace(/[^\d]/g, ""));
-}
-
-function statusPill(text) {
-  const tone = /active|paid|ready|verified|captured|protected/i.test(text)
-    ? "border-emerald-300/20 bg-emerald-400/10 text-emerald-200"
-    : /pending|review|testing|scheduled|invited|medium/i.test(text)
-      ? "border-amber-300/20 bg-amber-400/10 text-amber-200"
-      : /disabled|high|escalation/i.test(text)
-        ? "border-red-300/20 bg-red-400/10 text-red-200"
-        : "border-gold/20 bg-gold/10 text-goldSoft";
-  return `<span class="inline-flex rounded-full border px-3 py-1 text-xs font-bold ${tone}">${text}</span>`;
-}
-
-function navButton(id, label, helper = "") {
-  const active = activeSection === id;
+function renderSidebar() {
   return `
-    <button data-section="${id}" class="group w-full rounded-lg px-4 py-3 text-left transition ${active ? "bg-gold text-black" : "text-mist/65 hover:bg-gold/10 hover:text-goldSoft"}">
-      <span class="block text-sm font-bold">${label}</span>
-      ${helper ? `<span class="mt-1 block text-[11px] ${active ? "text-black/65" : "text-mist/35"}">${helper}</span>` : ""}
-    </button>
+    <aside class="fixed inset-y-0 left-0 z-30 hidden w-[236px] overflow-y-auto border-r border-gold/15 bg-black/95 px-3 py-4 text-sm shadow-[18px_0_60px_rgba(0,0,0,0.35)] lg:block">
+      <div class="mb-6 flex items-center gap-3 rounded-lg border border-gold/15 bg-[#12100d] p-3">
+        <img src="../assets/images/logo-bali-healer.png" alt="Bali Healer" class="h-10 w-10 rounded-full border border-gold/50 bg-black object-contain" />
+        <div class="min-w-0">
+          <p class="font-cinzel truncate text-sm font-extrabold uppercase text-gold">Bali Healer</p>
+          <p class="text-xs text-mist/45">Marketplace Admin</p>
+        </div>
+      </div>
+      <nav class="space-y-5">
+        ${navGroups.map((group) => `
+          <div>
+            <p class="mb-2 px-1 text-[11px] font-extrabold text-goldSoft/75">${group.label}</p>
+            <div class="space-y-1">
+              ${group.items.map(([label, iconName]) => {
+                const active = activeMenu === label;
+                return `
+                  <button data-nav-item="${label}" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition ${active ? "bg-gold/20 text-goldSoft ring-1 ring-gold/30" : "text-mist/70 hover:bg-gold/10 hover:text-goldSoft"}">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/5 ${active ? "text-goldSoft" : "text-mist/55"}">${icon(iconName, "h-4 w-4")}</span>
+                    <span class="min-w-0 flex-1 truncate font-semibold">${label}</span>
+                    ${["Services", "Pages", "Newsletter", "Blogs", "Communication Settings"].includes(label) ? `<span class="text-mist/30">›</span>` : ""}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `).join("")}
+      </nav>
+    </aside>
   `;
 }
 
-function navGroup(group) {
+function metricCard({ iconName, tint, value, label, leftLabel, leftValue, rightLabel, rightValue }) {
   return `
-    <div class="border-t border-gold/10 pt-4 first:border-t-0 first:pt-0">
-      <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-mist/35">${t(group.labelKey)}</p>
-      <div class="grid gap-1.5">
-        ${group.items.map(([id, labelKey, helperKey]) => navButton(id, t(labelKey), t(helperKey))).join("")}
+    <article class="rounded-lg border border-gold/15 bg-[#0f0d0a] p-5 shadow-[inset_0_1px_0_rgba(244,217,135,0.05)]">
+      <div class="flex items-center gap-3">
+        <span class="flex h-14 w-14 items-center justify-center rounded-md ${tint} text-black">${icon(iconName, "h-9 w-9")}</span>
+        <div>
+          <p class="text-2xl font-extrabold text-goldSoft">${value}</p>
+          <p class="text-sm text-mist/55">${label}</p>
+        </div>
       </div>
-    </div>
+      <div class="mt-4 grid grid-cols-[1fr_auto_1fr] items-center border-t border-gold/15 pt-4 text-sm">
+        <p class="text-mist/65">${leftLabel}: <span class="font-extrabold text-white">${leftValue}</span></p>
+        <span class="h-4 w-px bg-gold/15"></span>
+        <p class="text-right text-mist/65">${rightLabel}: <span class="font-extrabold text-white">${rightValue}</span></p>
+      </div>
+    </article>
+  `;
+}
+
+function statusBadge(status) {
+  const isOpen = status === "Open" || status === "Accept";
+  return `<span class="rounded-md px-3 py-1 text-xs font-extrabold ${isOpen ? "bg-gold text-black" : "bg-gold/10 text-goldSoft"}">${status}</span>`;
+}
+
+function leadRow(lead) {
+  return `
+    <article class="flex items-center gap-3 rounded-lg border border-gold/15 bg-black/35 p-4">
+      <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-gold/10 text-goldSoft">${icon("leads")}</span>
+      <div class="min-w-0 flex-1">
+        <p class="truncate font-semibold text-white">${lead.name}</p>
+        <p class="text-xs text-mist/45">${lead.type} - ${lead.area}</p>
+      </div>
+      ${statusBadge(lead.status)}
+    </article>
+  `;
+}
+
+function bookingRow(booking) {
+  return `
+    <article class="flex items-center gap-3 rounded-lg border border-gold/15 bg-black/35 p-4">
+      <img src="${booking.image || "../assets/images/logo-bali-healer.png"}" alt="" class="h-10 w-10 shrink-0 rounded-md object-cover" />
+      <div class="min-w-0 flex-1">
+        <p class="truncate font-semibold text-white">${booking.title}</p>
+        <p class="mt-1 flex items-center gap-1 text-xs text-mist/55">${icon("calendar", "h-3.5 w-3.5 text-goldSoft")} ${booking.time}</p>
+        <p class="text-xs text-mist/45">${booking.guest}</p>
+      </div>
+      ${statusBadge(booking.status)}
+    </article>
+  `;
+}
+
+function panel(title, body) {
+  return `
+    <section class="min-h-[420px] rounded-lg border border-gold/15 bg-[#0f0d0a] p-5">
+      <div class="flex items-center justify-between">
+        <h2 class="font-extrabold text-white">${title}</h2>
+        <button class="rounded-md border border-gold/20 px-4 py-2 text-sm font-bold text-goldSoft transition hover:bg-gold hover:text-black">View All</button>
+      </div>
+      <div class="mt-5 space-y-4">${body}</div>
+    </section>
   `;
 }
 
 function renderDashboard() {
   app.innerHTML = `
-    <div class="min-h-screen lg:grid lg:grid-cols-[292px_minmax(0,1fr)]">
-      <aside class="border-b border-gold/15 bg-black/75 p-4 backdrop-blur lg:sticky lg:top-0 lg:min-h-screen lg:border-b-0 lg:border-r">
+    <div class="min-h-screen bg-[#070604] text-mist lg:pl-[236px]">
+      ${renderSidebar()}
+
+      <header class="sticky top-0 z-20 border-b border-gold/15 bg-black/90 px-4 py-3 backdrop-blur lg:hidden">
         <div class="flex items-center gap-3">
-          <img src="${settings.logo}" alt="Bali Healer logo" class="h-12 w-12 rounded-full border border-gold/55 bg-black object-contain" />
-          <div class="min-w-0">
-            <p class="font-cinzel truncate font-extrabold uppercase tracking-normal text-gold">${settings.siteName}</p>
-            <p class="text-xs text-mist/45">${t("adminConsole")}</p>
-          </div>
-        </div>
-        <div class="mt-5 rounded-lg border border-gold/15 bg-panel p-4">
-          <p class="text-xs uppercase tracking-[0.2em] text-mist/35">${t("signedInAs")}</p>
-          <p class="mt-2 font-semibold text-white">superadmin</p>
-          <p class="mt-1 text-xs text-goldSoft">${t("fullAccess")}</p>
-        </div>
-        <nav class="mt-5 grid gap-4">
-          ${navGroups.map((group) => navGroup(group)).join("")}
-        </nav>
-        <button data-logout class="mt-6 w-full rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">${t("resetSession")}</button>
-      </aside>
-
-      <section class="px-4 py-6 lg:px-8">
-        <header class="flex flex-col gap-4 border-b border-gold/15 pb-6 xl:flex-row xl:items-center xl:justify-between">
+          <img src="../assets/images/logo-bali-healer.png" alt="Bali Healer" class="h-9 w-9 rounded-full border border-gold/50" />
           <div>
-            <p class="text-xs font-bold uppercase tracking-[0.24em] text-goldSoft">${t("marketplaceBackOffice")}</p>
-            <h1 class="mt-2 text-3xl font-semibold text-white">${sectionTitle()}</h1>
-            <p class="mt-2 max-w-3xl text-sm leading-6 text-mist/55">${sectionDescription()}</p>
+            <p class="font-cinzel text-sm font-extrabold uppercase text-gold">Bali Healer</p>
+            <p class="text-xs text-mist/45">Admin Dashboard</p>
           </div>
-          <div class="grid gap-3 xl:min-w-[680px]">
-            <label class="ml-auto flex w-full max-w-52 items-center gap-2 rounded-lg border border-gold/15 bg-panel px-3 py-2 text-sm text-mist/65">
-              <span class="text-xs font-bold uppercase tracking-[0.16em] text-mist/35">${t("language")}</span>
-              <select data-admin-language class="min-w-0 flex-1 cursor-pointer bg-transparent text-sm font-semibold text-white outline-none">
-                <option class="bg-night text-mist" value="en" ${selectedLanguage === "en" ? "selected" : ""}>English</option>
-                <option class="bg-night text-mist" value="id" ${selectedLanguage === "id" ? "selected" : ""}>Indonesia</option>
-              </select>
-            </label>
-            <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-              ${quickStatus(t("gateway"), `${gateways.filter((gateway) => gateway.status === "Active").length}/${gateways.length}`, t("active"))}
-              ${quickStatus(t("orders"), orderPipeline.length, t("open"))}
-              ${quickStatus(t("vendors"), vendorRows.length, t("managed"))}
-              ${quickStatus(t("services"), services.length, t("live"))}
-            </div>
-          </div>
-        </header>
-        <div class="mt-6">${sectionContent()}</div>
-      </section>
-    </div>
-  `;
-}
-
-function quickStatus(label, value, hint) {
-  return `
-    <article class="rounded-lg border border-gold/15 bg-panel px-4 py-3">
-      <p class="text-xs text-mist/45">${label}</p>
-      <p class="mt-1 text-xl font-semibold text-goldSoft">${value}</p>
-      <p class="mt-1 text-[11px] uppercase tracking-[0.14em] text-mist/35">${hint}</p>
-    </article>
-  `;
-}
-
-function sectionTitle() {
-  return sectionCopy[selectedLanguage]?.[activeSection]?.[0] || sectionCopy.en[activeSection]?.[0] || sectionCopy.en.command[0];
-}
-
-function sectionDescription() {
-  return sectionCopy[selectedLanguage]?.[activeSection]?.[1] || sectionCopy.en[activeSection]?.[1] || "";
-}
-
-function sectionContent() {
-  if (activeSection === "orders") return ordersSection();
-  if (activeSection === "vendors") return vendorsSection();
-  if (activeSection === "catalog") return catalogSection();
-  if (activeSection === "customers") return customersSection();
-  if (activeSection === "finance") return financeSection();
-  if (activeSection === "content") return contentSection();
-  if (activeSection === "payments") return paymentSection();
-  if (activeSection === "marketing") return marketingSection();
-  if (activeSection === "roles") return rolesSection();
-  if (activeSection === "analytics") return analyticsSection();
-  if (activeSection === "system") return systemSection();
-  return commandSection();
-}
-
-function metricCards() {
-  const monthlyGmv = orderPipeline.reduce((sum, order) => sum + order.amount, 0) + 128400000;
-  const catalogValue = services.reduce((sum, service) => sum + parsePrice(service.price), 0);
-  const metrics = [
-    ["GMV this month", formatIdr(monthlyGmv), "+18.4% vs last month"],
-    ["Net commission", formatIdr(Math.round(monthlyGmv * 0.12)), `${settings.commission} take rate`],
-    ["Active listings", services.length, `${healingCategories.length} categories`],
-    ["Avg service value", formatIdr(Math.round(catalogValue / services.length)), "catalog benchmark"],
-    ["Bookings open", orderPipeline.length, "requests and paid orders"],
-    ["Vendor payout due", formatIdr(payouts.reduce((sum, item) => sum + item.payout, 0)), "ready this cycle"],
-    ["Dispute queue", disputes.length, "needs review"],
-    ["Payment health", `${gateways.filter((item) => item.status === "Active").length}/${gateways.length}`, "providers active"]
-  ];
-  return metrics.map(([label, value, hint]) => card(label, value, hint)).join("");
-}
-
-function card(label, value, hint) {
-  return `
-    <article class="rounded-lg border border-gold/15 bg-panel p-5">
-      <p class="text-sm text-mist/55">${label}</p>
-      <p class="mt-3 text-2xl font-semibold text-goldSoft">${value}</p>
-      <p class="mt-2 text-xs uppercase tracking-[0.16em] text-mist/35">${hint}</p>
-    </article>
-  `;
-}
-
-function panel(title, body, extraClass = "") {
-  return `
-    <section class="rounded-lg border border-gold/15 bg-panel p-5 ${extraClass}">
-      <h2 class="text-xl font-semibold text-white">${title}</h2>
-      <div class="mt-4">${body}</div>
-    </section>
-  `;
-}
-
-function commandSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">${metricCards()}</div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-      ${panel("Operational alerts", `
-        <div class="grid gap-3">
-          ${[
-            ["High", "Corporate Wellness Day needs vendor approval before payment capture."],
-            ["Medium", "3 payout batches are ready for final release."],
-            ["Medium", "Stripe is disabled. Checkout fallback remains Midtrans."],
-            ["Low", "5 services have no updated availability this week."]
-          ].map(([level, text]) => `
-            <article class="flex gap-4 rounded-lg border border-gold/10 bg-black/35 p-4">
-              ${statusPill(level)}
-              <p class="text-sm leading-6 text-mist/70">${text}</p>
-            </article>
-          `).join("")}
         </div>
-      `)}
-      ${panel("Marketplace funnel", `
-        <div class="space-y-4">
-          ${[
-            ["Visitors", "24,830", "100%"],
-            ["Searches", "8,940", "36%"],
-            ["Service views", "4,128", "16.6%"],
-            ["Checkout started", "812", "3.2%"],
-            ["Paid bookings", "426", "1.7%"]
-          ].map(([label, value, percent]) => `
-            <div>
-              <div class="flex justify-between text-sm"><span class="text-mist/60">${label}</span><span class="font-semibold text-white">${value}</span></div>
-              <div class="mt-2 h-2 overflow-hidden rounded-full bg-black"><div class="h-full rounded-full bg-gold" style="width:${percent}"></div></div>
-            </div>
-          `).join("")}
-        </div>
-      `)}
-    </div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-3">
-      ${panel("Latest bookings", table(["Code", "Guest", "Service", "Status"], orderPipeline.slice(0, 5).map((order) => [order.code, order.guest, order.service, statusPill(order.status)])))}
-      ${panel("Vendor health", table(["Vendor", "Status", "Rating"], vendorRows.slice(0, 5).map((vendor) => [vendor.name, statusPill(vendor.status), vendor.rating])))}
-      ${panel("Audit trail", auditLogs.slice(0, 4).map((log) => `
-        <article class="border-b border-gold/10 py-3 last:border-b-0">
-          <p class="text-sm text-white">${log.action}</p>
-          <p class="mt-1 text-xs text-mist/40">${log.time} - ${log.actor} - ${log.module}</p>
-        </article>
-      `).join(""))}
-    </div>
-  `;
-}
+      </header>
 
-function ordersSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">
-      ${card("Needs confirmation", orderPipeline.filter((order) => /confirmation|review/i.test(order.status)).length, "admin queue")}
-      ${card("Paid", orderPipeline.filter((order) => /paid/i.test(order.status)).length, "captured")}
-      ${card("Reschedules", orderPipeline.filter((order) => /reschedule/i.test(order.status)).length, "policy review")}
-      ${card("High risk", orderPipeline.filter((order) => order.risk === "High").length, "manual review")}
-    </div>
-    <div class="mt-6">
-      ${panel("Booking command table", table(
-        ["Code", "Guest", "Service", "Vendor", "Amount", "Payment", "Risk", "Action"],
-        orderPipeline.map((order) => [
-          order.code,
-          order.guest,
-          order.service,
-          order.vendor,
-          formatIdr(order.amount),
-          statusPill(order.payment),
-          statusPill(order.risk),
-          actionButtons(["Approve", "Refund", "Escalate"])
-        ])
-      ))}
-    </div>
-  `;
-}
-
-function vendorsSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">
-      ${card("Verified vendors", vendorRows.filter((vendor) => vendor.status === "Verified").length, "live sellers")}
-      ${card("Review queue", vendorRows.filter((vendor) => vendor.status === "Review").length, "verification")}
-      ${card("Payout cycle", formatIdr(vendorRows.reduce((sum, vendor) => sum + vendor.payout, 0)), "estimated")}
-      ${card("Avg rating", "4.8", "quality score")}
-    </div>
-    <div class="mt-6">
-      ${panel("Vendor management", table(
-        ["Vendor", "Type", "Status", "Services", "Rating", "Payout", "Action"],
-        vendorRows.map((vendor) => [
-          vendor.name,
-          vendor.type,
-          statusPill(vendor.status),
-          vendor.services,
-          vendor.rating,
-          formatIdr(vendor.payout),
-          actionButtons(["Verify", "Suspend", "Open"])
-        ])
-      ))}
-    </div>
-  `;
-}
-
-function catalogSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">
-      ${card("Total services", services.length, "all listings")}
-      ${card("Categories", healingCategories.length, "taxonomy")}
-      ${card("Hybrid listings", services.filter((service) => service.mode === "Hybrid").length, "flexible sessions")}
-      ${card("Online listings", services.filter((service) => service.mode === "Online").length, "remote-ready")}
-    </div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_0.8fr]">
-      ${panel("Service catalog", table(
-        ["Service", "Category", "Vendor", "Mode", "Price", "Action"],
-        services.slice(0, 18).map((service) => [
-          service.name,
-          service.category,
-          service.vendor,
-          statusPill(service.mode),
-          service.price,
-          actionButtons(["Edit", "Rank", "Disable"])
-        ])
-      ))}
-      ${panel("Category controls", healingCategories.map((category) => `
-        <article class="rounded-lg border border-gold/10 bg-black/35 p-4">
-          <div class="flex items-center justify-between gap-3"><p class="font-semibold text-white">${category.name}</p><span class="text-sm text-goldSoft">${services.filter((service) => service.category === category.name).length} services</span></div>
-          <p class="mt-2 text-sm leading-6 text-mist/55">${category.description}</p>
-        </article>
-      `).join('<div class="h-3"></div>'))}
-    </div>
-  `;
-}
-
-function customersSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">
-      ${card("Customers", customerRows.length, "demo CRM")}
-      ${card("VIP customers", customerRows.filter((customer) => customer.segment === "VIP").length, "high value")}
-      ${card("Corporate leads", customerRows.filter((customer) => customer.segment === "Corporate").length, "B2B")}
-      ${card("Lifetime value", formatIdr(customerRows.reduce((sum, customer) => sum + customer.spent, 0)), "tracked")}
-    </div>
-    <div class="mt-6">
-      ${panel("Customer CRM", table(
-        ["Name", "Email", "Segment", "Orders", "Spend", "Status", "Action"],
-        customerRows.map((customer) => [
-          customer.name,
-          customer.email,
-          customer.segment,
-          customer.orders,
-          formatIdr(customer.spent),
-          statusPill(customer.status),
-          actionButtons(["Profile", "Message", "Segment"])
-        ])
-      ))}
-    </div>
-  `;
-}
-
-function financeSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">
-      ${card("Gross payout", formatIdr(payouts.reduce((sum, item) => sum + item.gross, 0)), "vendor gross")}
-      ${card("Commission", formatIdr(payouts.reduce((sum, item) => sum + item.commission, 0)), settings.commission)}
-      ${card("Net payout", formatIdr(payouts.reduce((sum, item) => sum + item.payout, 0)), "release amount")}
-      ${card("Open disputes", disputes.length, "finance risk")}
-    </div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_0.9fr]">
-      ${panel("Payout batches", table(
-        ["Vendor", "Period", "Gross", "Commission", "Payout", "Status", "Action"],
-        payouts.map((item) => [item.vendor, item.period, formatIdr(item.gross), formatIdr(item.commission), formatIdr(item.payout), statusPill(item.status), actionButtons(["Release", "Hold"])])
-      ))}
-      ${panel("Disputes and refunds", disputes.map((item) => `
-        <article class="rounded-lg border border-gold/10 bg-black/35 p-4">
-          <div class="flex items-center justify-between gap-3"><p class="font-semibold text-white">${item.code} - ${item.order}</p>${statusPill(item.priority)}</div>
-          <p class="mt-2 text-sm text-mist/60">${item.issue}</p>
-          <p class="mt-2 text-xs uppercase tracking-[0.16em] text-goldSoft">Owner: ${item.owner}</p>
-        </article>
-      `).join('<div class="h-3"></div>'))}
-    </div>
-  `;
-}
-
-function contentSection() {
-  return `
-    <form data-settings-form class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-      ${panel("Website identity", `
-        <div class="rounded-lg border border-gold/15 bg-black/35 p-4">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Logo preview</p>
-          <div class="mt-3 flex items-center gap-4">
-            <img data-logo-preview src="${settings.logo}" alt="Current logo preview" class="h-16 w-16 rounded-full border border-gold/45 bg-black object-contain" />
-            <label class="cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">
-              Choose Logo From Device
-              <input data-logo-upload name="logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" />
-            </label>
-            <label class="cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">
-              Take Photo
-              <input data-logo-upload name="logoCamera" type="file" accept="image/*" capture="environment" class="hidden" />
-            </label>
-          </div>
-          <p class="mt-3 text-xs leading-5 text-mist/45">Recommended: square PNG/WebP, transparent background, under 1 MB.</p>
-        </div>
-        ${inputField("Logo URL", "logo", settings.logo)}
-        <div class="mt-4 rounded-lg border border-gold/15 bg-black/35 p-4">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Hero video preview</p>
-          <video data-hero-video-preview class="mt-3 aspect-video w-full rounded-lg border border-gold/20 bg-black object-cover" src="${settings.heroVideo}" controls muted playsinline></video>
-          <label class="mt-3 inline-flex cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">
-            Choose Hero Video From Device
-            <input data-hero-video-upload name="heroVideoFile" type="file" accept="video/mp4,video/webm,video/ogg" class="hidden" />
-          </label>
-          <p class="mt-3 text-xs leading-5 text-mist/45">Recommended: MP4/WebM landscape video. For production, upload to server storage instead of localStorage.</p>
-        </div>
-        ${inputField("Hero video URL", "heroVideo", settings.heroVideo)}
-        ${inputField("Site name", "siteName", settings.siteName)}
-        ${inputField("Support email", "supportEmail", settings.supportEmail)}
-        ${inputField("Phone", "phone", settings.phone)}
-        ${inputField("Marketplace commission", "commission", settings.commission)}
-        ${inputField("Cancellation window", "cancellationWindow", settings.cancellationWindow)}
-        <label class="mt-4 flex items-center gap-3 rounded-lg border border-gold/15 bg-black/35 p-4">
-          <input name="maintenance" type="checkbox" class="accent-[#d6aa43]" ${settings.maintenance ? "checked" : ""} />
-          <span class="text-sm text-mist/70">Enable maintenance mode</span>
-        </label>
-      `)}
-      ${panel("Hero and SEO copy", `
-        ${inputField("Hero title", "heroTitle", settings.heroTitle)}
-        <label class="mt-4 block">
-          <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Hero subtitle</span>
-          <textarea name="heroSubtitle" rows="5" class="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">${settings.heroSubtitle}</textarea>
-        </label>
-        <div class="mt-5 grid gap-3 md:grid-cols-2">
-          <button class="rounded-lg bg-gold px-5 py-3 text-sm font-extrabold text-black transition hover:bg-goldSoft">Save Website Settings</button>
-          <button type="button" class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Preview Public Site</button>
-        </div>
-      `)}
-    </form>
-    <div class="mt-6 grid gap-6 xl:grid-cols-3">
-      ${panel("Homepage modules", list(["Hero video", "Search box", "Promotions", "Services pagination", "Testimonials", "Footer links"]))}
-      ${panel("Policy pages", list(["Terms of service", "Privacy policy", "Refund policy", "Vendor agreement", "Cancellation policy"]))}
-      ${panel("SEO checklist", list(["Canonical URL", "Open Graph image", "Structured data", "Sitemap", "Robots noindex for admin"]))}
-    </div>
-  `;
-}
-
-function paymentSection() {
-  return `
-    <div class="grid gap-6 xl:grid-cols-[380px_minmax(0,1fr)]">
-      <form data-gateway-form class="rounded-lg border border-gold/15 bg-panel p-5">
-        <h2 class="text-xl font-semibold text-white">Create gateway configuration</h2>
-        ${inputField("Gateway name", "name", "")}
-        ${inputField("Provider capabilities", "provider", "Card, VA, QRIS")}
-        ${inputField("Currency", "currency", "IDR")}
-        ${inputField("Fee", "fee", "2.9%")}
-        ${inputField("Settlement SLA", "settlement", "T+2")}
-        ${inputField("API secret / server key", "apiKey", "")}
-        ${inputField("Client / publishable key", "clientKey", "")}
-        ${inputField("Webhook URL", "webhookUrl", "https://balihealer.com/api/payments/provider/webhook")}
-        ${inputField("Success redirect URL", "successUrl", "https://balihealer.com/payment/success")}
-        ${inputField("Failure redirect URL", "failureUrl", "https://balihealer.com/payment/failed")}
-        ${inputField("Fraud / risk rule", "fraudRule", "Manual review above Rp5,000,000")}
-        <label class="mt-4 block">
-          <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Environment</span>
-          <select name="mode" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
-            <option>Sandbox</option><option>Production</option>
-          </select>
-        </label>
-        <label class="mt-4 block">
-          <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Status</span>
-          <select name="status" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
-            <option>Active</option><option>Testing</option><option>Disabled</option>
-          </select>
-        </label>
-        <label class="mt-4 flex items-center gap-3 rounded-lg border border-gold/15 bg-black/35 p-4">
-          <input name="maintenance" type="checkbox" class="accent-[#d6aa43]" />
-          <span class="text-sm text-mist/70">Put this gateway in maintenance mode</span>
-        </label>
-        <button class="mt-5 w-full rounded-lg bg-gold px-5 py-3 text-sm font-extrabold text-black transition hover:bg-goldSoft">Create Gateway</button>
-      </form>
-      <div class="grid gap-6">
-        ${panel("Payment gateway maintenance center", `
-          <div class="grid gap-4">
-            ${gateways.map((gateway) => gatewayConfigCard(gateway)).join("")}
-          </div>
-        `)}
-        ${panel("Routing and checkout rules", `
-          <div class="grid gap-3 md:grid-cols-2">
-            ${[
-              ["Primary gateway", gateways.find((gateway) => gateway.status === "Active")?.name || "Not selected"],
-              ["Fallback strategy", "Use next active IDR gateway if primary fails"],
-              ["Capture timing", "Authorize at checkout, capture after schedule approval"],
-              ["Refund policy", "Admin approval required for partial/full refund"],
-              ["Webhook retry", "5 attempts with exponential backoff"],
-              ["Currency rule", "IDR primary, USD fallback for overseas cards"]
-            ].map(([label, value]) => `
-              <div class="rounded-lg border border-gold/10 bg-black/35 p-4">
-                <p class="text-xs font-bold uppercase tracking-[0.16em] text-mist/35">${label}</p>
-                <p class="mt-2 text-sm font-semibold text-white">${value}</p>
-              </div>
-            `).join("")}
-          </div>
-        `)}
-      </div>
-    </div>
-  `;
-}
-
-function gatewayConfigCard(gateway) {
-  return `
-    <article class="rounded-lg border border-gold/10 bg-black/35 p-4">
-      <div class="flex flex-col gap-3 border-b border-gold/10 pb-4 md:flex-row md:items-start md:justify-between">
+      <main class="min-h-screen overflow-hidden px-4 py-6 lg:px-7">
         <div>
-          <div class="flex flex-wrap items-center gap-3">
-            <h3 class="text-lg font-semibold text-white">${gateway.name}</h3>
-            ${statusPill(gateway.status)}
-            ${gateway.maintenance ? statusPill("Maintenance") : ""}
+          <h1 class="text-xl font-extrabold text-white">Admin Dashboard</h1>
+          <div class="mt-2 flex items-center gap-2 text-sm text-mist/55">
+            <span>Dashboard</span>
+            <span>/</span>
+            <span class="text-goldSoft">${activeMenu}</span>
           </div>
-          <p class="mt-2 text-sm text-mist/55">${gateway.provider || "Payment provider"} - ${gateway.mode} - ${gateway.currency}</p>
         </div>
-        <div class="shrink-0">
-          <button data-toggle-gateway="${gateway.id}" class="rounded-md border border-gold/20 px-3 py-2 text-xs font-bold text-goldSoft">Toggle Active</button>
-          <button data-toggle-maintenance-gateway="${gateway.id}" class="ml-2 rounded-md border border-gold/20 px-3 py-2 text-xs font-bold text-goldSoft">Maintenance</button>
-          <button data-delete-gateway="${gateway.id}" class="ml-2 rounded-md border border-red-400/25 px-3 py-2 text-xs font-bold text-red-200">Delete</button>
-        </div>
-      </div>
-      <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        ${[
-          ["API secret / server key", gateway.apiKey || "Not set"],
-          ["Client / publishable key", gateway.clientKey || "Not set"],
-          ["Webhook URL", gateway.webhookUrl || "Not set"],
-          ["Success URL", gateway.successUrl || "Not set"],
-          ["Failure URL", gateway.failureUrl || "Not set"],
-          ["Fee & settlement", `${gateway.fee} - ${gateway.settlement || "T+2"}`],
-          ["Fraud rule", gateway.fraudRule || "Default review"],
-          ["Environment", gateway.mode],
-          ["Currency", gateway.currency]
-        ].map(([label, value]) => `
-          <div class="rounded-lg border border-gold/10 bg-black/45 p-3">
-            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-mist/35">${label}</p>
-            <p class="mt-2 break-words text-sm text-mist/70">${value}</p>
+
+        <section class="relative mt-7 overflow-hidden rounded-lg border border-gold/20 bg-[#1d2748] px-5 py-6 text-white shadow-[0_20px_70px_rgba(0,0,0,0.2)]">
+          <div class="absolute -right-8 -top-16 h-32 w-32 rounded-[32px] border-[10px] border-gold/35 rotate-45"></div>
+          <div class="absolute right-[18%] top-12 h-20 w-20 rounded-[28px] border-[9px] border-gold/25 rotate-12"></div>
+          <div class="absolute right-[6%] bottom-[-30px] h-20 w-20 rounded-[18px] border-[9px] border-gold/20 rotate-12"></div>
+          <div class="relative">
+            <h2 class="text-3xl font-extrabold">Welcome Back, Demo Admin</h2>
+            <p class="mt-2 text-sm font-bold text-white/80">Have a Good day at work</p>
           </div>
-        `).join("")}
-      </div>
-    </article>
-  `;
-}
+        </section>
 
-function marketingSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">
-      ${card("Campaigns", campaigns.length, "active planning")}
-      ${card("Promo budget", formatIdr(campaigns.reduce((sum, item) => sum + item.budget, 0)), "this month")}
-      ${card("Avg conversion", "6.8%", "campaign blend")}
-      ${card("Homepage banners", homepageBanners.length, "managed assets")}
-    </div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-[430px_minmax(0,1fr)]">
-      ${bannerFormPanel()}
-      ${bannerManagerPanel()}
-    </div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_0.9fr]">
-      ${panel("Campaign planner", table(
-        ["Campaign", "Channel", "Budget", "Status", "Conversion", "Action"],
-        campaigns.map((campaign) => [campaign.name, campaign.channel, formatIdr(campaign.budget), statusPill(campaign.status), campaign.conversion, actionButtons(["Edit", "Launch"])])
-      ))}
-      ${panel("Growth modules", list(["Coupon and voucher rules", "Homepage banner scheduler", "SEO content calendar", "Newsletter audience segments", "Partner referral tracking", "Abandoned checkout recovery"]))}
+        <section class="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          ${metricCard({ iconName: "provider", tint: "bg-rose-100", value: providerCount, label: "Total Providers", leftLabel: "Active", leftValue: providerCount, rightLabel: "Inactive", rightValue: 0 })}
+          ${metricCard({ iconName: "services", tint: "bg-cyan-100", value: serviceCount, label: "Total Services", leftLabel: "Active", leftValue: serviceCount, rightLabel: "Inactive", rightValue: 0 })}
+          ${metricCard({ iconName: "calendar", tint: "bg-goldSoft", value: bookingCount, label: "Total Bookings", leftLabel: "Completed", leftValue: 6, rightLabel: "Pending", rightValue: 6 })}
+          ${metricCard({ iconName: "transaction", tint: "bg-emerald-100", value: `$${totalAmount}`, label: "Total Amount", leftLabel: "Completed", leftValue: "$831.6", rightLabel: "Pending", rightValue: "$810" })}
+        </section>
+
+        <section class="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.95fr)]">
+          ${panel("Leads", leads.map(leadRow).join(""))}
+          ${panel("Bookings", adminBookings.map(bookingRow).join(""))}
+        </section>
+      </main>
     </div>
   `;
 }
-
-function bannerFormPanel() {
-  const banner = homepageBanners.find((item) => item.id === editingBannerId) || {
-    title: "",
-    vendor: "",
-    area: "Bali",
-    badge: "Featured",
-    offer: "Special Offer",
-    discount: "",
-    description: "",
-    cta: "Book Now",
-    secondaryCta: "Explore Services",
-    image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=1800&q=90",
-    status: "Draft",
-    placement: "Promotion carousel",
-    priority: String(homepageBanners.length + 1)
-  };
-
-  return panel(editingBannerId ? "Edit homepage banner" : "Add homepage banner", `
-    <form data-banner-form>
-      <input type="hidden" name="id" value="${editingBannerId}" />
-      <div class="rounded-lg border border-gold/15 bg-black/35 p-4">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Banner image preview</p>
-        <img data-banner-image-preview src="${banner.image}" alt="Banner preview" class="mt-3 aspect-[16/9] w-full rounded-lg border border-gold/20 object-cover" />
-        <label class="mt-3 inline-flex cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">
-          Choose Banner Image
-          <input data-banner-image-upload name="imageFile" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" />
-        </label>
-        <label class="ml-0 mt-3 inline-flex cursor-pointer rounded-lg border border-gold/25 px-4 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10 sm:ml-2">
-          Take Photo
-          <input data-banner-image-upload name="imageCamera" type="file" accept="image/*" capture="environment" class="hidden" />
-        </label>
-      </div>
-      ${inputField("Image URL", "image", banner.image)}
-      ${inputField("Title", "title", banner.title)}
-      ${inputField("Vendor / brand", "vendor", banner.vendor)}
-      ${inputField("Area", "area", banner.area)}
-      ${inputField("Badge text", "badge", banner.badge)}
-      ${inputField("Offer text", "offer", banner.offer)}
-      ${inputField("Discount / promo text", "discount", banner.discount)}
-      <label class="mt-4 block">
-        <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">Description</span>
-        <textarea name="description" rows="4" class="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">${banner.description}</textarea>
-      </label>
-      <div class="grid gap-3 md:grid-cols-2">
-        ${inputField("Primary CTA", "cta", banner.cta)}
-        ${inputField("Secondary CTA", "secondaryCta", banner.secondaryCta)}
-      </div>
-      <div class="grid gap-3 md:grid-cols-3">
-        ${selectField("Placement", "placement", ["Hero carousel", "Promotion carousel", "Category banner", "Mobile spotlight"], banner.placement)}
-        ${selectField("Status", "status", ["Active", "Scheduled", "Draft", "Disabled"], banner.status)}
-        ${inputField("Priority", "priority", banner.priority)}
-      </div>
-      <div class="mt-5 grid gap-3 md:grid-cols-2">
-        <button class="rounded-lg bg-gold px-5 py-3 text-sm font-extrabold text-black transition hover:bg-goldSoft">${editingBannerId ? "Save Banner" : "Add Banner"}</button>
-        <button data-cancel-banner-edit type="button" class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Clear</button>
-      </div>
-    </form>
-  `);
-}
-
-function bannerManagerPanel() {
-  return panel("Homepage banner section manager", `
-    <div class="grid gap-4">
-      ${homepageBanners
-        .slice()
-        .sort((first, second) => Number(first.priority) - Number(second.priority))
-        .map((banner) => `
-          <article class="grid gap-4 rounded-lg border border-gold/10 bg-black/35 p-4 lg:grid-cols-[180px_minmax(0,1fr)]">
-            <img src="${banner.image}" alt="${banner.title}" class="aspect-[16/10] w-full rounded-lg object-cover" />
-            <div class="min-w-0">
-              <div class="flex flex-wrap items-center gap-2">
-                ${statusPill(banner.status)}
-                ${statusPill(banner.placement)}
-                <span class="rounded-full border border-gold/15 px-3 py-1 text-xs text-mist/55">Priority ${banner.priority}</span>
-              </div>
-              <h3 class="mt-3 text-lg font-semibold text-white">${banner.title || "Untitled banner"}</h3>
-              <p class="mt-1 text-sm text-goldSoft">${banner.badge} - ${banner.offer} - ${banner.discount}</p>
-              <p class="mt-2 line-clamp-2 text-sm leading-6 text-mist/60">${banner.description}</p>
-              <div class="mt-3 flex flex-wrap gap-2">
-                <button data-edit-banner="${banner.id}" class="rounded-md border border-gold/20 px-3 py-2 text-xs font-bold text-goldSoft">Edit</button>
-                <button data-duplicate-banner="${banner.id}" class="rounded-md border border-gold/20 px-3 py-2 text-xs font-bold text-goldSoft">Duplicate</button>
-                <button data-delete-banner="${banner.id}" class="rounded-md border border-red-400/25 px-3 py-2 text-xs font-bold text-red-200">Delete</button>
-              </div>
-            </div>
-          </article>
-        `).join("")}
-    </div>
-  `);
-}
-
-function rolesSection() {
-  return `
-    <div class="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-      ${panel("Permission matrix", roleMatrix.map((role) => `
-        <article class="rounded-lg border border-gold/10 bg-black/35 p-4">
-          <div class="flex items-center justify-between gap-3"><p class="font-semibold text-goldSoft">${role.role}</p>${statusPill(role.role === "Super Admin" ? "Full access" : "Scoped access")}</div>
-          <p class="mt-2 text-sm leading-6 text-mist/60">${role.scope}</p>
-          <div class="mt-3 flex flex-wrap gap-2">${role.permissions.map((permission) => `<span class="rounded-full border border-gold/15 px-3 py-1 text-xs text-mist/55">${permission}</span>`).join("")}</div>
-        </article>
-      `).join('<div class="h-3"></div>'))}
-      ${panel("Admin users", table(
-        ["Name", "Username", "Role", "Status", "MFA", "Last login", "Action"],
-        adminUsers.map((user) => [user.name, user.username, user.role, statusPill(user.status), user.mfa, user.lastLogin, actionButtons(["Edit", "Revoke"])])
-      ))}
-    </div>
-  `;
-}
-
-function analyticsSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">${metricCards()}</div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-3">
-      ${panel("Top categories", table(["Category", "Services", "Demand"], healingCategories.slice(0, 8).map((category, index) => [category.name, services.filter((service) => service.category === category.name).length, `${92 - index * 6}%`])))}
-      ${panel("Top vendors", table(["Vendor", "GMV", "Rating"], vendorRows.slice(0, 8).map((vendor) => [vendor.name, formatIdr(vendor.payout * 1.22), vendor.rating])))}
-      ${panel("Insights", list(["Sound Bath demand is rising in Canggu", "Hybrid bookings convert higher than offline for overseas guests", "Corporate wellness has high GMV but slower payment cycle", "Retreat packages need stronger availability visibility", "Tarot and astrology perform well for online sessions"]))}
-    </div>
-  `;
-}
-
-function systemSection() {
-  return `
-    <div class="grid gap-4 md:grid-cols-4">
-      ${card("Admin auth", "Mock", "frontend demo")}
-      ${card("Backups", "Daily", "02:00 WITA")}
-      ${card("Queues", "Healthy", "jobs clear")}
-      ${card("Audit logs", auditLogs.length, "latest actions")}
-    </div>
-    <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_0.8fr]">
-      ${panel("Audit log", table(["Time", "Actor", "Action", "Module"], auditLogs.map((log) => [log.time, log.actor, log.action, log.module])))}
-      ${panel("System health", list(["Public site online", "Admin route noindex", "Payment provider fallback configured", "Image assets reachable", "Local settings persistence active", "Backend integration pending"]))}
-    </div>
-  `;
-}
-
-function inputField(label, name, value) {
-  return `
-    <label class="mt-4 block">
-      <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">${label}</span>
-      <input name="${name}" value="${value}" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold" />
-    </label>
-  `;
-}
-
-function selectField(label, name, options, value) {
-  return `
-    <label class="mt-4 block">
-      <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/45">${label}</span>
-      <select name="${name}" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
-        ${options.map((option) => `<option ${option === value ? "selected" : ""}>${option}</option>`).join("")}
-      </select>
-    </label>
-  `;
-}
-
-function list(items) {
-  return `
-    <div class="grid gap-3">
-      ${items.map((item) => `
-        <div class="flex items-center justify-between rounded-lg border border-gold/10 bg-black/35 p-3 text-sm text-mist/65">
-          <span>${item}</span><span class="text-goldSoft">Ready</span>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
-
-function actionButtons(labels) {
-  return labels.map((label) => `<button class="mr-2 rounded-md border border-gold/20 px-3 py-2 text-xs font-bold text-goldSoft last:mr-0">${label}</button>`).join("");
-}
-
-function table(headers, rows) {
-  return `
-    <div class="overflow-x-auto">
-      <table class="w-full min-w-[860px] text-left text-sm">
-        <thead class="border-b border-gold/15 text-xs uppercase tracking-[0.16em] text-goldSoft">
-          <tr>${headers.map((header) => `<th class="py-3 pr-4">${header}</th>`).join("")}</tr>
-        </thead>
-        <tbody class="divide-y divide-gold/10 text-mist/65">
-          ${rows.map((row) => `
-            <tr>${row.map((cell, index) => `<td class="py-4 pr-4 ${index === 0 ? "font-semibold text-white" : ""}">${cell}</td>`).join("")}</tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
-
-function handleSettingsSave(event) {
-  event.preventDefault();
-  const data = new FormData(event.currentTarget);
-  settings = {
-    logo: data.get("logo").trim(),
-    heroVideo: data.get("heroVideo").trim(),
-    siteName: data.get("siteName").trim(),
-    heroTitle: data.get("heroTitle").trim(),
-    heroSubtitle: data.get("heroSubtitle").trim(),
-    supportEmail: data.get("supportEmail").trim(),
-    phone: data.get("phone").trim(),
-    commission: data.get("commission").trim(),
-    cancellationWindow: data.get("cancellationWindow").trim(),
-    maintenance: Boolean(data.get("maintenance"))
-  };
-  writeJson(SETTINGS_KEY, settings);
-  renderDashboard();
-}
-
-function handleGatewayCreate(event) {
-  event.preventDefault();
-  const data = new FormData(event.currentTarget);
-  gateways = [
-    ...gateways,
-    {
-      id: createId(),
-      name: data.get("name").trim() || "New Gateway",
-      provider: data.get("provider").trim() || "Card",
-      mode: data.get("mode").trim() || "Sandbox",
-      status: data.get("status"),
-      currency: data.get("currency").trim() || "IDR",
-      fee: data.get("fee").trim() || "0%",
-      settlement: data.get("settlement").trim() || "T+2",
-      apiKey: data.get("apiKey").trim(),
-      clientKey: data.get("clientKey").trim(),
-      webhookUrl: data.get("webhookUrl").trim(),
-      successUrl: data.get("successUrl").trim(),
-      failureUrl: data.get("failureUrl").trim(),
-      fraudRule: data.get("fraudRule").trim(),
-      maintenance: Boolean(data.get("maintenance"))
-    }
-  ];
-  writeJson(GATEWAYS_KEY, gateways);
-  renderDashboard();
-}
-
-function handleBannerSave(event) {
-  event.preventDefault();
-  const data = new FormData(event.currentTarget);
-  const id = data.get("id") || createId();
-  const banner = {
-    id,
-    title: data.get("title").trim(),
-    vendor: data.get("vendor").trim(),
-    area: data.get("area").trim(),
-    badge: data.get("badge").trim(),
-    offer: data.get("offer").trim(),
-    discount: data.get("discount").trim(),
-    description: data.get("description").trim(),
-    cta: data.get("cta").trim(),
-    secondaryCta: data.get("secondaryCta").trim(),
-    image: data.get("image").trim(),
-    status: data.get("status"),
-    placement: data.get("placement"),
-    priority: data.get("priority").trim() || "99"
-  };
-
-  homepageBanners = homepageBanners.some((item) => item.id === id)
-    ? homepageBanners.map((item) => item.id === id ? banner : item)
-    : [...homepageBanners, banner];
-  editingBannerId = "";
-  writeJson(BANNERS_KEY, homepageBanners);
-  renderDashboard();
-}
-
-document.addEventListener("submit", (event) => {
-  if (event.target.matches("[data-settings-form]")) handleSettingsSave(event);
-  if (event.target.matches("[data-gateway-form]")) handleGatewayCreate(event);
-  if (event.target.matches("[data-banner-form]")) handleBannerSave(event);
-});
-
-document.addEventListener("change", (event) => {
-  const logoUpload = event.target.closest("[data-logo-upload]");
-  if (logoUpload) {
-    const file = logoUpload.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      const logoValue = String(reader.result || "");
-      const form = logoUpload.closest("form");
-      const logoInput = form?.querySelector('input[name="logo"]');
-      const preview = form?.querySelector("[data-logo-preview]");
-      if (logoInput) logoInput.value = logoValue;
-      if (preview) preview.src = logoValue;
-    });
-    reader.readAsDataURL(file);
-    return;
-  }
-
-  const heroVideoUpload = event.target.closest("[data-hero-video-upload]");
-  if (heroVideoUpload) {
-    const file = heroVideoUpload.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      const videoValue = String(reader.result || "");
-      const form = heroVideoUpload.closest("form");
-      const videoInput = form?.querySelector('input[name="heroVideo"]');
-      const preview = form?.querySelector("[data-hero-video-preview]");
-      if (videoInput) videoInput.value = videoValue;
-      if (preview) {
-        preview.src = videoValue;
-        preview.load();
-      }
-    });
-    reader.readAsDataURL(file);
-    return;
-  }
-
-  const bannerImageUpload = event.target.closest("[data-banner-image-upload]");
-  if (bannerImageUpload) {
-    const file = bannerImageUpload.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      const imageValue = String(reader.result || "");
-      const form = bannerImageUpload.closest("form");
-      const imageInput = form?.querySelector('input[name="image"]');
-      const preview = form?.querySelector("[data-banner-image-preview]");
-      if (imageInput) imageInput.value = imageValue;
-      if (preview) preview.src = imageValue;
-    });
-    reader.readAsDataURL(file);
-    return;
-  }
-
-  const languageSelect = event.target.closest("[data-admin-language]");
-  if (!languageSelect) return;
-  selectedLanguage = languageSelect.value;
-  localStorage.setItem(LANGUAGE_KEY, selectedLanguage);
-  renderDashboard();
-});
 
 document.addEventListener("click", (event) => {
-  const section = event.target.closest("[data-section]");
-  if (section) {
-    activeSection = section.dataset.section;
-    renderDashboard();
-    return;
-  }
-
-  if (event.target.closest("[data-logout]")) {
-    localStorage.setItem(AUTH_KEY, JSON.stringify({ username: credentials.username, role: "superadmin", loginAt: new Date().toISOString() }));
-    activeSection = "command";
-    renderDashboard();
-    return;
-  }
-
-  const editBanner = event.target.closest("[data-edit-banner]");
-  if (editBanner) {
-    editingBannerId = editBanner.dataset.editBanner;
-    renderDashboard();
-    return;
-  }
-
-  const duplicateBanner = event.target.closest("[data-duplicate-banner]");
-  if (duplicateBanner) {
-    const source = homepageBanners.find((banner) => banner.id === duplicateBanner.dataset.duplicateBanner);
-    if (source) {
-      homepageBanners = [...homepageBanners, { ...source, id: createId(), title: `${source.title} Copy`, status: "Draft", priority: String(homepageBanners.length + 1) }];
-      writeJson(BANNERS_KEY, homepageBanners);
-      renderDashboard();
-    }
-    return;
-  }
-
-  const deleteBanner = event.target.closest("[data-delete-banner]");
-  if (deleteBanner) {
-    homepageBanners = homepageBanners.filter((banner) => banner.id !== deleteBanner.dataset.deleteBanner);
-    if (editingBannerId === deleteBanner.dataset.deleteBanner) editingBannerId = "";
-    writeJson(BANNERS_KEY, homepageBanners);
-    renderDashboard();
-    return;
-  }
-
-  if (event.target.closest("[data-cancel-banner-edit]")) {
-    editingBannerId = "";
-    renderDashboard();
-    return;
-  }
-
-  const deleteButton = event.target.closest("[data-delete-gateway]");
-  if (deleteButton) {
-    gateways = gateways.filter((gateway) => gateway.id !== deleteButton.dataset.deleteGateway);
-    writeJson(GATEWAYS_KEY, gateways);
-    renderDashboard();
-    return;
-  }
-
-  const toggleButton = event.target.closest("[data-toggle-gateway]");
-  if (toggleButton) {
-    gateways = gateways.map((gateway) => gateway.id === toggleButton.dataset.toggleGateway
-      ? { ...gateway, status: gateway.status === "Active" ? "Disabled" : "Active" }
-      : gateway);
-    writeJson(GATEWAYS_KEY, gateways);
-    renderDashboard();
-    return;
-  }
-
-  const maintenanceButton = event.target.closest("[data-toggle-maintenance-gateway]");
-  if (maintenanceButton) {
-    gateways = gateways.map((gateway) => gateway.id === maintenanceButton.dataset.toggleMaintenanceGateway
-      ? { ...gateway, maintenance: !gateway.maintenance }
-      : gateway);
-    writeJson(GATEWAYS_KEY, gateways);
-    renderDashboard();
-  }
+  const navItem = event.target.closest("[data-nav-item]");
+  if (!navItem) return;
+  activeMenu = navItem.dataset.navItem;
+  renderDashboard();
 });
 
-localStorage.setItem(AUTH_KEY, JSON.stringify({ username: credentials.username, role: "superadmin", loginAt: new Date().toISOString() }));
 renderDashboard();
