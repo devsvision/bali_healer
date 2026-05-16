@@ -767,7 +767,6 @@ function updateClientHeader() {
   document.querySelector("[data-client-header-actions]")?.classList.toggle("hidden", !signedIn);
   document.querySelector("[data-client-header-actions]")?.classList.toggle("sm:flex", signedIn);
   document.querySelector("[data-client-mobile-panel]")?.classList.toggle("hidden", !signedIn);
-  document.querySelector("[data-client-bookings-link]")?.classList.toggle("text-goldSoft", signedIn);
 }
 
 function openClientAuth(mode = "signin") {
