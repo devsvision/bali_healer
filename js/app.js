@@ -748,25 +748,13 @@ function clientSignedIn() {
   return Boolean(localStorage.getItem(clientSessionKey));
 }
 
-function readClientSession() {
-  try {
-    return JSON.parse(localStorage.getItem(clientSessionKey) || "null");
-  } catch {
-    return null;
-  }
-}
-
 function updateClientHeader() {
-  const session = readClientSession();
-  const signedIn = Boolean(session);
   document.querySelectorAll("[data-client-signin-button]").forEach((button) => {
-    button.classList.toggle("hidden", signedIn);
-    button.classList.toggle("sm:flex", !signedIn);
-    button.classList.toggle("flex", !signedIn && button.closest("[data-mobile-menu]"));
+    const inMobileMenu = Boolean(button.closest("[data-mobile-menu]"));
+    button.classList.toggle("hidden", !inMobileMenu);
+    button.classList.toggle("sm:flex", !inMobileMenu);
+    button.classList.toggle("flex", inMobileMenu);
   });
-  document.querySelector("[data-client-header-actions]")?.classList.toggle("hidden", !signedIn);
-  document.querySelector("[data-client-header-actions]")?.classList.toggle("sm:flex", signedIn);
-  document.querySelector("[data-client-mobile-panel]")?.classList.toggle("hidden", !signedIn);
 }
 
 function openClientAuth(mode = "signin") {
@@ -786,13 +774,6 @@ function closeClientAuth() {
   modal.classList.add("hidden");
   modal.classList.remove("flex");
   document.body.classList.remove("overflow-hidden");
-}
-
-function closeClientProfileMenu() {
-  const menu = document.querySelector("[data-client-profile-menu]");
-  const toggle = document.querySelector("[data-client-profile-toggle]");
-  menu?.classList.add("hidden");
-  toggle?.setAttribute("aria-expanded", "false");
 }
 
 function setClientAuthMode(mode) {
@@ -895,27 +876,6 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const profileToggle = event.target.closest("[data-client-profile-toggle]");
-  if (profileToggle) {
-    const menu = document.querySelector("[data-client-profile-menu]");
-    const isOpen = menu && !menu.classList.contains("hidden");
-    menu?.classList.toggle("hidden", isOpen);
-    profileToggle.setAttribute("aria-expanded", String(!isOpen));
-    return;
-  }
-
-  if (!event.target.closest("[data-client-header-actions]")) {
-    closeClientProfileMenu();
-  }
-
-  if (event.target.closest("[data-client-logout]")) {
-    localStorage.removeItem(clientSessionKey);
-    closeClientProfileMenu();
-    closeMobileMenu();
-    updateClientHeader();
-    return;
-  }
-
   if (event.target.closest("[data-client-wishlist]")) {
     event.preventDefault();
     if (!clientSignedIn()) {
@@ -997,7 +957,6 @@ document.addEventListener("keydown", (event) => {
     closeCategoryMenu();
     closeMobileMenu();
     closeClientAuth();
-    closeClientProfileMenu();
   }
 });
 
