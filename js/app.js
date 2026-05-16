@@ -961,6 +961,9 @@ document.addEventListener("click", (event) => {
     closeClientProfileMenu();
     updateClientHeader();
     showClientToast("success", "Logout berhasil.");
+    if (currentPage === "client-dashboard") {
+      loadPage("home");
+    }
     return;
   }
 
