@@ -1,4 +1,5 @@
 import { services } from "../js/data.js";
+import { availabilityDays as sharedAvailabilityDays, bookingModal as sharedBookingModal, initBookingModal, packageItems as sharedPackageItems } from "./booking-system.js";
 import { serviceModeBadge, serviceProfile } from "./home.js";
 
 const galleryImages = [
@@ -223,8 +224,8 @@ export function render({ selectedService } = {}) {
   const profile = serviceProfile(service);
   const badge = serviceModeBadge(service.mode);
   const methods = methodItems(service);
-  const packages = packageItems(service);
-  const days = availabilityDays();
+  const packages = sharedPackageItems(service);
+  const days = sharedAvailabilityDays();
 
   return `
     <article class="bg-night text-mist">
@@ -392,12 +393,16 @@ export function render({ selectedService } = {}) {
           </div>
         </div>
       </section>
-      ${bookingModal(service, profile, packages, days)}
+      ${sharedBookingModal(service, profile, packages, days)}
     </article>
   `;
 }
 
 export function init() {
+  return initBookingModal(document);
+}
+
+function initLegacyBookingModal() {
   const modal = document.querySelector("[data-healing-booking-modal]");
   const openButtons = [...document.querySelectorAll("[data-open-healing-booking]")];
   const closeButtons = [...document.querySelectorAll("[data-close-healing-booking]")];

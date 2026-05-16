@@ -498,292 +498,6 @@ export function render() {
       </section>
     </div>
 
-    <div data-booking-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-32 md:pt-36">
-      <button data-close-booking class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close booking"></button>
-      <section class="relative max-h-[calc(100vh-9rem)] w-full max-w-4xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
-        <div class="sticky top-0 z-10 flex items-center justify-between border-b border-gold/15 bg-[#0d0c0b]/95 px-5 py-4 backdrop-blur">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-goldSoft">Booking Service</p>
-            <h3 class="mt-1 text-xl font-semibold text-white">Complete your reservation details</h3>
-          </div>
-          <button data-close-booking class="flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-mist/70 transition hover:border-gold hover:text-goldSoft">
-            <span class="sr-only">Close</span>
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
-        </div>
-
-        <div class="grid gap-0 md:grid-cols-[0.95fr_1.35fr]">
-          <aside class="border-b border-gold/15 bg-black/30 p-5 md:border-b-0 md:border-r">
-            <div class="overflow-hidden rounded-xl border border-gold/15 bg-black">
-              <img data-booking-image src="" alt="" class="h-56 w-full object-cover opacity-90" />
-            </div>
-            <div class="mt-5">
-              <div class="flex flex-wrap gap-2">
-                <span data-booking-mode class="rounded-full border px-3 py-1 text-xs font-semibold"></span>
-                <span data-booking-provider class="rounded-full border border-gold/25 bg-gold/10 px-3 py-1 text-xs font-semibold text-goldSoft"></span>
-              </div>
-              <h4 data-booking-service class="mt-4 text-2xl font-semibold text-white"></h4>
-              <p data-booking-healer class="mt-2 text-sm font-semibold text-gold"></p>
-              <p data-booking-description class="mt-3 text-sm leading-6 text-mist/60"></p>
-              <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
-                <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <p class="text-xs text-mist/45">Location</p>
-                  <p data-booking-location class="mt-1 font-semibold text-white"></p>
-                </div>
-                <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <p class="text-xs text-mist/45">Starting price</p>
-                  <p data-booking-price data-price-idr="" class="mt-1 font-semibold text-goldSoft"></p>
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          <form data-booking-form class="p-5">
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label data-date-picker-container class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Date</span>
-                <input required type="text" data-date-picker placeholder="Select date" readonly class="mt-2 w-full cursor-pointer rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
-              </label>
-              <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Time</span>
-                <select data-booking-time required class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
-                  <option value="">Select time</option>
-                  <option>09:00</option>
-                  <option>11:00</option>
-                  <option>14:00</option>
-                  <option>16:00</option>
-                  <option>19:00</option>
-                </select>
-              </label>
-              <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Session mode</span>
-                <select data-booking-mode-select required class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
-                  <option value="">Select mode</option>
-                </select>
-              </label>
-              <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Guests</span>
-                <select data-booking-guests required class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-gold">
-                  <option>1 guest</option>
-                  <option>2 guests</option>
-                  <option>3 guests</option>
-                  <option>4 guests</option>
-                  <option>5+ guests</option>
-                </select>
-              </label>
-              <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Full name</span>
-                <input data-booking-full-name required type="text" placeholder="Your name" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
-              </label>
-              <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">WhatsApp Number</span>
-                <input data-booking-whatsapp required type="tel" placeholder="+62 812 3456 7890" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
-              </label>
-              <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Email</span>
-                <input data-booking-email required type="email" placeholder="you@example.com" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
-              </label>
-            </div>
-
-            <label class="mt-4 block">
-              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Session notes</span>
-              <textarea data-booking-notes required rows="4" placeholder="Share your session goals, special conditions, language preferences, or villa/hotel location." class="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-mist/35 focus:border-gold"></textarea>
-            </label>
-
-            <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/70">
-              This booking will be sent as a request. The healer or marketplace admin will confirm the schedule, location or online link, and payment instructions.
-            </div>
-
-            <div class="mt-4 rounded-xl border border-gold/20 bg-black/45 p-4 text-sm leading-6 text-goldSoft">
-              Please make sure every field is filled in correctly and valid. You can continue to checkout only after all required booking details are complete.
-            </div>
-
-            <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <button type="button" data-close-booking class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Cancel</button>
-              <button type="submit" class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Continue to Checkout</button>
-            </div>
-          </form>
-        </div>
-      </section>
-    </div>
-
-    <div data-checkout-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-24 md:pt-28">
-      <button data-close-checkout class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close checkout"></button>
-      <section class="relative max-h-[calc(100vh-7rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] p-5 text-mist shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
-        <div class="flex items-center justify-between gap-4">
-          <h3 class="text-2xl font-semibold text-white">Checkout</h3>
-          <button data-close-checkout class="flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-mist/70 transition hover:border-gold hover:text-goldSoft">
-            <span class="sr-only">Close</span>
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
-        </div>
-
-        <div class="mt-6">
-          <p class="text-sm font-semibold text-mist/85">Order Summary</p>
-          <div class="mt-3 rounded-xl border border-gold/15 bg-black/45 p-4 shadow-[inset_0_1px_0_rgba(244,217,135,0.08)]">
-            <div class="flex gap-3">
-              <img data-checkout-image src="" alt="" class="h-20 w-20 shrink-0 rounded-lg border border-gold/15 object-cover" />
-              <div class="min-w-0 flex-1">
-                <p data-checkout-service class="line-clamp-2 text-sm font-semibold leading-5 text-white"></p>
-                <div class="mt-2 flex items-center gap-2 text-xs font-medium text-mist/70">
-                  <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-extrabold text-black">OK</span>
-                  <span data-checkout-mode></span>
-                </div>
-                <p data-checkout-healer class="mt-1 truncate text-xs text-mist/45"></p>
-              </div>
-            </div>
-
-            <details class="mt-4 border-t border-gold/10 pt-3">
-              <summary class="flex cursor-pointer list-none items-center justify-center gap-2 text-xs font-semibold text-mist/65 transition hover:text-goldSoft">
-                Show More
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-              </summary>
-              <div class="mt-3 grid gap-2 text-xs">
-                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <span class="text-mist/50">Full name</span>
-                  <span data-checkout-name class="text-right font-semibold text-white"></span>
-                </div>
-                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <span class="text-mist/50">WhatsApp</span>
-                  <span data-checkout-whatsapp class="text-right font-semibold text-white"></span>
-                </div>
-                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <span class="text-mist/50">Email</span>
-                  <span data-checkout-email class="text-right font-semibold text-white"></span>
-                </div>
-                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <span class="text-mist/50">Date</span>
-                  <span data-checkout-date class="text-right font-semibold text-white"></span>
-                </div>
-                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <span class="text-mist/50">Time</span>
-                  <span data-checkout-time class="text-right font-semibold text-white"></span>
-                </div>
-                <div class="flex justify-between gap-4 rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <span class="text-mist/50">Guests</span>
-                  <span data-checkout-guests class="text-right font-semibold text-white"></span>
-                </div>
-                <div class="rounded-lg border border-gold/10 bg-black/35 p-3">
-                  <span class="text-mist/50">Session notes</span>
-                  <p data-checkout-notes class="mt-2 whitespace-pre-line font-semibold leading-5 text-white"></p>
-                </div>
-              </div>
-            </details>
-          </div>
-        </div>
-
-        <div class="mt-6">
-          <p class="text-sm font-semibold text-mist/85">Select Payment Method</p>
-          <div class="mt-3 grid grid-cols-2 gap-3">
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="rounded border border-gold/45 px-1.5 py-0.5 text-[10px] font-extrabold text-gold">CC</span><span class="truncate">Credit Card</span></span>
-              <input checked type="radio" name="checkout_gateway" value="Credit Card" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="text-base font-extrabold text-gold">G</span><span class="truncate">Pay</span></span>
-              <input type="radio" name="checkout_gateway" value="Google Pay" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="text-base font-extrabold text-gold">P</span><span class="truncate">PayPal</span></span>
-              <input type="radio" name="checkout_gateway" value="PayPal" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="text-base font-extrabold text-white">A</span><span class="truncate">Pay</span></span>
-              <input type="radio" name="checkout_gateway" value="Apple Pay" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-gold px-1.5 py-0.5 text-[10px] font-extrabold text-black">B</span><span class="truncate">Bank Transfer</span></span>
-              <input type="radio" name="checkout_gateway" value="Bank Transfer" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-gold px-1.5 py-0.5 text-[10px] font-extrabold text-black">V</span><span class="truncate">E-Wallet</span></span>
-              <input type="radio" name="checkout_gateway" value="E-Wallet" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-emerald-500 px-1.5 py-0.5 text-[10px] font-extrabold text-black">$</span><span class="truncate">Cash App</span></span>
-              <input type="radio" name="checkout_gateway" value="Cash App" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-            <label class="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-lg border border-gold/15 bg-black/45 px-3 py-2 text-xs font-semibold text-white transition hover:border-gold/40">
-              <span class="flex min-w-0 items-center gap-2"><span class="rounded bg-gold/20 px-1.5 py-0.5 text-[10px] font-extrabold text-goldSoft">IDR</span><span class="truncate">Cash</span></span>
-              <input type="radio" name="checkout_gateway" value="Cash" class="h-4 w-4 accent-[#d6aa43]" />
-            </label>
-          </div>
-        </div>
-
-        <div class="mt-6 border-t border-gold/15 pt-4">
-          <div class="flex items-center justify-between gap-4 text-sm">
-            <span class="text-mist/70">Total:</span>
-            <span data-checkout-price data-price-idr="" class="text-right font-extrabold text-goldSoft"></span>
-          </div>
-          <button data-open-payment type="button" class="mt-4 w-full rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Continue</button>
-          <button data-close-checkout class="mt-3 w-full rounded-full border border-gold/20 px-6 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Back</button>
-        </div>
-      </section>
-    </div>
-
-    <div data-payment-modal class="fixed inset-0 z-[60] hidden items-start justify-center overflow-y-auto px-4 pb-8 pt-32 md:pt-36">
-      <button data-close-payment class="absolute inset-0 bg-black/75 backdrop-blur-sm" aria-label="Close payment"></button>
-      <section class="relative max-h-[calc(100vh-9rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gold/25 bg-[#0d0c0b] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
-        <div class="flex items-start justify-between gap-4 border-b border-gold/15 pb-4">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-goldSoft">Payment</p>
-            <h3 class="mt-1 text-xl font-semibold text-white">Complete payment details</h3>
-          </div>
-          <button data-close-payment class="flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-mist/70 transition hover:border-gold hover:text-goldSoft">
-            <span class="sr-only">Close</span>
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
-        </div>
-
-        <form data-payment-form class="mt-5">
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="block">
-              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Billing name</span>
-              <input data-payment-name required type="text" placeholder="Name on billing" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
-            </label>
-            <label class="block">
-              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Billing email</span>
-              <input data-payment-email required type="email" placeholder="billing@example.com" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
-            </label>
-            <label class="block">
-              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Phone number</span>
-              <input data-payment-phone required type="tel" placeholder="+62 812 3456 7890" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
-            </label>
-            <label class="block">
-              <span class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Amount</span>
-              <input data-payment-amount required readonly type="text" class="mt-2 w-full rounded-lg border border-gold/20 bg-black px-4 py-3 text-sm font-semibold text-goldSoft outline-none focus:border-gold" />
-            </label>
-          </div>
-
-          <div class="mt-5">
-            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-mist/45">Payment gateway</p>
-            <div class="mt-3 grid gap-3 sm:grid-cols-3">
-              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gold/20 bg-black/40 p-4 text-sm font-semibold text-white transition hover:border-gold/45">
-                <input required type="radio" name="payment_gateway" value="Midtrans" class="accent-[#d6aa43]" />
-                Midtrans
-              </label>
-              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gold/20 bg-black/40 p-4 text-sm font-semibold text-white transition hover:border-gold/45">
-                <input required type="radio" name="payment_gateway" value="HitPay" class="accent-[#d6aa43]" />
-                HitPay
-              </label>
-              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gold/20 bg-black/40 p-4 text-sm font-semibold text-white transition hover:border-gold/45">
-                <input required type="radio" name="payment_gateway" value="Stripe" class="accent-[#d6aa43]" />
-                Stripe
-              </label>
-            </div>
-          </div>
-
-          <div class="mt-5 rounded-xl border border-gold/15 bg-gold/10 p-4 text-sm leading-6 text-mist/70">
-            Payment gateway integration is prepared for Midtrans, HitPay, and Stripe. The selected gateway will handle the secure payment step.
-          </div>
-
-          <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-            <button data-close-payment type="button" class="rounded-lg border border-gold/25 px-5 py-3 text-sm font-bold text-goldSoft transition hover:bg-gold/10">Back</button>
-            <button type="submit" class="rounded-lg bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Start Payment</button>
-          </div>
-        </form>
-      </section>
-    </div>
   `;
 }
 
@@ -848,15 +562,6 @@ export function init() {
   const profileModal = document.querySelector("[data-profile-modal]");
   const closeProfileButtons = [...document.querySelectorAll("[data-close-profile]")];
   const profileBookButton = document.querySelector("[data-profile-book-service]");
-  const bookingModal = document.querySelector("[data-booking-modal]");
-  const bookingForm = document.querySelector("[data-booking-form]");
-  const closeBookingButtons = [...document.querySelectorAll("[data-close-booking]")];
-  const checkoutModal = document.querySelector("[data-checkout-modal]");
-  const closeCheckoutButtons = [...document.querySelectorAll("[data-close-checkout]")];
-  const openPaymentButton = document.querySelector("[data-open-payment]");
-  const paymentModal = document.querySelector("[data-payment-modal]");
-  const paymentForm = document.querySelector("[data-payment-form]");
-  const closePaymentButtons = [...document.querySelectorAll("[data-close-payment]")];
   const dateInputs = [...document.querySelectorAll("[data-date-picker]")];
   const datePickerContainers = [...document.querySelectorAll("[data-date-picker-container]")];
   if (!track || slides.length === 0) return;
@@ -870,7 +575,6 @@ export function init() {
   let activeDateInput;
   let calendarDate = new Date();
   let ignoreOutsideClickUntil = 0;
-  let activeBookingService;
   let activeBookingCleanup;
   const calendar = document.createElement("div");
   calendar.dataset.dateCalendar = "true";
@@ -1094,68 +798,6 @@ export function init() {
     document.dispatchEvent(new CustomEvent("prices:refresh"));
   };
 
-  const closeBooking = () => {
-    bookingModal?.classList.add("hidden");
-    bookingModal?.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
-  };
-
-  const openCheckout = () => {
-    if (!checkoutModal || !activeBookingService) return;
-    const profile = serviceProfile(activeBookingService);
-    const value = (selector) => bookingForm?.querySelector(selector)?.value?.trim() || "";
-    const image = checkoutModal.querySelector("[data-checkout-image]");
-    if (image) {
-      image.src = profile.image;
-      image.alt = activeBookingService.name;
-    }
-    checkoutModal.querySelector("[data-checkout-service]").textContent = activeBookingService.name;
-    checkoutModal.querySelector("[data-checkout-healer]").textContent = profile.name;
-    checkoutModal.querySelector("[data-checkout-name]").textContent = value("[data-booking-full-name]");
-    checkoutModal.querySelector("[data-checkout-whatsapp]").textContent = value("[data-booking-whatsapp]");
-    checkoutModal.querySelector("[data-checkout-email]").textContent = value("[data-booking-email]");
-    checkoutModal.querySelector("[data-checkout-date]").textContent = value("[data-date-picker]");
-    checkoutModal.querySelector("[data-checkout-time]").textContent = value("[data-booking-time]");
-    checkoutModal.querySelector("[data-checkout-mode]").textContent = value("[data-booking-mode-select]");
-    checkoutModal.querySelector("[data-checkout-guests]").textContent = value("[data-booking-guests]");
-    checkoutModal.querySelector("[data-checkout-notes]").textContent = value("[data-booking-notes]");
-    checkoutModal.querySelector("[data-checkout-price]").textContent = activeBookingService.price;
-    checkoutModal.querySelector("[data-checkout-price]").dataset.priceIdr = activeBookingService.price;
-    checkoutModal.classList.remove("hidden");
-    checkoutModal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
-    document.dispatchEvent(new CustomEvent("prices:refresh"));
-  };
-
-  const closeCheckout = () => {
-    checkoutModal?.classList.add("hidden");
-    checkoutModal?.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
-  };
-
-  const openPayment = () => {
-    if (!paymentModal || !activeBookingService) return;
-    paymentForm?.querySelector("[data-payment-name]") && (paymentForm.querySelector("[data-payment-name]").value = bookingForm?.querySelector("[data-booking-full-name]")?.value || "");
-    paymentForm?.querySelector("[data-payment-email]") && (paymentForm.querySelector("[data-payment-email]").value = bookingForm?.querySelector("[data-booking-email]")?.value || "");
-    paymentForm?.querySelector("[data-payment-phone]") && (paymentForm.querySelector("[data-payment-phone]").value = bookingForm?.querySelector("[data-booking-whatsapp]")?.value || "");
-    const amount = paymentForm?.querySelector("[data-payment-amount]");
-    if (amount) {
-      amount.value = activeBookingService.price;
-      amount.dataset.priceIdr = activeBookingService.price;
-    }
-    closeCheckout();
-    paymentModal.classList.remove("hidden");
-    paymentModal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
-    document.dispatchEvent(new CustomEvent("prices:refresh"));
-  };
-
-  const closePayment = () => {
-    paymentModal?.classList.add("hidden");
-    paymentModal?.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
-  };
-
   const closeProfile = () => {
     profileModal?.classList.add("hidden");
     profileModal?.classList.remove("flex");
@@ -1183,34 +825,9 @@ export function init() {
     openBooking(service);
   };
 
-  const handleBookingSubmit = (event) => {
-    event.preventDefault();
-    if (!bookingForm?.checkValidity()) {
-      bookingForm?.reportValidity();
-      return;
-    }
-    closeBooking();
-    openCheckout();
-  };
-
   const handleEscape = (event) => {
     if (event.key !== "Escape") return;
     closeProfile();
-    closeBooking();
-    closeCheckout();
-    closePayment();
-  };
-
-  const handlePaymentSubmit = (event) => {
-    event.preventDefault();
-    if (!paymentForm?.checkValidity()) {
-      paymentForm?.reportValidity();
-      return;
-    }
-    const submit = paymentForm.querySelector("button[type='submit']");
-    if (!submit) return;
-    submit.textContent = "Payment Started";
-    submit.classList.add("bg-goldSoft");
   };
 
   const formatDate = (date) => `${datePickerMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
@@ -1413,12 +1030,6 @@ export function init() {
   window.addEventListener("scroll", positionCalendar, true);
   calendar.addEventListener("click", handleCalendarClick);
   calendar.addEventListener("change", handleCalendarChange);
-  bookingForm?.addEventListener("submit", handleBookingSubmit);
-  closeBookingButtons.forEach((button) => button.addEventListener("click", closeBooking));
-  closeCheckoutButtons.forEach((button) => button.addEventListener("click", closeCheckout));
-  openPaymentButton?.addEventListener("click", openPayment);
-  closePaymentButtons.forEach((button) => button.addEventListener("click", closePayment));
-  paymentForm?.addEventListener("submit", handlePaymentSubmit);
   closeProfileButtons.forEach((button) => button.addEventListener("click", closeProfile));
   profileBookButton?.addEventListener("click", handleProfileBook);
   serviceCards.forEach((card) => card.addEventListener("pointermove", handleServiceCardGlow));
@@ -1452,12 +1063,6 @@ export function init() {
     window.removeEventListener("scroll", positionCalendar, true);
     calendar.removeEventListener("click", handleCalendarClick);
     calendar.removeEventListener("change", handleCalendarChange);
-    bookingForm?.removeEventListener("submit", handleBookingSubmit);
-    closeBookingButtons.forEach((button) => button.removeEventListener("click", closeBooking));
-    closeCheckoutButtons.forEach((button) => button.removeEventListener("click", closeCheckout));
-    openPaymentButton?.removeEventListener("click", openPayment);
-    closePaymentButtons.forEach((button) => button.removeEventListener("click", closePayment));
-    paymentForm?.removeEventListener("submit", handlePaymentSubmit);
     closeProfileButtons.forEach((button) => button.removeEventListener("click", closeProfile));
     profileBookButton?.removeEventListener("click", handleProfileBook);
     serviceCards.forEach((card) => card.removeEventListener("pointermove", handleServiceCardGlow));
