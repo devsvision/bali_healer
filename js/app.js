@@ -504,7 +504,7 @@ function ensureCurrencyEstimateControls(root = document.body) {
       <button type="button" data-currency-estimate-toggle class="text-[11px] font-semibold leading-4 text-mist/45 underline decoration-gold/35 underline-offset-4 transition hover:text-goldSoft">
         Click here for estimates in other countries' currencies.
       </button>
-      <div data-currency-estimate-panel class="absolute left-1/2 top-full z-30 mt-2 hidden w-64 -translate-x-1/2 rounded-lg border border-gold/25 bg-[#11100e] p-3 text-left text-xs shadow-[0_18px_55px_rgba(0,0,0,0.55)]"></div>
+      <div data-currency-estimate-panel class="absolute bottom-full left-1/2 z-30 mb-2 hidden w-64 -translate-x-1/2 rounded-lg border border-gold/25 bg-[#11100e] p-3 text-left text-xs shadow-[0_18px_55px_rgba(0,0,0,0.55)]"></div>
     `;
     element.insertAdjacentElement("afterend", wrapper);
   });
