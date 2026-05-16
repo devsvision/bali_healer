@@ -320,7 +320,7 @@
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
             My Bookings
           </button>
-          <button class="hidden items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft sm:flex">
+          <button data-open-client-auth class="hidden items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft sm:flex">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
             Sign In
           </button>
@@ -394,7 +394,7 @@
               </select>
             </label>
           </div>
-          <button class="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">
+          <button data-open-client-auth data-close-mobile-menu class="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
             Sign In
           </button>
@@ -415,6 +415,86 @@
         </div>
         <div data-category-menu-list class="mt-6 grid max-h-[62vh] gap-3 overflow-y-auto pr-2 sm:grid-cols-2 lg:grid-cols-3"></div>
       </div>
+    </div>
+
+    <div data-client-auth-modal class="fixed inset-0 z-[95] hidden items-center justify-center overflow-y-auto bg-black/75 px-4 py-8 backdrop-blur-sm">
+      <button data-close-client-auth class="absolute inset-0 cursor-default" aria-label="Close sign in"></button>
+      <section class="relative w-full max-w-[520px] rounded-xl border border-gold/25 bg-[#0d0c0b] p-5 text-mist shadow-[0_30px_100px_rgba(0,0,0,0.68)] sm:p-6">
+        <button data-close-client-auth class="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-lg border border-gold/20 text-goldSoft transition hover:bg-gold hover:text-black" aria-label="Close sign in">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+
+        <div class="flex flex-col items-center text-center">
+          <img src="./assets/images/logo-bali-healer.png" alt="Bali Healer logo" class="h-16 w-16 rounded-full border border-gold/55 bg-black object-contain p-1" />
+          <h2 class="font-cinzel mt-3 text-2xl font-extrabold uppercase text-gold">Bali Healer</h2>
+          <p class="mt-1 text-sm text-mist/55">Client Account</p>
+        </div>
+
+        <div class="mt-6 rounded-lg border border-gold/15 bg-black/35 p-5">
+          <div data-auth-panel="signin">
+            <h3 class="text-2xl font-extrabold text-white">Welcome</h3>
+            <p class="mt-2 text-sm text-mist/60">Please enter your details to sign in.</p>
+            <form data-client-signin-form class="mt-6 grid gap-4">
+              <label class="block">
+                <span class="text-sm font-bold text-mist/85">Email Address</span>
+                <span class="mt-2 flex items-center rounded-lg border border-gold/20 bg-[#070604] px-3 focus-within:border-gold">
+                  <input name="email" type="email" required value="client@gmail.com" class="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none" />
+                  <svg class="h-4 w-4 text-goldSoft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                </span>
+              </label>
+              <label class="block">
+                <span class="flex items-center justify-between gap-3 text-sm font-bold text-mist/85">
+                  Password
+                  <button type="button" class="text-xs font-extrabold text-goldSoft hover:text-gold">Forgot Password?</button>
+                </span>
+                <span class="mt-2 flex items-center rounded-lg border border-gold/20 bg-[#070604] px-3 focus-within:border-gold">
+                  <input name="password" type="password" required value="password" class="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none" />
+                  <svg class="h-4 w-4 text-goldSoft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path d="m3 3 18 18"/></svg>
+                </span>
+              </label>
+              <button type="submit" class="rounded-lg bg-gold px-5 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Sign In</button>
+            </form>
+          </div>
+
+          <div data-auth-panel="signup" class="hidden">
+            <h3 class="text-2xl font-extrabold text-white">Create Account</h3>
+            <p class="mt-2 text-sm text-mist/60">Sign up to save wishlist items and manage bookings.</p>
+            <form data-client-signup-form class="mt-6 grid gap-4">
+              <label class="block">
+                <span class="text-sm font-bold text-mist/85">Full Name</span>
+                <input name="name" type="text" required placeholder="Your name" class="mt-2 w-full rounded-lg border border-gold/20 bg-[#070604] px-3 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-bold text-mist/85">Email Address</span>
+                <input name="email" type="email" required placeholder="client@gmail.com" class="mt-2 w-full rounded-lg border border-gold/20 bg-[#070604] px-3 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-bold text-mist/85">Password</span>
+                <input name="password" type="password" required placeholder="Create password" class="mt-2 w-full rounded-lg border border-gold/20 bg-[#070604] px-3 py-3 text-sm text-white outline-none placeholder:text-mist/35 focus:border-gold" />
+              </label>
+              <button type="submit" class="rounded-lg bg-gold px-5 py-3 text-sm font-extrabold text-black shadow-gold transition hover:bg-goldSoft">Sign Up</button>
+            </form>
+          </div>
+
+          <div class="my-6 flex items-center gap-3">
+            <span class="h-px flex-1 bg-gold/15"></span>
+            <span class="text-xs font-bold uppercase tracking-[0.18em] text-mist/40">or</span>
+            <span class="h-px flex-1 bg-gold/15"></span>
+          </div>
+
+          <button data-client-google-auth class="flex w-full items-center justify-center gap-3 rounded-lg border border-gold/25 bg-black px-5 py-3 text-sm font-extrabold text-white transition hover:border-gold hover:bg-gold/10">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white text-sm font-black text-[#4285f4]">G</span>
+            Continue with Google
+          </button>
+
+          <p data-auth-switch-text class="mt-5 text-center text-sm text-mist/60">
+            Not registered yet?
+            <button data-show-client-signup class="font-extrabold text-goldSoft hover:text-gold">Sign up</button>
+          </p>
+        </div>
+
+        <p class="mt-6 text-center text-xs text-mist/45">&copy; 2026 Bali Healer. All rights reserved.</p>
+      </section>
     </div>
 
     <main class="relative z-10">

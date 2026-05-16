@@ -1092,7 +1092,7 @@ function serviceCard(service, isHidden = false) {
           <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="3"/><path d="M6 21a6 6 0 0 1 12 0"/></svg>
           ${providerLabel}
         </span>
-        <button class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-gold/30 bg-black/55 text-gold backdrop-blur transition hover:bg-gold hover:text-black">
+        <button data-client-wishlist class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-gold/30 bg-black/55 text-gold backdrop-blur transition hover:bg-gold hover:text-black" aria-label="Save service to wishlist">
           <span class="sr-only">Save service</span>
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/></svg>
         </button>

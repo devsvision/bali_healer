@@ -12,6 +12,7 @@ const selectedCurrency = "IDR";
 let currencyRatesLastUpdated = "";
 const splashStartedAt = performance.now();
 const splashMinimumDuration = 2300;
+const clientSessionKey = "baliHealerClientSession";
 
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
@@ -737,6 +738,47 @@ function closeMobileMenu() {
   document.body.classList.remove("overflow-hidden");
 }
 
+function clientSignedIn() {
+  return Boolean(localStorage.getItem(clientSessionKey));
+}
+
+function openClientAuth(mode = "signin") {
+  const modal = document.querySelector("[data-client-auth-modal]");
+  if (!modal) return;
+  setClientAuthMode(mode);
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  document.body.classList.add("overflow-hidden");
+}
+
+function closeClientAuth() {
+  const modal = document.querySelector("[data-client-auth-modal]");
+  if (!modal) return;
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  document.body.classList.remove("overflow-hidden");
+}
+
+function setClientAuthMode(mode) {
+  const signInPanel = document.querySelector('[data-auth-panel="signin"]');
+  const signUpPanel = document.querySelector('[data-auth-panel="signup"]');
+  const switchText = document.querySelector("[data-auth-switch-text]");
+  const isSignUp = mode === "signup";
+
+  signInPanel?.classList.toggle("hidden", isSignUp);
+  signUpPanel?.classList.toggle("hidden", !isSignUp);
+  if (switchText) {
+    switchText.innerHTML = isSignUp
+      ? 'Already registered? <button data-show-client-signin class="font-extrabold text-goldSoft hover:text-gold">Sign in</button>'
+      : 'Not registered yet? <button data-show-client-signup class="font-extrabold text-goldSoft hover:text-gold">Sign up</button>';
+  }
+}
+
+function completeClientAuth(method = "email") {
+  localStorage.setItem(clientSessionKey, JSON.stringify({ method, signedInAt: new Date().toISOString() }));
+  closeClientAuth();
+}
+
 function renderCategoryMenu() {
   const list = document.querySelector("[data-category-menu-list]");
   if (!list) return;
@@ -771,6 +813,46 @@ document.addEventListener("click", (event) => {
     document.querySelectorAll("[data-currency-estimate-panel]").forEach((panel) => {
       panel.classList.add("hidden");
     });
+  }
+
+  if (event.target.closest("[data-open-client-auth]")) {
+    event.preventDefault();
+    closeMobileMenu();
+    openClientAuth("signin");
+    return;
+  }
+
+  if (event.target.closest("[data-client-wishlist]")) {
+    event.preventDefault();
+    if (!clientSignedIn()) {
+      openClientAuth("signin");
+      return;
+    }
+    const button = event.target.closest("[data-client-wishlist]");
+    button.classList.toggle("bg-gold");
+    button.classList.toggle("text-black");
+    button.classList.toggle("bg-black/55");
+    return;
+  }
+
+  if (event.target.closest("[data-close-client-auth]") || event.target === document.querySelector("[data-client-auth-modal]")) {
+    closeClientAuth();
+    return;
+  }
+
+  if (event.target.closest("[data-show-client-signup]")) {
+    setClientAuthMode("signup");
+    return;
+  }
+
+  if (event.target.closest("[data-show-client-signin]")) {
+    setClientAuthMode("signin");
+    return;
+  }
+
+  if (event.target.closest("[data-client-google-auth]")) {
+    completeClientAuth("google");
+    return;
   }
 
   const link = event.target.closest(".page-link");
@@ -814,6 +896,18 @@ document.addEventListener("keydown", (event) => {
     });
     closeCategoryMenu();
     closeMobileMenu();
+    closeClientAuth();
+  }
+});
+
+document.addEventListener("submit", (event) => {
+  if (event.target.matches("[data-client-signin-form]") || event.target.matches("[data-client-signup-form]")) {
+    event.preventDefault();
+    if (!event.target.checkValidity()) {
+      event.target.reportValidity();
+      return;
+    }
+    completeClientAuth("email");
   }
 });
 
