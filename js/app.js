@@ -13,6 +13,12 @@ let currencyRatesLastUpdated = "";
 const splashStartedAt = performance.now();
 const splashMinimumDuration = 2300;
 const clientSessionKey = "baliHealerClientSession";
+const registeredClientKey = "baliHealerRegisteredClient";
+const demoClientAccount = {
+  name: "Demo Client",
+  email: "client@balihealer.com",
+  password: "BaliHealer123"
+};
 
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
@@ -746,6 +752,8 @@ function openClientAuth(mode = "signin") {
   const modal = document.querySelector("[data-client-auth-modal]");
   if (!modal) return;
   setClientAuthMode(mode);
+  setClientAuthError("");
+  setClientSignupMessage("");
   modal.classList.remove("hidden");
   modal.classList.add("flex");
   document.body.classList.add("overflow-hidden");
@@ -774,9 +782,45 @@ function setClientAuthMode(mode) {
   }
 }
 
-function completeClientAuth(method = "email") {
-  localStorage.setItem(clientSessionKey, JSON.stringify({ method, signedInAt: new Date().toISOString() }));
+function setClientAuthError(message) {
+  const error = document.querySelector("[data-client-auth-error]");
+  if (!error) return;
+  error.textContent = message;
+  error.classList.toggle("hidden", !message);
+}
+
+function setClientSignupMessage(message) {
+  const notice = document.querySelector("[data-client-signup-message]");
+  if (!notice) return;
+  notice.textContent = message;
+  notice.classList.toggle("hidden", !message);
+}
+
+function readRegisteredClient() {
+  try {
+    return JSON.parse(localStorage.getItem(registeredClientKey) || "null");
+  } catch {
+    return null;
+  }
+}
+
+function completeClientAuth(method = "email", account = demoClientAccount) {
+  localStorage.setItem(clientSessionKey, JSON.stringify({
+    method,
+    name: account.name || "Bali Healer Client",
+    email: account.email,
+    signedInAt: new Date().toISOString()
+  }));
   closeClientAuth();
+}
+
+function toggleClientPassword(button) {
+  const field = button.closest("label")?.querySelector('input[type="password"], input[type="text"]');
+  if (!field) return;
+  const showPassword = field.type === "password";
+  field.type = showPassword ? "text" : "password";
+  button.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+  button.querySelector("[data-password-slash]")?.classList.toggle("hidden", showPassword);
 }
 
 function renderCategoryMenu() {
@@ -851,7 +895,13 @@ document.addEventListener("click", (event) => {
   }
 
   if (event.target.closest("[data-client-google-auth]")) {
-    completeClientAuth("google");
+    completeClientAuth("google", { name: "Google Demo Client", email: "google.client@balihealer.com" });
+    return;
+  }
+
+  const passwordToggle = event.target.closest("[data-client-password-toggle]");
+  if (passwordToggle) {
+    toggleClientPassword(passwordToggle);
     return;
   }
 
@@ -901,13 +951,42 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("submit", (event) => {
-  if (event.target.matches("[data-client-signin-form]") || event.target.matches("[data-client-signup-form]")) {
+  if (event.target.matches("[data-client-signin-form]")) {
     event.preventDefault();
     if (!event.target.checkValidity()) {
       event.target.reportValidity();
       return;
     }
-    completeClientAuth("email");
+    const data = new FormData(event.target);
+    const email = String(data.get("email") || "").trim().toLowerCase();
+    const password = String(data.get("password") || "");
+    const registeredClient = readRegisteredClient();
+    const demoMatches = email === demoClientAccount.email.toLowerCase() && password === demoClientAccount.password;
+    const registeredMatches = registeredClient && email === registeredClient.email?.toLowerCase() && password === registeredClient.password;
+
+    if (!demoMatches && !registeredMatches) {
+      setClientAuthError("Use the demo account or sign up first.");
+      return;
+    }
+    completeClientAuth("email", demoMatches ? demoClientAccount : registeredClient);
+    return;
+  }
+
+  if (event.target.matches("[data-client-signup-form]")) {
+    event.preventDefault();
+    if (!event.target.checkValidity()) {
+      event.target.reportValidity();
+      return;
+    }
+    const data = new FormData(event.target);
+    const account = {
+      name: String(data.get("name") || "").trim(),
+      email: String(data.get("email") || "").trim().toLowerCase(),
+      password: String(data.get("password") || "")
+    };
+    localStorage.setItem(registeredClientKey, JSON.stringify(account));
+    setClientSignupMessage("Account created. You are signed in for this browser.");
+    completeClientAuth("signup", account);
   }
 });
 
