@@ -779,6 +779,13 @@ function closeClientAuth() {
   document.body.classList.remove("overflow-hidden");
 }
 
+function closeClientProfileMenu() {
+  const menu = document.querySelector("[data-client-profile-menu]");
+  const toggle = document.querySelector("[data-client-profile-toggle]");
+  menu?.classList.add("hidden");
+  toggle?.setAttribute("aria-expanded", "false");
+}
+
 function showClientToast(type, message) {
   let toast = document.querySelector("[data-client-toast]");
   if (!toast) {
@@ -935,6 +942,27 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const profileToggle = event.target.closest("[data-client-profile-toggle]");
+  if (profileToggle) {
+    const menu = document.querySelector("[data-client-profile-menu]");
+    const open = menu && !menu.classList.contains("hidden");
+    menu?.classList.toggle("hidden", open);
+    profileToggle.setAttribute("aria-expanded", String(!open));
+    return;
+  }
+
+  if (event.target.closest("[data-client-logout]")) {
+    localStorage.removeItem(clientSessionKey);
+    closeClientProfileMenu();
+    updateClientHeader();
+    showClientToast("success", "Logout berhasil.");
+    return;
+  }
+
+  if (!event.target.closest("[data-client-header-actions]")) {
+    closeClientProfileMenu();
+  }
+
   const passwordToggle = event.target.closest("[data-client-password-toggle]");
   if (passwordToggle) {
     toggleClientPassword(passwordToggle);
@@ -983,6 +1011,7 @@ document.addEventListener("keydown", (event) => {
     closeCategoryMenu();
     closeMobileMenu();
     closeClientAuth();
+    closeClientProfileMenu();
   }
 });
 
