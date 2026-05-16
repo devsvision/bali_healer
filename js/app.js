@@ -8,7 +8,7 @@ let initialRenderDone = false;
 let currentPage = "home";
 let selectedCategory = "";
 let selectedLanguage = localStorage.getItem("baliHealerLanguage") || "en-US";
-let selectedCurrency = localStorage.getItem("baliHealerCurrency") || "IDR";
+const selectedCurrency = "IDR";
 let currencyRatesLastUpdated = "";
 const splashStartedAt = performance.now();
 const splashMinimumDuration = 2300;
@@ -441,7 +441,7 @@ async function refreshLiveCurrencyRates() {
       throw new Error("Currency rates unavailable");
     }
 
-    [selectedCurrency, ...estimateCurrencies].forEach((currency) => {
+    estimateCurrencies.forEach((currency) => {
       const rate = Number(data.rates[currency]);
       if (Number.isFinite(rate) && rate > 0) {
         currencyRatesFromIdr[currency] = rate;
@@ -627,9 +627,6 @@ function hashState() {
 function syncLocaleControls() {
   document.querySelectorAll("[data-language-select]").forEach((languageSelect) => {
     languageSelect.value = selectedLanguage;
-  });
-  document.querySelectorAll("[data-currency-select]").forEach((currencySelect) => {
-    currencySelect.value = selectedCurrency;
   });
 }
 
@@ -828,15 +825,6 @@ document.addEventListener("change", (event) => {
     syncLocaleControls();
     renderCategoryMenu();
     applyLocalization();
-    return;
-  }
-
-  const currencySelect = event.target.closest("[data-currency-select]");
-  if (currencySelect) {
-    selectedCurrency = currencySelect.value;
-    localStorage.setItem("baliHealerCurrency", selectedCurrency);
-    syncLocaleControls();
-    applyLocalizedPrices();
     return;
   }
 
