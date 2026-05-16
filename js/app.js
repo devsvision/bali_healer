@@ -9,6 +9,7 @@ let currentPage = "home";
 let selectedCategory = "";
 let selectedLanguage = localStorage.getItem("baliHealerLanguage") || "en-US";
 let selectedCurrency = localStorage.getItem("baliHealerCurrency") || "IDR";
+let currencyRatesLastUpdated = "";
 const splashStartedAt = performance.now();
 const splashMinimumDuration = 2300;
 
@@ -54,10 +55,12 @@ let selectedHealingService = "";
 const currencyRatesFromIdr = {
   IDR: 1,
   USD: 1 / 16000,
+  EUR: 1 / 17500,
+  GBP: 1 / 20500,
   AUD: 1 / 10500,
-  JPY: 1 / 105,
-  EUR: 1 / 17500
+  JPY: 1 / 105
 };
+const estimateCurrencies = ["USD", "EUR", "GBP", "AUD", "JPY"];
 const zeroDecimalCurrencies = new Set(["IDR", "JPY"]);
 const translations = {
   "id-ID": {
@@ -426,17 +429,95 @@ function parseIdrPrice(price) {
   return Number(String(price).replace(/[^\d]/g, ""));
 }
 
-function formatPrice(price) {
-  const idrPrice = parseIdrPrice(price);
-  const convertedPrice = idrPrice * (currencyRatesFromIdr[selectedCurrency] || 1);
-  const fractionDigits = zeroDecimalCurrencies.has(selectedCurrency) ? 0 : 2;
+async function refreshLiveCurrencyRates() {
+  try {
+    const response = await fetch("https://open.er-api.com/v6/latest/IDR", {
+      cache: "no-store"
+    });
+    if (!response.ok) throw new Error("Currency service unavailable");
+
+    const data = await response.json();
+    if (data.result !== "success" || !data.rates) {
+      throw new Error("Currency rates unavailable");
+    }
+
+    [selectedCurrency, ...estimateCurrencies].forEach((currency) => {
+      const rate = Number(data.rates[currency]);
+      if (Number.isFinite(rate) && rate > 0) {
+        currencyRatesFromIdr[currency] = rate;
+      }
+    });
+    currencyRatesLastUpdated = data.time_last_update_utc || new Date().toUTCString();
+    document.dispatchEvent(new CustomEvent("prices:refresh"));
+  } catch (error) {
+    console.warn("Using fallback currency estimates.", error);
+  }
+}
+
+function formatCurrencyAmount(amount, currency = selectedCurrency) {
+  const fractionDigits = zeroDecimalCurrencies.has(currency) ? 0 : 2;
 
   return new Intl.NumberFormat(selectedLanguage, {
     style: "currency",
-    currency: selectedCurrency,
+    currency,
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits
-  }).format(convertedPrice);
+  }).format(amount);
+}
+
+function formatPrice(price) {
+  const idrPrice = parseIdrPrice(price);
+  const convertedPrice = idrPrice * (currencyRatesFromIdr[selectedCurrency] || 1);
+
+  return formatCurrencyAmount(convertedPrice);
+}
+
+function estimateCurrencyRows(price) {
+  const idrPrice = parseIdrPrice(price);
+  return estimateCurrencies.map((currency) => {
+    const convertedPrice = idrPrice * (currencyRatesFromIdr[currency] || 1);
+    return `
+      <div class="flex items-center justify-between gap-4 border-b border-gold/10 py-2 last:border-b-0">
+        <span class="font-semibold text-mist/65">${currency}</span>
+        <span class="font-extrabold text-goldSoft">${formatCurrencyAmount(convertedPrice, currency)}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function updateCurrencyEstimatePanel(panel, price) {
+  panel.innerHTML = `
+    <div class="space-y-1">${estimateCurrencyRows(price)}</div>
+    <p class="mt-3 text-[10px] leading-4 text-mist/35">${currencyRatesLastUpdated ? `Live rates updated ${currencyRatesLastUpdated}` : "Live estimates use fallback rates until the currency service loads."}</p>
+  `;
+}
+
+function ensureCurrencyEstimateControls(root = document.body) {
+  root.querySelectorAll?.("[data-price-idr]").forEach((element) => {
+    if (!element.dataset.priceIdr || ["INPUT", "TEXTAREA", "SELECT"].includes(element.tagName)) return;
+    if (element.nextElementSibling?.hasAttribute("data-currency-estimates")) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.dataset.currencyEstimates = "true";
+    wrapper.className = "relative mt-1 text-center";
+    wrapper.innerHTML = `
+      <button type="button" data-currency-estimate-toggle class="text-[11px] font-semibold leading-4 text-mist/45 underline decoration-gold/35 underline-offset-4 transition hover:text-goldSoft">
+        Click here for estimates in other countries' currencies.
+      </button>
+      <div data-currency-estimate-panel class="absolute left-1/2 top-full z-30 mt-2 hidden w-64 -translate-x-1/2 rounded-lg border border-gold/25 bg-[#11100e] p-3 text-left text-xs shadow-[0_18px_55px_rgba(0,0,0,0.55)]"></div>
+    `;
+    element.insertAdjacentElement("afterend", wrapper);
+  });
+}
+
+function updateCurrencyEstimateControls(root = document.body) {
+  ensureCurrencyEstimateControls(root);
+  root.querySelectorAll?.("[data-currency-estimates]").forEach((wrapper) => {
+    const priceElement = wrapper.previousElementSibling;
+    const panel = wrapper.querySelector("[data-currency-estimate-panel]");
+    if (!priceElement?.dataset.priceIdr || !panel) return;
+    updateCurrencyEstimatePanel(panel, priceElement.dataset.priceIdr);
+  });
 }
 
 function applyLocalizedPrices() {
@@ -444,6 +525,7 @@ function applyLocalizedPrices() {
     if (!element.dataset.priceIdr) return;
     element.textContent = formatPrice(element.dataset.priceIdr);
   });
+  updateCurrencyEstimateControls();
 }
 
 function dictionary() {
@@ -675,6 +757,25 @@ function renderCategoryMenu() {
 }
 
 document.addEventListener("click", (event) => {
+  const estimateToggle = event.target.closest("[data-currency-estimate-toggle]");
+  if (estimateToggle) {
+    const wrapper = estimateToggle.closest("[data-currency-estimates]");
+    const panel = wrapper?.querySelector("[data-currency-estimate-panel]");
+    if (!panel) return;
+
+    document.querySelectorAll("[data-currency-estimate-panel]").forEach((openPanel) => {
+      if (openPanel !== panel) openPanel.classList.add("hidden");
+    });
+    panel.classList.toggle("hidden");
+    return;
+  }
+
+  if (!event.target.closest("[data-currency-estimates]")) {
+    document.querySelectorAll("[data-currency-estimate-panel]").forEach((panel) => {
+      panel.classList.add("hidden");
+    });
+  }
+
   const link = event.target.closest(".page-link");
   if (link) {
     event.preventDefault();
@@ -711,6 +812,9 @@ document.addEventListener("click", (event) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    document.querySelectorAll("[data-currency-estimate-panel]").forEach((panel) => {
+      panel.classList.add("hidden");
+    });
     closeCategoryMenu();
     closeMobileMenu();
   }
@@ -744,6 +848,10 @@ document.addEventListener("change", (event) => {
 document.addEventListener("prices:refresh", () => applyLocalization());
 
 window.addEventListener("scroll", () => updateCategoryBarVisibility(), { passive: true });
+window.addEventListener("focus", () => refreshLiveCurrencyRates());
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) refreshLiveCurrencyRates();
+});
 
 window.addEventListener("hashchange", () => {
   const nextState = hashState();
@@ -756,3 +864,5 @@ syncLocaleControls();
 const initialState = hashState();
 selectedHealingService = initialState.service;
 loadPage(initialState.page, false);
+refreshLiveCurrencyRates();
+window.setInterval(refreshLiveCurrencyRates, 60 * 60 * 1000);
