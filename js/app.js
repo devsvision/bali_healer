@@ -748,6 +748,28 @@ function clientSignedIn() {
   return Boolean(localStorage.getItem(clientSessionKey));
 }
 
+function readClientSession() {
+  try {
+    return JSON.parse(localStorage.getItem(clientSessionKey) || "null");
+  } catch {
+    return null;
+  }
+}
+
+function updateClientHeader() {
+  const session = readClientSession();
+  const signedIn = Boolean(session);
+  document.querySelectorAll("[data-client-signin-button]").forEach((button) => {
+    button.classList.toggle("hidden", signedIn);
+    button.classList.toggle("sm:flex", !signedIn);
+    button.classList.toggle("flex", !signedIn && button.closest("[data-mobile-menu]"));
+  });
+  document.querySelector("[data-client-header-actions]")?.classList.toggle("hidden", !signedIn);
+  document.querySelector("[data-client-header-actions]")?.classList.toggle("sm:flex", signedIn);
+  document.querySelector("[data-client-mobile-panel]")?.classList.toggle("hidden", !signedIn);
+  document.querySelector("[data-client-bookings-link]")?.classList.toggle("text-goldSoft", signedIn);
+}
+
 function openClientAuth(mode = "signin") {
   const modal = document.querySelector("[data-client-auth-modal]");
   if (!modal) return;
@@ -765,6 +787,13 @@ function closeClientAuth() {
   modal.classList.add("hidden");
   modal.classList.remove("flex");
   document.body.classList.remove("overflow-hidden");
+}
+
+function closeClientProfileMenu() {
+  const menu = document.querySelector("[data-client-profile-menu]");
+  const toggle = document.querySelector("[data-client-profile-toggle]");
+  menu?.classList.add("hidden");
+  toggle?.setAttribute("aria-expanded", "false");
 }
 
 function setClientAuthMode(mode) {
@@ -812,6 +841,7 @@ function completeClientAuth(method = "email", account = demoClientAccount) {
     signedInAt: new Date().toISOString()
   }));
   closeClientAuth();
+  updateClientHeader();
 }
 
 function toggleClientPassword(button) {
@@ -863,6 +893,27 @@ document.addEventListener("click", (event) => {
     event.preventDefault();
     closeMobileMenu();
     openClientAuth("signin");
+    return;
+  }
+
+  const profileToggle = event.target.closest("[data-client-profile-toggle]");
+  if (profileToggle) {
+    const menu = document.querySelector("[data-client-profile-menu]");
+    const isOpen = menu && !menu.classList.contains("hidden");
+    menu?.classList.toggle("hidden", isOpen);
+    profileToggle.setAttribute("aria-expanded", String(!isOpen));
+    return;
+  }
+
+  if (!event.target.closest("[data-client-header-actions]")) {
+    closeClientProfileMenu();
+  }
+
+  if (event.target.closest("[data-client-logout]")) {
+    localStorage.removeItem(clientSessionKey);
+    closeClientProfileMenu();
+    closeMobileMenu();
+    updateClientHeader();
     return;
   }
 
@@ -947,6 +998,7 @@ document.addEventListener("keydown", (event) => {
     closeCategoryMenu();
     closeMobileMenu();
     closeClientAuth();
+    closeClientProfileMenu();
   }
 });
 
@@ -1022,6 +1074,7 @@ window.addEventListener("hashchange", () => {
 
 renderCategoryMenu();
 syncLocaleControls();
+updateClientHeader();
 const initialState = hashState();
 selectedHealingService = initialState.service;
 loadPage(initialState.page, false);
