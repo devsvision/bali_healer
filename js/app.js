@@ -50,6 +50,11 @@ const routes = {
     title: "Marketplace Dashboard Preview | Bali Healer",
     description: "Preview admin, vendor, and user dashboard workflows for the Bali Healer marketplace."
   },
+  "client-dashboard": {
+    hash: "client-dashboard",
+    title: "Client Dashboard | Bali Healer",
+    description: "Manage your Bali Healer bookings, transactions, wallet, wishlist, tickets, and profile."
+  },
   spec: {
     hash: "about",
     title: "About the Bali Healer Marketplace",
@@ -973,6 +978,7 @@ document.addEventListener("click", (event) => {
   if (link) {
     event.preventDefault();
     closeMobileMenu();
+    closeClientProfileMenu();
     loadPage(link.dataset.page);
     return;
   }
